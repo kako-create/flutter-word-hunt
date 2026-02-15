@@ -1,0 +1,383 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_tech_010",
+  "title": {
+    "pt-BR": "Tecnologia 010"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "DLDCACHEOM",
+          "HFNMKMYSQL",
+          "ILGDOCKERG",
+          "BDQHQTOSQL",
+          "BVPAJAVAHL",
+          "SAJBROWSER",
+          "IWOZCHREQD",
+          "JSONPIXELP",
+          "USNANDROID",
+          "AALVJSWIFT"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "pixel",
+          "text": "PIXEL",
+          "display": "PIXEL",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "sql",
+          "text": "SQL",
+          "display": "SQL",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "cache",
+          "text": "CACHE",
+          "display": "CACHE",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "java",
+          "text": "JAVA",
+          "display": "JAVA",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "docker",
+          "text": "DOCKER",
+          "display": "DOCKER",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "json",
+          "text": "JSON",
+          "display": "JSON",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "swift",
+          "text": "SWIFT",
+          "display": "SWIFT",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "browser",
+          "text": "BROWSER",
+          "display": "BROWSER",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "mysql",
+          "text": "MYSQL",
+          "display": "MYSQL",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "android",
+          "text": "ANDROID",
+          "display": "ANDROID",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "browser",
+          "start": {
+            "r": 5,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "android",
+          "start": {
+            "r": 8,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "docker",
+          "start": {
+            "r": 2,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "pixel",
+          "start": {
+            "r": 7,
+            "c": 4
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "cache",
+          "start": {
+            "r": 0,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "swift",
+          "start": {
+            "r": 9,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "mysql",
+          "start": {
+            "r": 1,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "java",
+          "start": {
+            "r": 4,
+            "c": 4
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "json",
+          "start": {
+            "r": 7,
+            "c": 0
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "sql",
+          "start": {
+            "r": 3,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 3
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "tech",
+        "title": {
+          "pt-BR": "Tecnologia"
+        },
+        "icon": "memory"
+      },
+      "difficulty": 3
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "tech",
+    "difficulty": 3
+  }
+}

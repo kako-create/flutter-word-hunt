@@ -1,0 +1,427 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "standard_esportes_007",
+  "title": {
+    "pt-BR": "Esportes 007"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "VSNITAPSET",
+          "IEUQOHETSE",
+          "LCRBATENLK",
+          "SIETAUOACC",
+          "IGULQWDPJI",
+          "NLISBIYYUR",
+          "EPAORITZDC",
+          "TBARNEVEOB",
+          "RROTRIATLO",
+          "DCARIEOPAC"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "BASQUETE",
+          "display": "BASQUETE",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "CORRIDA",
+          "display": "CORRIDA",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "TIRO",
+          "display": "TIRO",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "JUDO",
+          "display": "JUDO",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "CRICKET",
+          "display": "CRICKET",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "HOQUEI",
+          "display": "HOQUEI",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "PATINS",
+          "display": "PATINS",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "LUTA",
+          "display": "LUTA",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "NEVE",
+          "display": "NEVE",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "SNOWBOARD",
+          "display": "SNOWBOARD",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "PILATES",
+          "display": "PILATES",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "CAPOEIRA",
+          "display": "CAPOEIRA",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "TENIS",
+          "display": "TENIS",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "TRIATLO",
+          "display": "TRIATLO",
+          "tags": [
+            "esportes"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "groups": [
+        {
+          "id": "g_esportes",
+          "label": {
+            "pt-BR": "Esportes"
+          },
+          "wordIds": [
+            "w01",
+            "w02",
+            "w03",
+            "w04",
+            "w05",
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14"
+          ]
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 1,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 7,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 9,
+            "c": 9
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 9,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 6,
+            "c": 9
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 6,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 8,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 1,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 0,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 7,
+            "c": 0
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 6,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 4,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 5,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 7,
+            "c": 4
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "pack": "standard",
+      "theme": {
+        "id": "esportes",
+        "title": {
+          "pt-BR": "Esportes"
+        },
+        "icon": "sports_soccer"
+      },
+      "index": 7,
+      "seed": 202602090507
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o Tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 180
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Seleção Aleatória"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "esportes",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "standard",
+    "theme": "esportes",
+    "difficulty": 2
+  }
+}

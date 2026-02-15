@@ -1,0 +1,427 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "standard_animais_001",
+  "title": {
+    "pt-BR": "Animais 001"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "OOUMORCEGO",
+          "GABELHAOUR",
+          "XVECOELHOM",
+          "XAELEFANTE",
+          "TPCACHORRO",
+          "IOCACAMSGP",
+          "GOBMOPASLW",
+          "RNAHNIDRAS",
+          "ELSERACAJO",
+          "WNBALEIAPK"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "MACACO",
+          "display": "MACACO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "COELHO",
+          "display": "COELHO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "ELEFANTE",
+          "display": "ELEFANTE",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "ABELHA",
+          "display": "ABELHA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "LEAO",
+          "display": "LEAO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "CACHORRO",
+          "display": "CACHORRO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "PAVAO",
+          "display": "PAVAO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "BALEIA",
+          "display": "BALEIA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "SAPO",
+          "display": "SAPO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "SARDINHA",
+          "display": "SARDINHA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "MORCEGO",
+          "display": "MORCEGO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "TIGRE",
+          "display": "TIGRE",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "POMBO",
+          "display": "POMBO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "JACARE",
+          "display": "JACARE",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "groups": [
+        {
+          "id": "g_animais",
+          "label": {
+            "pt-BR": "Animais"
+          },
+          "wordIds": [
+            "w01",
+            "w02",
+            "w03",
+            "w04",
+            "w05",
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14"
+          ]
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 3,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 4,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 7,
+            "c": 9
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 0,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 5,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 2,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 1,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 9,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 8,
+            "c": 8
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 4,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 4,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 6,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 3,
+            "c": 3
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 6,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "pack": "standard",
+      "theme": {
+        "id": "animais",
+        "title": {
+          "pt-BR": "Animais"
+        },
+        "icon": "pets"
+      },
+      "index": 1,
+      "seed": 202602090101
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o Tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 180
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Seleção Aleatória"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "animais",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "standard",
+    "theme": "animais",
+    "difficulty": 2
+  }
+}

@@ -1,0 +1,361 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_tech_002",
+  "title": {
+    "pt-BR": "Tecnologia 002"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "PLQJSONZBA",
+          "YVHTTPGLUP",
+          "HHYABDIRAI",
+          "DMRRPOXFCM",
+          "DTKOICUDLB",
+          "PMSOXKXTIC",
+          "IAGGEEAMEA",
+          "HZIKLRRQNC",
+          "YBTLETTLTH",
+          "DLINUXXOOE"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "client",
+          "text": "CLIENT",
+          "display": "CLIENT",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "http",
+          "text": "HTTP",
+          "display": "HTTP",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "api",
+          "text": "API",
+          "display": "API",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "pixel",
+          "text": "PIXEL",
+          "display": "PIXEL",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "git",
+          "text": "GIT",
+          "display": "GIT",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "cache",
+          "text": "CACHE",
+          "display": "CACHE",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "json",
+          "text": "JSON",
+          "display": "JSON",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "docker",
+          "text": "DOCKER",
+          "display": "DOCKER",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "linux",
+          "text": "LINUX",
+          "display": "LINUX",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "client",
+          "start": {
+            "r": 3,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "docker",
+          "start": {
+            "r": 2,
+            "c": 5
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "pixel",
+          "start": {
+            "r": 3,
+            "c": 4
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "cache",
+          "start": {
+            "r": 5,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "linux",
+          "start": {
+            "r": 9,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "http",
+          "start": {
+            "r": 1,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "json",
+          "start": {
+            "r": 0,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "api",
+          "start": {
+            "r": 0,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 3
+        },
+        {
+          "wordId": "git",
+          "start": {
+            "r": 6,
+            "c": 2
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 3
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "tech",
+        "title": {
+          "pt-BR": "Tecnologia"
+        },
+        "icon": "memory"
+      },
+      "difficulty": 1
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "tech",
+    "difficulty": 1
+  }
+}

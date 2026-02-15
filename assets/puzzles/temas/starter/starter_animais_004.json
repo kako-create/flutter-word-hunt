@@ -1,0 +1,361 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_animais_004",
+  "title": {
+    "pt-BR": "Animais 004"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "AQFASTATUR",
+          "PDSAYCEBRA",
+          "PGZBZVFUZN",
+          "ZJGEURLEAO",
+          "CAMLMAJLWI",
+          "ACRHIPVTDL",
+          "FAAABOXILV",
+          "VRTBISVGHA",
+          "MEOCIAPRDC",
+          "TKIOVZWELA"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "abelha",
+          "text": "ABELHA",
+          "display": "ABELHA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "tigre",
+          "text": "TIGRE",
+          "display": "TIGRE",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "jacare",
+          "text": "JACARE",
+          "display": "JACARE",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "vaca",
+          "text": "VACA",
+          "display": "VACA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "rato",
+          "text": "RATO",
+          "display": "RATO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "leao",
+          "text": "LEAO",
+          "display": "LEAO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "cebra",
+          "text": "CEBRA",
+          "display": "CEBRA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "tatu",
+          "text": "TATU",
+          "display": "TATU",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "raposa",
+          "text": "RAPOSA",
+          "display": "RAPOSA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "abelha",
+          "start": {
+            "r": 1,
+            "c": 3
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "jacare",
+          "start": {
+            "r": 3,
+            "c": 1
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "raposa",
+          "start": {
+            "r": 3,
+            "c": 5
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "tigre",
+          "start": {
+            "r": 5,
+            "c": 7
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "cebra",
+          "start": {
+            "r": 1,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "vaca",
+          "start": {
+            "r": 6,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "rato",
+          "start": {
+            "r": 5,
+            "c": 2
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "leao",
+          "start": {
+            "r": 3,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "tatu",
+          "start": {
+            "r": 0,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "animais",
+        "title": {
+          "pt-BR": "Animais"
+        },
+        "icon": "pets"
+      },
+      "difficulty": 1
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "animais",
+    "difficulty": 1
+  }
+}

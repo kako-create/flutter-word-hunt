@@ -1,0 +1,361 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_lugares_004",
+  "title": {
+    "pt-BR": "Lugares 004"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "YEOASISXVE",
+          "ASGKLFAPER",
+          "ECVPEAAEPI",
+          "ROYRMRRMTS",
+          "OLWAQOEUOP",
+          "PAMIULNSRS",
+          "OBLAYLAERZ",
+          "RTEMPLOUEF",
+          "TJJDFSIGGD",
+          "OKXTTQQXEV"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "farol",
+          "text": "FAROL",
+          "display": "FAROL",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "aeroporto",
+          "text": "AEROPORTO",
+          "display": "AEROPORTO",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "museu",
+          "text": "MUSEU",
+          "display": "MUSEU",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "templo",
+          "text": "TEMPLO",
+          "display": "TEMPLO",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "praia",
+          "text": "PRAIA",
+          "display": "PRAIA",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "escola",
+          "text": "ESCOLA",
+          "display": "ESCOLA",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "torre",
+          "text": "TORRE",
+          "display": "TORRE",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "arena",
+          "text": "ARENA",
+          "display": "ARENA",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        },
+        {
+          "id": "oasis",
+          "text": "OASIS",
+          "display": "OASIS",
+          "tags": [
+            "lugares"
+          ],
+          "weight": 1.0,
+          "difficulty": 1
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "aeroporto",
+          "start": {
+            "r": 1,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 9
+        },
+        {
+          "wordId": "templo",
+          "start": {
+            "r": 7,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "escola",
+          "start": {
+            "r": 0,
+            "c": 1
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "farol",
+          "start": {
+            "r": 1,
+            "c": 5
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "museu",
+          "start": {
+            "r": 3,
+            "c": 7
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "praia",
+          "start": {
+            "r": 2,
+            "c": 3
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "torre",
+          "start": {
+            "r": 3,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "arena",
+          "start": {
+            "r": 2,
+            "c": 6
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "oasis",
+          "start": {
+            "r": 0,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "lugares",
+        "title": {
+          "pt-BR": "Lugares"
+        },
+        "icon": "place"
+      },
+      "difficulty": 1
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "lugares",
+    "difficulty": 1
+  }
+}

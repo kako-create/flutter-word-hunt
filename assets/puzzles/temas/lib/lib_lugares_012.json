@@ -1,0 +1,470 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "lib_lugares_012",
+  "title": {
+    "pt-BR": "Biblioteca - Lugares 012"
+  },
+  "content": {
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 13,
+      "cols": 13,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "LTAQULUESUMJC",
+          "EODQLARDETACQ",
+          "SSITUFUSXOGAL",
+          "OTTYFAPRAIAFS",
+          "DXMALHRWFHXRI",
+          "GDBICORIETSOM",
+          "NHVPDAMCOEWNA",
+          "PBIBLIOTECATL",
+          "JADINEVAIKDED",
+          "BOLPMETKPRKIE",
+          "SAVANAEFBPRRI",
+          "HJQOLETSACLAA",
+          "IIASOTRESEDNP"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "MUSEU",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "TEMPLO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "DESERTO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "BIBLIOTECA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "FRONTEIRA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "CASTELO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "SAVANA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "LAGO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "PRAIA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "MOSTEIRO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "ESTACAO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "AQUARIO",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "CATEDRAL",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "ALDEIA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w15",
+          "text": "AVENIDA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w16",
+          "text": "VILA",
+          "tags": [
+            "pool",
+            "lugares"
+          ],
+          "weight": 1.0
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 7,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 10
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 3,
+            "c": 11
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 5,
+            "c": 12
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 1,
+            "c": 11
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 12,
+            "c": 10
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 11,
+            "c": 9
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 1,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 0,
+            "c": 2
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w15",
+          "start": {
+            "r": 8,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 9,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 10,
+            "c": 0
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 6,
+            "c": 12
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 0,
+            "c": 10
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 3,
+            "c": 6
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 2,
+            "c": 12
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w16",
+          "start": {
+            "r": 6,
+            "c": 2
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "lugares",
+        "title": {
+          "pt-BR": "Lugares"
+        },
+        "icon": "place"
+      },
+      "wordsCount": 16,
+      "boardSize": "13x13"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 150
+      },
+      "goals": {
+        "end": [
+          {
+            "type": "time_over",
+            "params": {
+              "seconds": 150
+            }
+          }
+        ],
+        "win": [
+          {
+            "type": "find_all_words"
+          }
+        ]
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true,
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Repetição"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "pool",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "library_good",
+    "theme": "lugares"
+  }
+}

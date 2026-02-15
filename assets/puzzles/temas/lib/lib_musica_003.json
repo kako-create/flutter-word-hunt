@@ -1,0 +1,470 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "lib_musica_003",
+  "title": {
+    "pt-BR": "Biblioteca - Musica 003"
+  },
+  "content": {
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 13,
+      "cols": 13,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "ZODALCETVSUWM",
+          "VQVKOCLAPOTVQ",
+          "QMJHQFLAUTAUD",
+          "OONAIPSTYYRWS",
+          "JAJEYEERITMOA",
+          "RODAZITETNISX",
+          "ADHVIOLINORJO",
+          "TRAPARTITURAF",
+          "SZRAIDOLEMAOO",
+          "XAPKNWLAROCON",
+          "WEACANTOVOULE",
+          "ETEPMORTXNNOX",
+          "ORQUESTRALESM"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "ORQUESTRA",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "FLAUTA",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "PARTITURA",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "HARPA",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "SOLO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "PALCO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "PIANO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "SAXOFONE",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "SINTETIZADOR",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "CORAL",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "TROMPETE",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "CANTO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "TECLADO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "MELODIA",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w15",
+          "text": "VIOLINO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w16",
+          "text": "RITMO",
+          "tags": [
+            "pool",
+            "musica"
+          ],
+          "weight": 1.0
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 5,
+            "c": 11
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 12
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 12,
+            "c": 0
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 7,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 3,
+            "c": 12
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 11,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 0,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 8,
+            "c": 9
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w15",
+          "start": {
+            "r": 6,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 2,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 6,
+            "c": 2
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 1,
+            "c": 8
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 3,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 9,
+            "c": 10
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 10,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w16",
+          "start": {
+            "r": 4,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 12,
+            "c": 11
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "musica",
+        "title": {
+          "pt-BR": "Musica"
+        },
+        "icon": "music_note"
+      },
+      "wordsCount": 16,
+      "boardSize": "13x13"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 180
+      },
+      "goals": {
+        "end": [
+          {
+            "type": "time_over",
+            "params": {
+              "seconds": 180
+            }
+          }
+        ],
+        "win": [
+          {
+            "type": "find_all_words"
+          }
+        ]
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true,
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Repetição"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "pool",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "library_good",
+    "theme": "musica"
+  }
+}

@@ -1,0 +1,508 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "lib_historia_002",
+  "title": {
+    "pt-BR": "Biblioteca - Historia 002"
+  },
+  "content": {
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 13,
+      "cols": 13,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "IATRTEDSSDZRQ",
+          "QIAGEHODATART",
+          "UTNMCPCIRDPKY",
+          "WSAAOKUPGXCOO",
+          "OAIHCRMBQHIAI",
+          "ANALYOEGLOURR",
+          "CIMAIANRRIAAE",
+          "ADZTNPTQEECFP",
+          "GSMAVAOLUNCAM",
+          "EXJBAMNMQIYII",
+          "VREVOLUCAOSZA",
+          "ARENASCENCATY",
+          "NWRAINHAHBYCA"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "REVOLUCAO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "FARAO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "DOCUMENTO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "MAPA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "CONQUISTA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "RENASCENCA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "MAIA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "GRECIA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "DINASTIA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "TRATADO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "BATALHA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "REPUBLICA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "RAINHA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "ROMA",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w15",
+          "text": "NAVEGACAO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w16",
+          "text": "IMPERIO",
+          "tags": [
+            "pool",
+            "historia"
+          ],
+          "weight": 1.0
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 11,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 10
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 10,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 0,
+            "c": 6
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 4,
+            "c": 4
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 0,
+            "c": 3
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w15",
+          "start": {
+            "r": 12,
+            "c": 0
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 9
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 7,
+            "c": 1
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 1,
+            "c": 12
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 9,
+            "c": 3
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w16",
+          "start": {
+            "r": 9,
+            "c": 12
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 5,
+            "c": 7
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 12,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 7,
+            "c": 11
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 9,
+            "c": 5
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 6,
+            "c": 2
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 4,
+            "c": 5
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "historia",
+        "title": {
+          "pt-BR": "Historia"
+        },
+        "icon": "history_edu"
+      },
+      "wordsCount": 16,
+      "boardSize": "13x13"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 180
+      },
+      "goals": {
+        "end": [
+          {
+            "type": "time_over",
+            "params": {
+              "seconds": 180
+            }
+          }
+        ],
+        "win": [
+          {
+            "type": "find_all_words"
+          }
+        ]
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true,
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Repetição"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "pool",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "by_length",
+          "ascending": true
+        }
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "modifiers": [
+        {
+          "type": "word_masking",
+          "params": {
+            "maskMode": "underscores",
+            "revealOnFound": true
+          }
+        }
+      ],
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "library_good",
+    "theme": "historia",
+    "specialVariant": "ordered"
+  }
+}

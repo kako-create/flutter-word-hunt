@@ -1,0 +1,383 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_animais_010",
+  "title": {
+    "pt-BR": "Animais 010"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "TILBQCEBRA",
+          "YBALEIACNK",
+          "VUJFVZPODQ",
+          "ZLNOARJRIA",
+          "FOJRCQMUVB",
+          "PVUMADAJAE",
+          "AEXIPBCARL",
+          "TLSGMLAQAH",
+          "OHFAJKCARA",
+          "QAXCFNOZAO"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "macaco",
+          "text": "MACACO",
+          "display": "MACACO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "coruja",
+          "text": "CORUJA",
+          "display": "CORUJA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "vaca",
+          "text": "VACA",
+          "display": "VACA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "pato",
+          "text": "PATO",
+          "display": "PATO",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "ovelha",
+          "text": "OVELHA",
+          "display": "OVELHA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "arara",
+          "text": "ARARA",
+          "display": "ARARA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "baleia",
+          "text": "BALEIA",
+          "display": "BALEIA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "formiga",
+          "text": "FORMIGA",
+          "display": "FORMIGA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "abelha",
+          "text": "ABELHA",
+          "display": "ABELHA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        },
+        {
+          "id": "cebra",
+          "text": "CEBRA",
+          "display": "CEBRA",
+          "tags": [
+            "animais"
+          ],
+          "weight": 1.0,
+          "difficulty": 3
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "formiga",
+          "start": {
+            "r": 2,
+            "c": 3
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 7
+        },
+        {
+          "wordId": "macaco",
+          "start": {
+            "r": 4,
+            "c": 6
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "coruja",
+          "start": {
+            "r": 1,
+            "c": 7
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "ovelha",
+          "start": {
+            "r": 4,
+            "c": 1
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "baleia",
+          "start": {
+            "r": 1,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "abelha",
+          "start": {
+            "r": 3,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "arara",
+          "start": {
+            "r": 5,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "cebra",
+          "start": {
+            "r": 0,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "vaca",
+          "start": {
+            "r": 2,
+            "c": 4
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "pato",
+          "start": {
+            "r": 5,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "animais",
+        "title": {
+          "pt-BR": "Animais"
+        },
+        "icon": "pets"
+      },
+      "difficulty": 3
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "animais",
+    "difficulty": 3
+  }
+}

@@ -1,0 +1,383 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "starter_tech_006",
+  "title": {
+    "pt-BR": "Tecnologia 006"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "HFLEJQJLJB",
+          "THCPYTHONV",
+          "OLANDROIDZ",
+          "KSJSCRIPTC",
+          "EEHBINARYD",
+          "NNTTRKSYAR",
+          "WILMSERVER",
+          "KWIDGETMCB",
+          "DOCKERCBQQ",
+          "RCLOUDAGIT"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "android",
+          "text": "ANDROID",
+          "display": "ANDROID",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "widget",
+          "text": "WIDGET",
+          "display": "WIDGET",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "python",
+          "text": "PYTHON",
+          "display": "PYTHON",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "cloud",
+          "text": "CLOUD",
+          "display": "CLOUD",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "docker",
+          "text": "DOCKER",
+          "display": "DOCKER",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "token",
+          "text": "TOKEN",
+          "display": "TOKEN",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "binary",
+          "text": "BINARY",
+          "display": "BINARY",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "script",
+          "text": "SCRIPT",
+          "display": "SCRIPT",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "git",
+          "text": "GIT",
+          "display": "GIT",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        },
+        {
+          "id": "server",
+          "text": "SERVER",
+          "display": "SERVER",
+          "tags": [
+            "tech"
+          ],
+          "weight": 1.0,
+          "difficulty": 2
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "android",
+          "start": {
+            "r": 2,
+            "c": 2
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "widget",
+          "start": {
+            "r": 7,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "python",
+          "start": {
+            "r": 1,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "docker",
+          "start": {
+            "r": 8,
+            "c": 0
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "binary",
+          "start": {
+            "r": 4,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "script",
+          "start": {
+            "r": 3,
+            "c": 3
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "server",
+          "start": {
+            "r": 6,
+            "c": 4
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "cloud",
+          "start": {
+            "r": 9,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "token",
+          "start": {
+            "r": 1,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "git",
+          "start": {
+            "r": 9,
+            "c": 7
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 3
+        }
+      ]
+    },
+    "meta": {
+      "pack": "starter",
+      "theme": {
+        "id": "tech",
+        "title": {
+          "pt-BR": "Tecnologia"
+        },
+        "icon": "memory"
+      },
+      "difficulty": 2
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 2
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          },
+          {
+            "type": "show_direction",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 120
+      },
+      "rules": {
+        "allowedDirsPreset": "custom",
+        "allowedDirs": [
+          {
+            "dr": 0,
+            "dc": 1
+          },
+          {
+            "dr": 1,
+            "dc": 0
+          }
+        ],
+        "straightLineOnly": true,
+        "allowReuseCell": true,
+        "selection": {
+          "minLen": 2,
+          "snapToGrid": true
+        }
+      },
+      "hints": {
+        "budget": {
+          "perPuzzle": 1
+        },
+        "types": [
+          {
+            "type": "reveal_start",
+            "cost": 1
+          }
+        ]
+      },
+      "scoring": {
+        "events": {
+          "wrongSelection": {
+            "delta": -5
+          },
+          "hintUsed": {
+            "delta": -10
+          }
+        }
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 3
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "pack": "starter",
+    "theme": "tech",
+    "difficulty": 2
+  }
+}

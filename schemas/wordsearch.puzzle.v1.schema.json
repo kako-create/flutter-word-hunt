@@ -1,0 +1,692 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wordsearch.puzzle.v1.schema.json",
+  "title": "wordsearch.puzzle@1",
+  "type": "object",
+  "required": ["schema", "id", "title", "content", "variants"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "wordsearch.puzzle@1" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "$ref": "#/$defs/i18nText" },
+    "content": { "$ref": "#/$defs/content" },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/variant" }
+    },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "i18nText": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string" }
+        }
+      ]
+    },
+    "content": {
+      "type": "object",
+      "required": ["locale", "board", "lexicon", "solution"],
+      "additionalProperties": false,
+      "properties": {
+        "locale": { "type": "string", "minLength": 1 },
+        "normalize": { "$ref": "#/$defs/normalize" },
+        "board": { "$ref": "#/$defs/board" },
+        "lexicon": { "$ref": "#/$defs/lexicon" },
+        "solution": { "$ref": "#/$defs/solution" },
+        "meta": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "normalize": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "upper": { "type": "boolean" },
+        "stripAccents": { "type": "boolean" },
+        "stripNonLetters": { "type": "boolean" },
+        "customMap": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "board": {
+      "type": "object",
+      "required": ["rows", "cols", "alphabet", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "rows": { "type": "integer", "minimum": 2 },
+        "cols": { "type": "integer", "minimum": 2 },
+        "alphabet": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/$defs/boardSource" }
+      }
+    },
+    "boardSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "grid"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "static" },
+            "grid": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "type": "string", "minLength": 2 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "generator"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "generated" },
+            "generator": { "$ref": "#/$defs/generator" }
+          }
+        }
+      ]
+    },
+    "generator": {
+      "type": "object",
+      "required": ["algo"],
+      "additionalProperties": false,
+      "properties": {
+        "algo": { "type": "string", "minLength": 1 },
+        "seed": { "type": "string" },
+        "maxAttempts": { "type": "integer", "minimum": 1, "default": 300 },
+        "allowOverlaps": { "type": "boolean", "default": true },
+        "preferOverlaps": { "type": "boolean", "default": true },
+        "fillStrategy": {
+          "type": "string",
+          "enum": ["random", "frequency_weighted", "theme_weighted"],
+          "default": "random"
+        }
+      }
+    },
+    "lexicon": {
+      "type": "object",
+      "required": ["words"],
+      "additionalProperties": false,
+      "properties": {
+        "words": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/word" }
+        },
+        "groups": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/group" }
+        }
+      }
+    },
+    "word": {
+      "type": "object",
+      "required": ["id", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "display": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "weight": { "type": "number", "default": 1.0 },
+        "difficulty": { "type": "integer" }
+      }
+    },
+    "group": {
+      "type": "object",
+      "required": ["id", "wordIds"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "$ref": "#/$defs/i18nText" },
+        "wordIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "solution": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "placements"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "placements" },
+            "placements": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/placement" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "auto_from_grid" } }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "none" } }
+        }
+      ]
+    },
+    "placement": {
+      "type": "object",
+      "required": ["wordId", "start", "dir"],
+      "additionalProperties": false,
+      "properties": {
+        "wordId": { "type": "string", "minLength": 1 },
+        "start": { "$ref": "#/$defs/coord" },
+        "dir": { "$ref": "#/$defs/dir" },
+        "len": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "coord": {
+      "type": "object",
+      "required": ["r", "c"],
+      "additionalProperties": false,
+      "properties": {
+        "r": { "type": "integer", "minimum": 0 },
+        "c": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "dir": {
+      "type": "object",
+      "required": ["dr", "dc"],
+      "additionalProperties": false,
+      "properties": {
+        "dr": { "type": "integer", "minimum": -1, "maximum": 1 },
+        "dc": { "type": "integer", "minimum": -1, "maximum": 1 }
+      },
+      "not": {
+        "properties": { "dr": { "const": 0 }, "dc": { "const": 0 } },
+        "required": ["dr", "dc"]
+      }
+    },
+    "variant": {
+      "type": "object",
+      "required": ["id", "title", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "$ref": "#/$defs/i18nText" },
+        "mode": { "$ref": "#/$defs/mode" },
+        "rules": { "$ref": "#/$defs/rules" },
+        "goals": { "$ref": "#/$defs/goals" },
+        "hints": { "$ref": "#/$defs/hints" },
+        "scoring": { "$ref": "#/$defs/scoring" },
+        "ui": { "$ref": "#/$defs/ui" },
+        "modifiers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/modifier" }
+        },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "mode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "classic" } }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "zen" } }
+        },
+        {
+          "type": "object",
+          "required": ["type", "timeLimitSec"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "timed" },
+            "timeLimitSec": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "timeLimitSec"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "sprint" },
+            "timeLimitSec": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "order"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ordered" },
+            "order": { "$ref": "#/$defs/order" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "by"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "subset" },
+            "by": { "enum": ["group", "tag", "wordIds"] },
+            "groupId": { "type": "string" },
+            "tag": { "type": "string" },
+            "wordIds": { "type": "array", "items": { "type": "string" } },
+            "count": { "type": "integer", "minimum": 1 }
+          }
+        }
+      ]
+    },
+    "order": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "wordIds"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "explicit" },
+            "wordIds": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "by_length" },
+            "ascending": { "type": "boolean", "default": true }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "tag"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "by_tag" },
+            "tag": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "random" } }
+        }
+      ]
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowedDirsPreset": {
+          "type": "string",
+          "enum": ["orthogonal", "eightway", "diagonal_only", "custom"],
+          "default": "eightway"
+        },
+        "allowedDirs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dir" }
+        },
+        "straightLineOnly": { "type": "boolean", "default": true },
+        "allowReuseCell": { "type": "boolean", "default": true },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "minLen": { "type": "integer", "minimum": 2, "default": 2 },
+            "maxLen": { "type": "integer", "minimum": 2 },
+            "snapToGrid": { "type": "boolean", "default": true }
+          }
+        }
+      }
+    },
+    "goals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "end": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "win": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "fail": { "type": "array", "items": { "$ref": "#/$defs/condition" } }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "time_over",
+            "moves_over",
+            "find_all_words",
+            "find_subset",
+            "find_in_order",
+            "score_at_least",
+            "words_found_at_least",
+            "time_under",
+            "mistakes_over",
+            "hints_over",
+            "no_progress_for"
+          ]
+        },
+        "params": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "hints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "perPuzzle": { "type": "integer", "minimum": 0, "default": 0 },
+            "perRun": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "reveal_letter",
+                  "reveal_start",
+                  "show_direction",
+                  "highlight_path",
+                  "reveal_area"
+                ]
+              },
+              "cost": { "type": "integer", "minimum": 1, "default": 1 },
+              "params": { "$ref": "#/$defs/extensions" }
+            }
+          }
+        },
+        "cooldownsSec": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "events": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wordFound": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "base": { "type": "integer", "default": 100 },
+                "perChar": { "type": "integer", "default": 0 },
+                "byTagBonus": {
+                  "type": "object",
+                  "additionalProperties": { "type": "integer" }
+                }
+              }
+            },
+            "wrongSelection": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": { "delta": { "type": "integer", "default": 0 } }
+            },
+            "hintUsed": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": { "delta": { "type": "integer", "default": 0 } }
+            }
+          }
+        },
+        "combo": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "windowMs": { "type": "integer", "minimum": 1 },
+            "step": { "type": "integer", "minimum": 1 },
+            "max": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "medals": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bronze": { "type": "integer", "minimum": 0 },
+            "silver": { "type": "integer", "minimum": 0 },
+            "gold": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "showWordList": { "type": "boolean", "default": true },
+        "wordListMode": {
+          "type": "string",
+          "enum": ["full", "lengths_only", "groups_only", "hidden"],
+          "default": "full"
+        },
+        "showRemainingCount": { "type": "boolean", "default": true },
+        "showTimer": { "type": "boolean" },
+        "showScore": { "type": "boolean" },
+        "showMistakes": { "type": "boolean", "default": true },
+        "showHints": { "type": "boolean" }
+      }
+    },
+    "modifier": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "fog" },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "revealRadius": { "type": "integer", "minimum": 1, "default": 1 },
+                "reveal": { "enum": ["touch", "cursor", "wordFound"], "default": "touch" },
+                "persist": { "type": "boolean", "default": true },
+                "startRevealed": { "enum": ["none", "center", "edges"], "default": "none" }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "locked_cells" },
+            "params": {
+              "type": "object",
+              "required": ["cells"],
+              "additionalProperties": false,
+              "properties": {
+                "cells": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/coord" } },
+                "unlockOn": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": ["type", "wordId"],
+                      "additionalProperties": false,
+                      "properties": { "type": { "const": "wordFound" }, "wordId": { "type": "string" } }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["type", "count"],
+                      "additionalProperties": false,
+                      "properties": { "type": { "const": "wordsFoundAtLeast" }, "count": { "type": "integer", "minimum": 1 } }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["type", "seconds"],
+                      "additionalProperties": false,
+                      "properties": { "type": { "const": "timeElapsed" }, "seconds": { "type": "integer", "minimum": 1 } }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "portals" },
+            "params": {
+              "type": "object",
+              "required": ["pairs"],
+              "additionalProperties": false,
+              "properties": {
+                "pairs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["a", "b"],
+                    "additionalProperties": false,
+                    "properties": { "a": { "$ref": "#/$defs/coord" }, "b": { "$ref": "#/$defs/coord" } }
+                  }
+                },
+                "bidirectional": { "type": "boolean", "default": true }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ice_slide" },
+            "params": {
+              "type": "object",
+              "required": ["stopOn"],
+              "additionalProperties": false,
+              "properties": {
+                "stopOn": { "enum": ["edge", "blocked", "portal"] },
+                "allowDiagonal": { "type": "boolean", "default": true }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "error_time_penalty" },
+            "params": {
+              "type": "object",
+              "required": ["seconds"],
+              "additionalProperties": false,
+              "properties": { "seconds": { "type": "integer", "minimum": 1 } }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "hint_cooldown_override" },
+            "params": {
+              "type": "object",
+              "required": ["cooldownsSec"],
+              "additionalProperties": false,
+              "properties": {
+                "cooldownsSec": {
+                  "type": "object",
+                  "additionalProperties": { "type": "integer", "minimum": 0 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "decoy_blink" },
+            "params": {
+              "type": "object",
+              "required": ["count", "intervalMs"],
+              "additionalProperties": false,
+              "properties": {
+                "count": { "type": "integer", "minimum": 1 },
+                "intervalMs": { "type": "integer", "minimum": 1 }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "params"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "word_masking" },
+            "params": {
+              "type": "object",
+              "required": ["maskMode"],
+              "additionalProperties": false,
+              "properties": {
+                "maskMode": { "enum": ["asterisk", "underscores"] },
+                "revealOnFound": { "type": "boolean", "default": true }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "shuffle_word_list" },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "on": { "enum": ["start", "wordFound"], "default": "start" },
+                "enabled": { "type": "boolean", "default": true }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

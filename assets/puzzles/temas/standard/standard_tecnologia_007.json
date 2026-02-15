@@ -1,0 +1,427 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "standard_tecnologia_007",
+  "title": {
+    "pt-BR": "Tecnologia 007"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 10,
+      "cols": 10,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "BROWSERUTV",
+          "QFLSWROBBP",
+          "RPSASIWYAY",
+          "DORETEJHNT",
+          "CATODECSCH",
+          "ALRESENOOO",
+          "MRLTANBCRN",
+          "EPUPCDEUIP",
+          "RJAVAWOSGA",
+          "ASCRIPTRCP"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "CAMERA",
+          "display": "CAMERA",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "DEBUG",
+          "display": "DEBUG",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "JSON",
+          "display": "JSON",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "JAVA",
+          "display": "JAVA",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "SENSOR",
+          "display": "SENSOR",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "PROCESSO",
+          "display": "PROCESSO",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "BANCO",
+          "display": "BANCO",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "DART",
+          "display": "DART",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "BROWSER",
+          "display": "BROWSER",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "PYTHON",
+          "display": "PYTHON",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "LATENCIA",
+          "display": "LATENCIA",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "SCRIPT",
+          "display": "SCRIPT",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "ROTEADOR",
+          "display": "ROTEADOR",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "CPU",
+          "display": "CPU",
+          "tags": [
+            "tecnologia"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "groups": [
+        {
+          "id": "g_tecnologia",
+          "label": {
+            "pt-BR": "Tecnologia"
+          },
+          "wordIds": [
+            "w01",
+            "w02",
+            "w03",
+            "w04",
+            "w05",
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14"
+          ]
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 7,
+            "c": 9
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 1,
+            "c": 2
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 2,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 8
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 0,
+            "c": 0
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 4,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 8,
+            "c": 7
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 1,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 9,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 4,
+            "c": 4
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 1,
+            "c": 8
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 3,
+            "c": 6
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 8,
+            "c": 1
+          },
+          "dir": {
+            "dr": 0,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 3,
+            "c": 0
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 1
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 7,
+            "c": 4
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 3
+        }
+      ]
+    },
+    "meta": {
+      "pack": "standard",
+      "theme": {
+        "id": "tecnologia",
+        "title": {
+          "pt-BR": "Tecnologia"
+        },
+        "icon": "memory"
+      },
+      "index": 7,
+      "seed": 202602090307
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o Tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 180
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true
+      }
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Seleção Aleatória"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "tecnologia",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "standard",
+    "theme": "tecnologia",
+    "difficulty": 2
+  }
+}

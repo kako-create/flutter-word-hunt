@@ -1,0 +1,478 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "lib_natureza_013",
+  "title": {
+    "pt-BR": "Biblioteca - Natureza 013"
+  },
+  "content": {
+    "normalize": {
+      "upper": true,
+      "stripAccents": true,
+      "stripNonLetters": true
+    },
+    "board": {
+      "rows": 13,
+      "cols": 13,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "OACLUVCNPAFQR",
+          "VSKTBMJOTNEVA",
+          "UVPBOACARUFVI",
+          "AFXKENGOHTUAZ",
+          "SECHLGNSEHRSY",
+          "IUTCHUKMDVEHX",
+          "ROENVEPWOSOHO",
+          "BFIEEEERTDSDT",
+          "HXMASMERAMAEL",
+          "SAHTREENKRRLA",
+          "DIAYFLRSRRYDR",
+          "YDHMAONEAWZLO",
+          "ENZRTOCCCJFSC"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "w01",
+          "text": "RAIZ",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w02",
+          "text": "ARVORE",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w03",
+          "text": "NUVEM",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w04",
+          "text": "MANGUE",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w05",
+          "text": "CORAL",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w06",
+          "text": "TORNADO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w07",
+          "text": "SEMENTE",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w08",
+          "text": "BRISA",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w09",
+          "text": "TERRA",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w10",
+          "text": "CERRADO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w11",
+          "text": "ESTRELA",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w12",
+          "text": "VULCAO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w13",
+          "text": "RAIO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w14",
+          "text": "VENTO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w15",
+          "text": "FURACAO",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        },
+        {
+          "id": "w16",
+          "text": "TEMPESTADE",
+          "tags": [
+            "pool",
+            "natureza"
+          ],
+          "weight": 1.0
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "w16",
+          "start": {
+            "r": 3,
+            "c": 9
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 10
+        },
+        {
+          "wordId": "w06",
+          "start": {
+            "r": 12,
+            "c": 4
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w07",
+          "start": {
+            "r": 10,
+            "c": 7
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w10",
+          "start": {
+            "r": 12,
+            "c": 6
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w11",
+          "start": {
+            "r": 5,
+            "c": 10
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w15",
+          "start": {
+            "r": 2,
+            "c": 10
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 7
+        },
+        {
+          "wordId": "w02",
+          "start": {
+            "r": 3,
+            "c": 11
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w04",
+          "start": {
+            "r": 1,
+            "c": 5
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w12",
+          "start": {
+            "r": 0,
+            "c": 5
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 6
+        },
+        {
+          "wordId": "w03",
+          "start": {
+            "r": 4,
+            "c": 6
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w05",
+          "start": {
+            "r": 12,
+            "c": 12
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w08",
+          "start": {
+            "r": 7,
+            "c": 0
+          },
+          "dir": {
+            "dr": -1,
+            "dc": 0
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w09",
+          "start": {
+            "r": 7,
+            "c": 12
+          },
+          "dir": {
+            "dr": 1,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w14",
+          "start": {
+            "r": 1,
+            "c": 11
+          },
+          "dir": {
+            "dr": 0,
+            "dc": -1
+          },
+          "len": 5
+        },
+        {
+          "wordId": "w01",
+          "start": {
+            "r": 0,
+            "c": 12
+          },
+          "dir": {
+            "dr": 1,
+            "dc": 0
+          },
+          "len": 4
+        },
+        {
+          "wordId": "w13",
+          "start": {
+            "r": 9,
+            "c": 4
+          },
+          "dir": {
+            "dr": -1,
+            "dc": -1
+          },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "natureza",
+        "title": {
+          "pt-BR": "Natureza"
+        },
+        "icon": "park"
+      },
+      "wordsCount": 16,
+      "boardSize": "13x13"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    },
+    {
+      "id": "timed",
+      "title": {
+        "pt-BR": "Contra o tempo"
+      },
+      "mode": {
+        "type": "timed",
+        "timeLimitSec": 150
+      },
+      "goals": {
+        "end": [
+          {
+            "type": "time_over",
+            "params": {
+              "seconds": 150
+            }
+          }
+        ],
+        "win": [
+          {
+            "type": "find_all_words"
+          }
+        ]
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showTimer": true,
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      },
+      "modifiers": [
+        {
+          "type": "error_time_penalty",
+          "params": {
+            "seconds": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "subset",
+      "title": {
+        "pt-BR": "Repetição"
+      },
+      "mode": {
+        "type": "subset",
+        "by": "tag",
+        "tag": "pool",
+        "count": 10
+      },
+      "rules": {
+        "allowedDirsPreset": "eightway"
+      },
+      "ui": {
+        "showWordList": true,
+        "wordListMode": "full",
+        "showRemainingCount": true
+      }
+    }
+  ],
+  "extensions": {
+    "pack": "library_good",
+    "theme": "natureza"
+  }
+}
