@@ -5,6 +5,9 @@ import '../../../../app/routes/app_routes.dart';
 import '../../../../app/widgets/app_footer_bar.dart';
 import '../../../../core/constants/ui_constants.dart';
 import '../../../../core/i18n/app_strings_pt_br.dart';
+import '../../../../features/content_catalog_v1/presentation/screens/catalog_route_args.dart';
+import '../../../../features/content_catalog_v1/presentation/state/content_catalog_providers.dart';
+import '../../domain/services/next_word_hunt_session_resolver.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../state/word_hunt_controller.dart';
 import '../state/word_hunt_state.dart';
@@ -90,12 +93,9 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
       },
     );
 
-    final controller =
-        ref.read(wordHuntControllerProvider(widget.session).notifier);
-
     switch (action) {
-      case _CompletionAction.newGame:
-        controller.newGame();
+      case _CompletionAction.next:
+        await _goToNext();
         return;
       case _CompletionAction.goToStart:
         await _persist();
@@ -106,6 +106,85 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
       case null:
         return;
     }
+  }
+
+  Future<void> _goToNext() async {
+    await _persist();
+    if (!mounted) return;
+
+    final controller =
+        ref.read(wordHuntControllerProvider(widget.session).notifier);
+
+    final session = widget.session;
+
+    if (session is WordHuntCatalogSession) {
+      final catalog = await ref.read(contentCatalogProvider.future);
+      if (!mounted) return;
+      final node = catalog.tryGetNode(session.catalogAbsNodeId);
+      final nextItem = node == null
+          ? null
+          : findNextCatalogPuzzleItem(
+              items: node.index.items,
+              currentItemId: session.catalogItemId,
+            );
+
+      if (nextItem != null) {
+        final nextSession = WordHuntCatalogSession(
+          puzzleId: nextItem.puzzleId,
+          variantId: nextItem.variantId,
+          catalogAbsNodeId: session.catalogAbsNodeId,
+          catalogItemId: nextItem.id,
+        );
+        Navigator.of(context)
+            .pushReplacementNamed(AppRoutes.wordHunt, arguments: nextSession);
+        return;
+      }
+
+      // Sem proxima fase: volta para o mesmo node no catalogo.
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.catalogFolder,
+        arguments: CatalogFolderRouteArgs(absNodeId: session.catalogAbsNodeId),
+      );
+      return;
+    }
+
+    if (session is WordHuntThemeSession) {
+      final themes = await ref.read(themeCatalogProvider.future);
+      if (!mounted) return;
+      final theme = themes.where((t) => t.id == session.themeId).toList();
+      if (theme.isNotEmpty) {
+        final nextPuzzle = findNextThemePuzzle(
+          puzzles: theme.first.puzzles,
+          currentPuzzleId: session.puzzleId,
+        );
+
+        if (nextPuzzle != null) {
+          final nextVariantId = chooseNextVariantId(
+            nextPuzzle: nextPuzzle,
+            currentVariantId: session.variantId,
+          );
+          if (nextVariantId != null) {
+            final nextSession = WordHuntThemeSession(
+              puzzleId: nextPuzzle.puzzleId,
+              variantId: nextVariantId,
+              themeId: session.themeId,
+            );
+            Navigator.of(context).pushReplacementNamed(
+              AppRoutes.wordHunt,
+              arguments: nextSession,
+            );
+            return;
+          }
+        }
+      }
+
+      // Sem proxima fase (ou tema nao encontrado): volta para lista de temas.
+      Navigator.of(context).pushReplacementNamed(AppRoutes.themes);
+      return;
+    }
+
+    // Fallback: mantem comportamento atual.
+    controller.newGame();
   }
 
   @override
@@ -347,9 +426,9 @@ class _CompletedDialogState extends State<_CompletedDialog>
                         children: [
                           Expanded(
                             child: FilledButton.icon(
-                              onPressed: () => Navigator.of(context).pop(_CompletionAction.newGame),
-                              icon: const Icon(Icons.refresh),
-                              label: const Text(AppStringsPtBr.newGame),
+                              onPressed: () => Navigator.of(context).pop(_CompletionAction.next),
+                              icon: const Icon(Icons.navigate_next),
+                              label: const Text(AppStringsPtBr.next),
                             ),
                           ),
                         ],
@@ -385,6 +464,6 @@ class _CompletedDialogState extends State<_CompletedDialog>
 
 enum _CompletionAction {
   ok,
-  newGame,
+  next,
   goToStart,
 }

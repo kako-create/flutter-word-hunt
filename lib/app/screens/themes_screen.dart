@@ -82,9 +82,14 @@ class ThemePuzzlesScreen extends ConsumerWidget {
   const ThemePuzzlesScreen({super.key, required this.theme});
 
   void _start(BuildContext context, WordHuntSession session) {
+    final themed = WordHuntThemeSession(
+      puzzleId: session.puzzleId,
+      variantId: session.variantId,
+      themeId: theme.id,
+    );
     Navigator.of(
       context,
-    ).pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
+    ).pushReplacementNamed(AppRoutes.wordHunt, arguments: themed);
   }
 
   @override

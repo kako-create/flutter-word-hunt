@@ -356,7 +356,12 @@ class _ListLayout extends StatelessWidget {
   }
 
   void _openPuzzle(BuildContext context, CatalogPuzzleItemV1 p) {
-    final session = WordHuntSession(puzzleId: p.puzzleId, variantId: p.variantId);
+    final session = WordHuntCatalogSession(
+      puzzleId: p.puzzleId,
+      variantId: p.variantId,
+      catalogAbsNodeId: node.absNodeId,
+      catalogItemId: p.id,
+    );
     Navigator.of(context)
         .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }
@@ -483,7 +488,12 @@ class _GridLayout extends StatelessWidget {
   }
 
   void _openPuzzle(BuildContext context, CatalogPuzzleItemV1 p) {
-    final session = WordHuntSession(puzzleId: p.puzzleId, variantId: p.variantId);
+    final session = WordHuntCatalogSession(
+      puzzleId: p.puzzleId,
+      variantId: p.variantId,
+      catalogAbsNodeId: node.absNodeId,
+      catalogItemId: p.id,
+    );
     Navigator.of(context)
         .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }
@@ -671,7 +681,12 @@ class _ChapterGridLayout extends StatelessWidget {
   });
 
   void _openPuzzle(BuildContext context, CatalogPuzzleItemV1 p) {
-    final session = WordHuntSession(puzzleId: p.puzzleId, variantId: p.variantId);
+    final session = WordHuntCatalogSession(
+      puzzleId: p.puzzleId,
+      variantId: p.variantId,
+      catalogAbsNodeId: node.absNodeId,
+      catalogItemId: p.id,
+    );
     Navigator.of(context)
         .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }

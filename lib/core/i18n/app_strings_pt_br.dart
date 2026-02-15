@@ -17,6 +17,7 @@ class AppStringsPtBr {
   static const String variants = 'variantes';
 
   static const String newGame = 'Novo jogo';
+  static const String next = 'Próxima';
   static const String targetWords = 'Palavras';
   static const String remaining = 'Restam';
   static const String wordListHidden = 'Lista de palavras oculta';
