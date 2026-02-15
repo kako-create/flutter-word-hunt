@@ -6,9 +6,12 @@ class AppStringsPtBr {
   static const String choosePuzzle = 'Selecione um puzzle';
   static const String chooseVariant = 'Selecione uma variante';
   static const String themes = 'Temas';
+  static const String catalog = 'Catálogo';
   static const String noThemesFound = 'Nenhum tema encontrado.';
   static const String puzzles = 'puzzles';
   static const String noPuzzlesFound = 'Nenhum puzzle encontrado.';
+  static const String noPacksFound = 'Nenhum pacote encontrado.';
+  static const String noItemsFound = 'Nenhum item encontrado.';
   static const String playRandom = 'Jogar aleatório';
   static const String continueLastGame = 'Continuar último jogo';
   static const String variants = 'variantes';
@@ -22,6 +25,8 @@ class AppStringsPtBr {
   static const String retry = 'Tentar novamente';
 
   static const String errorLoadingPuzzle = 'Erro ao carregar o puzzle.';
+  static const String errorLoadingCatalog = 'Erro ao carregar o catálogo.';
+  static const String catalogNodeNotFound = 'Conteúdo não encontrado.';
 
   static const String backToStart = 'Voltar ao início';
   static const String quitKeepsProgress =

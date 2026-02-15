@@ -1,0 +1,17 @@
+{
+  "schema": "wordsearch.catalog@1",
+  "id": "starter",
+  "contentVersion": 1,
+  "title": { "pt-BR": "Starter" },
+  "ui": { "layout": "chapter_grid", "showProgress": true, "gridColumns": 4 },
+  "progression": { "mode": "sequential", "clearThresholdPct": 100 },
+  "items": [
+    { "kind": "puzzle", "id": "p1", "puzzleId": "starter_animais_001", "variantId": "classic" },
+    { "kind": "puzzle", "id": "p2", "puzzleId": "starter_animais_002", "variantId": "classic" },
+    { "kind": "puzzle", "id": "p3", "puzzleId": "starter_animais_003", "variantId": "classic" },
+    { "kind": "puzzle", "id": "p4", "puzzleId": "starter_lugares_001", "variantId": "classic" },
+    { "kind": "puzzle", "id": "p5", "puzzleId": "starter_lugares_002", "variantId": "classic" },
+    { "kind": "puzzle", "id": "p6", "puzzleId": "starter_tech_001", "variantId": "classic" }
+  ]
+}
+

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/ui_constants.dart';
 import '../../../../core/errors/app_exception.dart';
-import '../../data/repositories/shared_prefs_word_hunt_progress_repository.dart';
 import '../../domain/entities/cell_coord.dart';
 import '../../domain/entities/found_word_span.dart';
 import '../../domain/entities/puzzle_catalog_item.dart';
@@ -13,19 +12,12 @@ import '../../domain/entities/word_hunt_session.dart';
 import '../../domain/entities/word_target.dart';
 import '../../domain/repositories/word_hunt_progress_repository.dart';
 import '../../domain/rules/selection_path.dart';
-import '../../../wordsearch_puzzle_v1/data/repositories/asset_puzzle_repository_v1.dart';
 import '../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
 import '../../../wordsearch_puzzle_v1/domain/repositories/puzzle_repository_v1.dart';
 import '../../../wordsearch_puzzle_v1/domain/utils/puzzle_text_normalizer_v1.dart';
+import '../../../wordsearch_puzzle_v1/di/puzzle_repository_v1_provider.dart';
+import '../../di/word_hunt_progress_providers.dart';
 import 'word_hunt_state.dart';
-
-final puzzleRepositoryV1Provider = Provider<PuzzleRepositoryV1>(
-  (ref) => AssetPuzzleRepositoryV1(),
-);
-
-final progressRepositoryProvider = Provider<WordHuntProgressRepository>(
-  (ref) => SharedPrefsWordHuntProgressRepository(),
-);
 
 final lastSessionProvider = FutureProvider<WordHuntSession?>((ref) async {
   final repo = ref.read(progressRepositoryProvider);

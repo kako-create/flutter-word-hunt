@@ -1,0 +1,31 @@
+{
+  "schema": "wordsearch.catalog@1",
+  "id": "root",
+  "contentVersion": 1,
+  "title": { "pt-BR": "Temas" },
+  "ui": { "layout": "chapters", "showProgress": true },
+  "items": [
+    {
+      "kind": "folder",
+      "id": "starter",
+      "title": { "pt-BR": "Starter" },
+      "ref": "starter/index.json",
+      "ui": { "layout": "chapter_grid", "showProgress": true }
+    },
+    {
+      "kind": "folder",
+      "id": "standard",
+      "title": { "pt-BR": "Standard" },
+      "ref": "standard/index.json",
+      "ui": { "layout": "list", "showProgress": true }
+    },
+    {
+      "kind": "folder",
+      "id": "lib",
+      "title": { "pt-BR": "Biblioteca" },
+      "ref": "lib/index.json",
+      "ui": { "layout": "grid", "showProgress": true, "gridColumns": 2 }
+    }
+  ]
+}
+

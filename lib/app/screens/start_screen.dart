@@ -75,6 +75,12 @@ class StartScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppUiConstants.sectionSpacing),
               FilledButton.icon(
+                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.catalog),
+                icon: const Icon(Icons.view_module),
+                label: const Text(AppStringsPtBr.catalog),
+              ),
+              const SizedBox(height: AppUiConstants.sectionSpacing),
+              FilledButton.icon(
                 onPressed: () => Navigator.of(context).pushNamed(AppRoutes.themes),
                 icon: const Icon(Icons.category),
                 label: const Text(AppStringsPtBr.themes),

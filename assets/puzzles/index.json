@@ -1,0 +1,17 @@
+{
+  "schema": "wordsearch.catalog@1",
+  "id": "global",
+  "contentVersion": 1,
+  "title": { "pt-BR": "Catálogo" },
+  "ui": { "layout": "hero_list", "showProgress": false },
+  "items": [
+    {
+      "kind": "folder",
+      "id": "temas",
+      "title": { "pt-BR": "Temas" },
+      "ref": "temas/index.json",
+      "ui": { "layout": "chapters", "showProgress": true }
+    }
+  ]
+}
+

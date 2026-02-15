@@ -15,6 +15,8 @@ void main() {
     final files = <File>[];
     for (final entity in dir.listSync(recursive: true, followLinks: false)) {
       if (entity is File && entity.path.toLowerCase().endsWith('.json')) {
+        final p = entity.path.replaceAll('\\', '/');
+        if (p.endsWith('/index.json')) continue; // Content Catalog V1
         files.add(entity);
       }
     }

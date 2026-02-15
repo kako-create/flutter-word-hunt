@@ -130,7 +130,10 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
       final paths = manifest
           .listAssets()
           .where(
-            (k) => k.startsWith('assets/puzzles/') && k.endsWith('.json'),
+            (k) =>
+                k.startsWith('assets/puzzles/') &&
+                k.endsWith('.json') &&
+                !k.endsWith('/index.json'),
           )
           .toList(growable: false)
         ..sort();
@@ -148,7 +151,9 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
       for (final e in dir.listSync(recursive: true, followLinks: false)) {
         if (e is File && e.path.endsWith('.json')) {
           // Normalize separators for consistency.
-          files.add(e.path.replaceAll('\\', '/'));
+          final p = e.path.replaceAll('\\', '/');
+          if (p.endsWith('/index.json')) continue;
+          files.add(p);
         }
       }
       files.sort();
