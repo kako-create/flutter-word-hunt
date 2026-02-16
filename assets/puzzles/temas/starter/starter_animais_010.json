@@ -18,7 +18,7 @@
       "source": {
         "type": "static",
         "grid": [
-          "TILBQCEBRA",
+          "TILBQZEBRA",
           "YBALEIACNK",
           "VUJFVZPODQ",
           "ZLNOARJRIA",
@@ -124,9 +124,9 @@
           "difficulty": 3
         },
         {
-          "id": "cebra",
-          "text": "CEBRA",
-          "display": "CEBRA",
+          "id": "zebra",
+          "text": "ZEBRA",
+          "display": "ZEBRA",
           "tags": [
             "animais"
           ],
@@ -223,7 +223,7 @@
           "len": 5
         },
         {
-          "wordId": "cebra",
+          "wordId": "zebra",
           "start": {
             "r": 0,
             "c": 5

@@ -20,7 +20,7 @@
         "grid": [
           "IUJPLVZOBW",
           "HWEPZXVZVI",
-          "JYPAVCEBRA",
+          "JYPAVZEBRA",
           "TEBVJQTGHJ",
           "AVGAKEWILA",
           "TIYODYTROC",
@@ -54,9 +54,9 @@
           "difficulty": 1
         },
         {
-          "id": "cebra",
-          "text": "CEBRA",
-          "display": "CEBRA",
+          "id": "zebra",
+          "text": "ZEBRA",
+          "display": "ZEBRA",
           "tags": [
             "animais"
           ],
@@ -189,7 +189,7 @@
           "len": 5
         },
         {
-          "wordId": "cebra",
+          "wordId": "zebra",
           "start": {
             "r": 2,
             "c": 5

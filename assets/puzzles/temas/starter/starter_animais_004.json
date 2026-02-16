@@ -19,7 +19,7 @@
         "type": "static",
         "grid": [
           "AQFASTATUR",
-          "PDSAYCEBRA",
+          "PDSAYZEBRA",
           "PGZBZVFUZN",
           "ZJGEURLEAO",
           "CAMLMAJLWI",
@@ -94,9 +94,9 @@
           "difficulty": 1
         },
         {
-          "id": "cebra",
-          "text": "CEBRA",
-          "display": "CEBRA",
+          "id": "zebra",
+          "text": "ZEBRA",
+          "display": "ZEBRA",
           "tags": [
             "animais"
           ],
@@ -177,7 +177,7 @@
           "len": 5
         },
         {
-          "wordId": "cebra",
+          "wordId": "zebra",
           "start": {
             "r": 1,
             "c": 5
