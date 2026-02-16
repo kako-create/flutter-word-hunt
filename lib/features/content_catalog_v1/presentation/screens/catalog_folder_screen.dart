@@ -77,6 +77,31 @@ class CatalogFolderScreen extends ConsumerWidget {
             completion: completion,
           ),
           builder: (context, snap) {
+            if (snap.hasError) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(title.isEmpty ? node.absNodeId : title),
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(AppUiConstants.screenPadding),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(AppStringsPtBr.errorLoadingCatalog),
+                        const SizedBox(height: 8),
+                        Text(
+                          snap.error.toString(),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
             final vm = snap.data;
             final items = vm?.items ?? const <_CatalogItemVm>[];
 
@@ -189,6 +214,14 @@ Future<_CatalogNodeVm> _buildNodeVm({
   required CatalogNodeV1 node,
   required PuzzleCompletionService completion,
 }) async {
+  void logVmError(Object error, StackTrace st, {required String where}) {
+    assert(() {
+      debugPrint('CatalogFolderScreen: erro ao construir VM ($where): $error');
+      debugPrint('$st');
+      return true;
+    }());
+  }
+
   final items = <_CatalogItemVm>[];
 
   final sequential = node.index.progression.mode == ProgressionModeV1.sequential;
@@ -210,24 +243,41 @@ Future<_CatalogNodeVm> _buildNodeVm({
 
     if (item is CatalogPuzzleItemV1) {
       puzzleNumber++;
-      completed = await completion.completed(
-        puzzleId: item.puzzleId,
-        variantId: item.variantId,
-      );
+      try {
+        completed = await completion.completed(
+          puzzleId: item.puzzleId,
+          variantId: item.variantId,
+        );
+      } catch (e, st) {
+        logVmError(e, st, where: 'completed(${item.puzzleId}, ${item.variantId})');
+        completed = false;
+      }
       cleared = completed;
     } else if (item is CatalogFolderItemV1 || item is CatalogCampaignItemV1) {
       childAbsNodeId = node.childAbsNodeIdByItemId[item.id];
       if (childAbsNodeId != null) {
-        folderProgress = await completion.folderProgress(absNodeId: childAbsNodeId);
-        cleared = folderProgress.percentFloor >= node.index.progression.clearThresholdPct;
+        try {
+          folderProgress = await completion.folderProgress(absNodeId: childAbsNodeId);
+          cleared = folderProgress.percentFloor >= node.index.progression.clearThresholdPct;
+        } catch (e, st) {
+          logVmError(e, st, where: 'folderProgress($childAbsNodeId)');
+          folderProgress = null;
+          cleared = false;
+        }
       }
     }
 
-    final unlockedByRule = await _evalUnlockRule(
-      unlock: item.unlock,
-      node: node,
-      completion: completion,
-    );
+    bool unlockedByRule;
+    try {
+      unlockedByRule = await _evalUnlockRule(
+        unlock: item.unlock,
+        node: node,
+        completion: completion,
+      );
+    } catch (e, st) {
+      logVmError(e, st, where: 'unlock(${item.id})');
+      unlockedByRule = false;
+    }
 
     final unlockedBySequential = !sequential
         ? true
