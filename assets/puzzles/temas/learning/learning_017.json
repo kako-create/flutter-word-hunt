@@ -1,0 +1,85 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "learning_017",
+  "title": {
+    "pt-BR": "Primeiros Passos 017"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "ANTAX",
+          "AULOH",
+          "TTGBH",
+          "DAFOZ",
+          "UTKLJ"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "lobo",
+          "text": "LOBO"
+        },
+        {
+          "id": "tatu",
+          "text": "TATU"
+        },
+        {
+          "id": "anta",
+          "text": "ANTA"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "lobo",
+            "tatu",
+            "anta"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      }
+    }
+  ]
+}

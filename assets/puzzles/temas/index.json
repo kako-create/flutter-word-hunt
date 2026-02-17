@@ -14,6 +14,13 @@
     },
     {
       "kind": "folder",
+      "id": "learning",
+      "title": { "pt-BR": "Primeiros Passos" },
+      "ref": "learning/index.json",
+      "ui": { "layout": "chapter_grid", "showProgress": true }
+    },
+    {
+      "kind": "folder",
       "id": "standard",
       "title": { "pt-BR": "Standard" },
       "ref": "standard/index.json",
@@ -28,4 +35,3 @@
     }
   ]
 }
-

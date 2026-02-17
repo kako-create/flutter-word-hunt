@@ -1,5 +1,6 @@
 import '../../domain/entities/found_word_span.dart';
 import '../../domain/entities/word_target.dart';
+import '../../domain/entities/word_hunt_run_status.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
 
@@ -32,6 +33,29 @@ class WordHuntState {
   /// Cor (ARGB int) por celula (indice linear = row * cols + col).
   final Map<int, int> foundCellColorsByIndex;
 
+  /// Relogio da run (timed/sprint).
+  final int? timeLimitMs;
+  final int elapsedMs;
+  final int? remainingMs;
+  final bool isTimerRunning;
+  final bool isPaused;
+  final int? completedAtEpochMs;
+
+  /// Metricas de run.
+  final List<String>? subsetTargetWordIds;
+  final int? subsetSeed;
+  final int baseScore;
+  final int speedBonus;
+  final int maxBaseScore;
+  final int score;
+  final int bestScore;
+  final int mistakes;
+  final int hintsUsed;
+
+  /// Estado de fim de run.
+  final WordHuntEndStatus endStatus;
+  final WordHuntEndReason? endReason;
+
   WordHuntState({
     required this.session,
     required this.puzzle,
@@ -46,13 +70,35 @@ class WordHuntState {
     required Map<String, int> foundWordColorsById,
     required Map<String, FoundWordSpan> foundWordSpansById,
     required Map<int, int> foundCellColorsByIndex,
-  })  : grid = List.unmodifiable(grid),
-        targets = List.unmodifiable(targets),
-        targetWordIds = Set.unmodifiable(targetWordIds),
-        targetWordIdsByNormalizedText = _freezeNested(targetWordIdsByNormalizedText),
-        foundWordColorsById = Map.unmodifiable(foundWordColorsById),
-        foundWordSpansById = Map.unmodifiable(foundWordSpansById),
-        foundCellColorsByIndex = Map.unmodifiable(foundCellColorsByIndex);
+    required this.timeLimitMs,
+    required this.elapsedMs,
+    required this.remainingMs,
+    required this.isTimerRunning,
+    required this.isPaused,
+    required this.completedAtEpochMs,
+    required List<String>? subsetTargetWordIds,
+    required this.subsetSeed,
+    required this.baseScore,
+    required this.speedBonus,
+    required this.maxBaseScore,
+    required this.score,
+    required this.bestScore,
+    required this.mistakes,
+    required this.hintsUsed,
+    required this.endStatus,
+    required this.endReason,
+  }) : grid = List.unmodifiable(grid),
+       targets = List.unmodifiable(targets),
+       targetWordIds = Set.unmodifiable(targetWordIds),
+       targetWordIdsByNormalizedText = _freezeNested(
+         targetWordIdsByNormalizedText,
+       ),
+       subsetTargetWordIds = subsetTargetWordIds == null
+           ? null
+           : List.unmodifiable(subsetTargetWordIds),
+       foundWordColorsById = Map.unmodifiable(foundWordColorsById),
+       foundWordSpansById = Map.unmodifiable(foundWordSpansById),
+       foundCellColorsByIndex = Map.unmodifiable(foundCellColorsByIndex);
 
   int get rows => grid.length;
   int get cols => grid.isEmpty ? 0 : grid.first.length;
@@ -60,6 +106,7 @@ class WordHuntState {
   Set<String> get foundWordIds => foundWordColorsById.keys.toSet();
 
   bool get isCompleted => foundWordIds.containsAll(targetWordIds);
+  bool get isRunFinished => endStatus != WordHuntEndStatus.running;
 
   int get remainingCount {
     final foundTargetCount = foundWordIds.intersection(targetWordIds).length;
@@ -79,6 +126,22 @@ class WordHuntState {
     Map<String, int>? foundWordColorsById,
     Map<String, FoundWordSpan>? foundWordSpansById,
     Map<int, int>? foundCellColorsByIndex,
+    int? elapsedMs,
+    int? remainingMs,
+    bool? isTimerRunning,
+    bool? isPaused,
+    Object? completedAtEpochMs = _unset,
+    Object? subsetTargetWordIds = _unset,
+    Object? subsetSeed = _unset,
+    int? baseScore,
+    int? speedBonus,
+    int? maxBaseScore,
+    int? score,
+    int? bestScore,
+    int? mistakes,
+    int? hintsUsed,
+    WordHuntEndStatus? endStatus,
+    Object? endReason = _unset,
   }) {
     return WordHuntState(
       session: session,
@@ -93,10 +156,38 @@ class WordHuntState {
       orderedNextIndex: orderedNextIndex ?? this.orderedNextIndex,
       foundWordColorsById: foundWordColorsById ?? this.foundWordColorsById,
       foundWordSpansById: foundWordSpansById ?? this.foundWordSpansById,
-      foundCellColorsByIndex: foundCellColorsByIndex ?? this.foundCellColorsByIndex,
+      foundCellColorsByIndex:
+          foundCellColorsByIndex ?? this.foundCellColorsByIndex,
+      timeLimitMs: timeLimitMs,
+      elapsedMs: elapsedMs ?? this.elapsedMs,
+      remainingMs: remainingMs ?? this.remainingMs,
+      isTimerRunning: isTimerRunning ?? this.isTimerRunning,
+      isPaused: isPaused ?? this.isPaused,
+      completedAtEpochMs: identical(completedAtEpochMs, _unset)
+          ? this.completedAtEpochMs
+          : completedAtEpochMs as int?,
+      subsetTargetWordIds: identical(subsetTargetWordIds, _unset)
+          ? this.subsetTargetWordIds
+          : subsetTargetWordIds as List<String>?,
+      subsetSeed: identical(subsetSeed, _unset)
+          ? this.subsetSeed
+          : subsetSeed as int?,
+      baseScore: baseScore ?? this.baseScore,
+      speedBonus: speedBonus ?? this.speedBonus,
+      maxBaseScore: maxBaseScore ?? this.maxBaseScore,
+      score: score ?? this.score,
+      bestScore: bestScore ?? this.bestScore,
+      mistakes: mistakes ?? this.mistakes,
+      hintsUsed: hintsUsed ?? this.hintsUsed,
+      endStatus: endStatus ?? this.endStatus,
+      endReason: identical(endReason, _unset)
+          ? this.endReason
+          : endReason as WordHuntEndReason?,
     );
   }
 }
+
+const Object _unset = Object();
 
 Map<String, List<String>> _freezeNested(Map<String, List<String>> input) {
   final out = <String, List<String>>{};

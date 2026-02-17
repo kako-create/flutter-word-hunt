@@ -11,9 +11,8 @@ import '../../domain/services/puzzle_completion_service.dart';
 final catalogSourceProvider = Provider((ref) => AssetCatalogSource());
 
 final contentCatalogRepositoryProvider = Provider<ContentCatalogRepository>(
-  (ref) => AssetContentCatalogRepositoryV1(
-    source: ref.read(catalogSourceProvider),
-  ),
+  (ref) =>
+      AssetContentCatalogRepositoryV1(source: ref.read(catalogSourceProvider)),
 );
 
 final contentCatalogProvider = FutureProvider<ContentCatalogV1>((ref) async {
@@ -21,15 +20,15 @@ final contentCatalogProvider = FutureProvider<ContentCatalogV1>((ref) async {
   return repo.load();
 });
 
-final puzzleCompletionServiceProvider = Provider<PuzzleCompletionService>((ref) {
-  final catalogRepo = ref.read(contentCatalogRepositoryProvider);
-  final puzzleRepo = ref.read(puzzleRepositoryV1Provider);
-  final progressRepo = ref.read(progressRepositoryProvider);
+final puzzleCompletionServiceProvider =
+    Provider.autoDispose<PuzzleCompletionService>((ref) {
+      final catalogRepo = ref.read(contentCatalogRepositoryProvider);
+      final puzzleRepo = ref.read(puzzleRepositoryV1Provider);
+      final progressRepo = ref.read(progressRepositoryProvider);
 
-  return PuzzleCompletionService(
-    catalogRepository: catalogRepo,
-    puzzleRepository: puzzleRepo,
-    progressRepository: progressRepo,
-  );
-});
-
+      return PuzzleCompletionService(
+        catalogRepository: catalogRepo,
+        puzzleRepository: puzzleRepo,
+        progressRepository: progressRepo,
+      );
+    });

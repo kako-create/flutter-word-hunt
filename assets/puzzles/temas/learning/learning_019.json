@@ -1,0 +1,85 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "learning_019",
+  "title": {
+    "pt-BR": "Primeiros Passos 019"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "YZORI",
+          "ZOHYO",
+          "DRLSG",
+          "TRIGO",
+          "RAMCD"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "arroz",
+          "text": "ARROZ"
+        },
+        {
+          "id": "milho",
+          "text": "MILHO"
+        },
+        {
+          "id": "trigo",
+          "text": "TRIGO"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "arroz",
+            "milho",
+            "trigo"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      }
+    }
+  ]
+}

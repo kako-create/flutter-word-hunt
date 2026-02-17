@@ -1,0 +1,85 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "learning_002",
+  "title": {
+    "pt-BR": "Primeiros Passos 002"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "OTAPL",
+          "OGATO",
+          "TMDDT",
+          "AOGKW",
+          "REMIA"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "gato",
+          "text": "GATO"
+        },
+        {
+          "id": "pato",
+          "text": "PATO"
+        },
+        {
+          "id": "rato",
+          "text": "RATO"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "gato",
+            "pato",
+            "rato"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      }
+    }
+  ]
+}

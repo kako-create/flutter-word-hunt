@@ -8,15 +8,15 @@ import '../../domain/entities/word_hunt_progress.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../../domain/repositories/word_hunt_progress_repository.dart';
 
-class SharedPrefsWordHuntProgressRepository implements WordHuntProgressRepository {
+class SharedPrefsWordHuntProgressRepository
+    implements WordHuntProgressRepository {
   static const String _lastSessionKey = 'word_hunt.last_session.v1';
   static const String _progressPrefix = 'word_hunt.progress.v1.';
 
   final Future<SharedPreferences> _prefs;
 
-  SharedPrefsWordHuntProgressRepository({
-    Future<SharedPreferences>? prefs,
-  }) : _prefs = prefs ?? SharedPreferences.getInstance();
+  SharedPrefsWordHuntProgressRepository({Future<SharedPreferences>? prefs})
+    : _prefs = prefs ?? SharedPreferences.getInstance();
 
   String _progressKey(WordHuntSession session) =>
       '$_progressPrefix${session.puzzleId}::${session.variantId}';
@@ -69,6 +69,19 @@ class SharedPrefsWordHuntProgressRepository implements WordHuntProgressRepositor
     final foundWordColors = <String, int>{};
     final foundWordSpans = <String, FoundWordSpan>{};
     var orderedNextIndex = 0;
+    int? timeLimitMs;
+    int? elapsedMs;
+    int? remainingMs;
+    int? mistakes;
+    int? baseScore;
+    int? speedBonus;
+    int? maxBaseScore;
+    List<String>? subsetTargetWordIds;
+    int? subsetSeed;
+    int? score;
+    int? bestScore;
+    int? completedAtEpochMs;
+    int? lastSavedAtEpochMs;
 
     final idsRaw = decoded['foundWordIds'];
     if (idsRaw is List) {
@@ -117,12 +130,41 @@ class SharedPrefsWordHuntProgressRepository implements WordHuntProgressRepositor
       orderedNextIndex = orderedRaw;
     }
 
+    timeLimitMs = _readNonNegativeInt(decoded, 'timeLimitMs');
+    elapsedMs = _readNonNegativeInt(decoded, 'elapsedMs');
+    remainingMs = _readNonNegativeInt(decoded, 'remainingMs');
+    mistakes = _readNonNegativeInt(decoded, 'mistakes');
+    baseScore = _readInt(decoded, 'baseScore');
+    speedBonus = _readInt(decoded, 'speedBonus');
+    maxBaseScore = _readNonNegativeInt(decoded, 'maxBaseScore');
+    subsetTargetWordIds = _readStringList(decoded, 'subsetTargetWordIds');
+    subsetSeed = _readNonNegativeInt(decoded, 'subsetSeed');
+    score = _readInt(decoded, 'score');
+    bestScore = _readInt(decoded, 'bestScore');
+    completedAtEpochMs = _readNonNegativeInt(decoded, 'completedAtEpochMs');
+    lastSavedAtEpochMs = _readNonNegativeInt(decoded, 'lastSavedAtEpochMs');
+
     return WordHuntSavedProgress(
       session: session,
       foundWordIds: Set.unmodifiable(foundWordIds),
       foundWordColorsById: Map.unmodifiable(foundWordColors),
       foundWordSpansById: Map.unmodifiable(foundWordSpans),
       orderedNextIndex: orderedNextIndex,
+      timeLimitMs: timeLimitMs,
+      elapsedMs: elapsedMs,
+      remainingMs: remainingMs,
+      mistakes: mistakes,
+      baseScore: baseScore,
+      speedBonus: speedBonus,
+      maxBaseScore: maxBaseScore,
+      subsetTargetWordIds: subsetTargetWordIds == null
+          ? null
+          : List.unmodifiable(subsetTargetWordIds),
+      subsetSeed: subsetSeed,
+      score: score,
+      bestScore: bestScore,
+      completedAtEpochMs: completedAtEpochMs,
+      lastSavedAtEpochMs: lastSavedAtEpochMs,
     );
   }
 
@@ -144,17 +186,29 @@ class SharedPrefsWordHuntProgressRepository implements WordHuntProgressRepositor
       };
     }
 
-    await prefs.setString(
-      _progressKey(progress.session),
-      jsonEncode(<String, Object?>{
-        'puzzleId': progress.session.puzzleId,
-        'variantId': progress.session.variantId,
-        'foundWordIds': progress.foundWordIds.toList(growable: false),
-        'foundWordColors': progress.foundWordColorsById,
-        'foundWordSpans': spansJson,
-        'orderedNextIndex': progress.orderedNextIndex,
-      }),
-    );
+    final payload = <String, Object?>{
+      'puzzleId': progress.session.puzzleId,
+      'variantId': progress.session.variantId,
+      'foundWordIds': progress.foundWordIds.toList(growable: false),
+      'foundWordColors': progress.foundWordColorsById,
+      'foundWordSpans': spansJson,
+      'orderedNextIndex': progress.orderedNextIndex,
+      'timeLimitMs': progress.timeLimitMs,
+      'elapsedMs': progress.elapsedMs,
+      'remainingMs': progress.remainingMs,
+      'mistakes': progress.mistakes,
+      'baseScore': progress.baseScore,
+      'speedBonus': progress.speedBonus,
+      'maxBaseScore': progress.maxBaseScore,
+      'subsetTargetWordIds': progress.subsetTargetWordIds,
+      'subsetSeed': progress.subsetSeed,
+      'score': progress.score,
+      'bestScore': progress.bestScore,
+      'completedAtEpochMs': progress.completedAtEpochMs,
+      'lastSavedAtEpochMs': progress.lastSavedAtEpochMs,
+    }..removeWhere((_, value) => value == null);
+
+    await prefs.setString(_progressKey(progress.session), jsonEncode(payload));
   }
 
   @override
@@ -164,3 +218,32 @@ class SharedPrefsWordHuntProgressRepository implements WordHuntProgressRepositor
   }
 }
 
+int? _readNonNegativeInt(Map decoded, String key) {
+  final raw = decoded[key];
+  if (raw is int) return raw >= 0 ? raw : null;
+  if (raw is num) {
+    final value = raw.toInt();
+    return value >= 0 ? value : null;
+  }
+  return null;
+}
+
+int? _readInt(Map decoded, String key) {
+  final raw = decoded[key];
+  if (raw is int) return raw;
+  if (raw is num) return raw.toInt();
+  return null;
+}
+
+List<String>? _readStringList(Map decoded, String key) {
+  final raw = decoded[key];
+  if (raw is! List) return null;
+
+  final out = <String>[];
+  for (final value in raw) {
+    if (value is String && value.isNotEmpty) {
+      out.add(value);
+    }
+  }
+  return out;
+}

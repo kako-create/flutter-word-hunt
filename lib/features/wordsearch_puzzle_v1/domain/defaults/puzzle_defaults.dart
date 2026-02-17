@@ -9,10 +9,7 @@ class PuzzleDefaults {
         .map((v) => _applyVariant(v))
         .toList(growable: false);
 
-    return puzzle.copyWith(
-      content: content,
-      variants: variants,
-    );
+    return puzzle.copyWith(content: content, variants: variants);
   }
 
   static PuzzleVariant _applyVariant(PuzzleVariant variant) {
@@ -42,9 +39,7 @@ class PuzzleDefaults {
       return base;
     }
 
-    return base.copyWith(
-      allowedDirs: _dirsForPreset(base.allowedDirsPreset),
-    );
+    return base.copyWith(allowedDirs: _dirsForPreset(base.allowedDirsPreset));
   }
 
   static List<Direction> _dirsForPreset(AllowedDirsPreset preset) {
@@ -88,18 +83,23 @@ class PuzzleDefaults {
         ? [
             Condition(
               type: ConditionType.timeOver,
-              params: timeLimit == null ? null : <String, Object?>{'seconds': timeLimit},
-            )
+              params: timeLimit == null
+                  ? null
+                  : <String, Object?>{'seconds': timeLimit},
+            ),
           ]
         : base.end;
 
     // Defaults:
-    // - classic/timed/zen: win=[find_all_words]
+    // - classic/timed/zen/ordered/subset: win=[find_all_words]
     // - sprint: win=[find_all_words] + end=[time_over(timeLimitSec)]
-    final needsWinDefault = base.win.isEmpty &&
+    final needsWinDefault =
+        base.win.isEmpty &&
         (mode is VariantModeClassic ||
             mode is VariantModeTimed ||
             mode is VariantModeZen ||
+            mode is VariantModeOrdered ||
+            mode is VariantModeSubset ||
             mode is VariantModeSprint);
 
     final nextWin = needsWinDefault
@@ -107,24 +107,20 @@ class PuzzleDefaults {
         : base.win;
 
     // Inherit time_over seconds from mode.timeLimitSec (when applicable).
-    final patchedEnd = nextEnd.map((c) {
-      if (c.type != ConditionType.timeOver) return c;
-      if (timeLimit == null) return c;
-      final params = c.params;
-      if (params != null && params['seconds'] is int) return c;
+    final patchedEnd = nextEnd
+        .map((c) {
+          if (c.type != ConditionType.timeOver) return c;
+          if (timeLimit == null) return c;
+          final params = c.params;
+          if (params != null && params['seconds'] is int) return c;
 
-      return c.copyWith(
-        params: <String, Object?>{
-          ...?params,
-          'seconds': timeLimit,
-        },
-      );
-    }).toList(growable: false);
+          return c.copyWith(
+            params: <String, Object?>{...?params, 'seconds': timeLimit},
+          );
+        })
+        .toList(growable: false);
 
-    return base.copyWith(
-      end: patchedEnd,
-      win: nextWin,
-    );
+    return base.copyWith(end: patchedEnd, win: nextWin);
   }
 
   static ScoringConfig _applyScoring(ScoringConfig? scoring, VariantMode mode) {
@@ -132,9 +128,7 @@ class PuzzleDefaults {
 
     final enabled = base.enabled ?? (mode is! VariantModeZen);
 
-    return base.copyWith(
-      enabled: enabled,
-    );
+    return base.copyWith(enabled: enabled);
   }
 
   static UIConfig _applyUi(
@@ -145,8 +139,11 @@ class PuzzleDefaults {
   ) {
     final base = ui ?? const UIConfig();
 
-    final showTimer = base.showTimer ?? (mode is VariantModeTimed || mode is VariantModeSprint);
-    final showScore = base.showScore ?? (scoring.enabled ?? (mode is! VariantModeZen));
+    final showTimer =
+        base.showTimer ??
+        (mode is VariantModeTimed || mode is VariantModeSprint);
+    final showScore =
+        base.showScore ?? (scoring.enabled ?? (mode is! VariantModeZen));
 
     final budget = hints.budget;
     final budgetTotal = budget.perPuzzle + (budget.perRun ?? 0);

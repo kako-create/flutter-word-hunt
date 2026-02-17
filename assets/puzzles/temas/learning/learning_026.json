@@ -1,0 +1,85 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "learning_026",
+  "title": {
+    "pt-BR": "Primeiros Passos 026"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "AVORT",
+          "PWJYO",
+          "PMPCN",
+          "RAIOD",
+          "DOFMA"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "onda",
+          "text": "ONDA"
+        },
+        {
+          "id": "raio",
+          "text": "RAIO"
+        },
+        {
+          "id": "trova",
+          "text": "TROVA"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "onda",
+            "raio",
+            "trova"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      }
+    }
+  ]
+}

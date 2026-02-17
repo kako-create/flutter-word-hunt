@@ -1,0 +1,85 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "learning_021",
+  "title": {
+    "pt-BR": "Primeiros Passos 021"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "NARIZ",
+          "PYBTB",
+          "OPBEO",
+          "BKQPC",
+          "TESTA"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "boca",
+          "text": "BOCA"
+        },
+        {
+          "id": "nariz",
+          "text": "NARIZ"
+        },
+        {
+          "id": "testa",
+          "text": "TESTA"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    }
+  },
+  "variants": [
+    {
+      "id": "classic",
+      "title": {
+        "pt-BR": "Clássico"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      }
+    },
+    {
+      "id": "ordered",
+      "title": {
+        "pt-BR": "Em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "boca",
+            "nariz",
+            "testa"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      }
+    }
+  ]
+}

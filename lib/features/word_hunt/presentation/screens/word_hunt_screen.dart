@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +10,7 @@ import '../../../../core/i18n/app_strings_pt_br.dart';
 import '../../../../features/content_catalog_v1/presentation/screens/catalog_route_args.dart';
 import '../../../../features/content_catalog_v1/presentation/state/content_catalog_providers.dart';
 import '../../domain/services/next_word_hunt_session_resolver.dart';
+import '../../domain/entities/word_hunt_run_status.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../state/word_hunt_controller.dart';
 import '../state/word_hunt_state.dart';
@@ -17,10 +20,7 @@ import '../widgets/word_list.dart';
 class WordHuntScreen extends ConsumerStatefulWidget {
   final WordHuntSession? session;
 
-  const WordHuntScreen({
-    super.key,
-    this.session,
-  });
+  const WordHuntScreen({super.key, this.session});
 
   @override
   ConsumerState<WordHuntScreen> createState() => _WordHuntScreenState();
@@ -28,6 +28,8 @@ class WordHuntScreen extends ConsumerStatefulWidget {
 
 class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     with WidgetsBindingObserver {
+  bool _completedDialogWasShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -37,24 +39,45 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    // Melhor esforço: persiste ao sair da tela.
-    _persist();
+    unawaited(_prepareProgressForExit());
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Persistimos em transicoes comuns (Android/iOS) para nao perder progresso.
+    final notifier = ref.read(
+      wordHuntControllerProvider(widget.session).notifier,
+    );
+
+    // Casual-friendly: nao consumimos tempo em background.
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
+      notifier.pauseRun();
       _persist();
+      return;
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      notifier.resumeRun();
     }
   }
 
   Future<void> _persist() async {
-    final notifier =
-        ref.read(wordHuntControllerProvider(widget.session).notifier);
+    final notifier = ref.read(
+      wordHuntControllerProvider(widget.session).notifier,
+    );
+    await notifier.persist();
+  }
+
+  Future<void> _prepareProgressForExit() async {
+    final notifier = ref.read(
+      wordHuntControllerProvider(widget.session).notifier,
+    );
+    if (_completedDialogWasShown) {
+      await notifier.restartCompletedRun();
+      return;
+    }
     await notifier.persist();
   }
 
@@ -78,18 +101,24 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     );
 
     if (go != true) return;
-    await _persist();
+    await _prepareProgressForExit();
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed(AppRoutes.start);
   }
 
-  Future<void> _showCompletedDialog() async {
+  Future<void> _showCompletedDialog(WordHuntState game) async {
     final action = await showGeneralDialog<_CompletionAction?>(
       context: context,
       barrierDismissible: false,
       barrierLabel: AppStringsPtBr.completed,
       pageBuilder: (context, _, _) {
-        return const _CompletedDialog();
+        return _CompletedDialog(
+          baseScore: game.baseScore,
+          speedBonus: game.speedBonus,
+          finalScore: game.score,
+          bestScore: game.bestScore,
+          elapsedSec: game.elapsedMs ~/ 1000,
+        );
       },
     );
 
@@ -98,22 +127,105 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
         await _goToNext();
         return;
       case _CompletionAction.goToStart:
-        await _persist();
+        await _prepareProgressForExit();
         if (!mounted) return;
         Navigator.of(context).pushReplacementNamed(AppRoutes.start);
         return;
-      case _CompletionAction.ok:
       case null:
         return;
     }
   }
 
-  Future<void> _goToNext() async {
-    await _persist();
+  Future<void> _showRunEndedDialog(WordHuntState game) async {
+    final action = await showDialog<_RunEndAction>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        final statusTitle = _statusTitle(game);
+        final elapsed = _formatClockMs(game.elapsedMs);
+        final remaining = game.remainingMs == null
+            ? null
+            : _formatClockMs(game.remainingMs!);
+
+        return AlertDialog(
+          title: Text(statusTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${AppStringsPtBr.score}: ${game.score}'),
+              Text('${AppStringsPtBr.bestScore}: ${game.bestScore}'),
+              const SizedBox(height: 8),
+              Text('${AppStringsPtBr.elapsed}: $elapsed'),
+              if (remaining != null)
+                Text('${AppStringsPtBr.remainingTime}: $remaining'),
+            ],
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(_RunEndAction.goToStart),
+              child: const Text(AppStringsPtBr.goToStart),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(_RunEndAction.repeat),
+              child: const Text(AppStringsPtBr.replay),
+            ),
+          ],
+        );
+      },
+    );
+
     if (!mounted) return;
 
-    final controller =
-        ref.read(wordHuntControllerProvider(widget.session).notifier);
+    switch (action) {
+      case _RunEndAction.repeat:
+        ref.read(wordHuntControllerProvider(widget.session).notifier).newGame();
+        return;
+      case _RunEndAction.goToStart:
+      case null:
+        await _prepareProgressForExit();
+        if (!mounted) return;
+        Navigator.of(context).pushReplacementNamed(AppRoutes.start);
+        return;
+    }
+  }
+
+  String _statusTitle(WordHuntState game) {
+    switch (game.endStatus) {
+      case WordHuntEndStatus.won:
+        return AppStringsPtBr.victory;
+      case WordHuntEndStatus.failed:
+        if (game.endReason == WordHuntEndReason.timeOver) {
+          return AppStringsPtBr.timeOver;
+        }
+        return AppStringsPtBr.failed;
+      case WordHuntEndStatus.ended:
+        if (game.endReason == WordHuntEndReason.timeOver) {
+          return AppStringsPtBr.timeOver;
+        }
+        return AppStringsPtBr.ended;
+      case WordHuntEndStatus.running:
+        return AppStringsPtBr.ended;
+    }
+  }
+
+  String _formatClockMs(int ms) {
+    final totalSeconds = ms <= 0 ? 0 : (ms ~/ 1000);
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    final mm = minutes.toString().padLeft(2, '0');
+    final ss = seconds.toString().padLeft(2, '0');
+    return '$mm:$ss';
+  }
+
+  Future<void> _goToNext() async {
+    await _prepareProgressForExit();
+    if (!mounted) return;
+
+    final controller = ref.read(
+      wordHuntControllerProvider(widget.session).notifier,
+    );
 
     final session = widget.session;
 
@@ -135,8 +247,9 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
           catalogAbsNodeId: session.catalogAbsNodeId,
           catalogItemId: nextItem.id,
         );
-        Navigator.of(context)
-            .pushReplacementNamed(AppRoutes.wordHunt, arguments: nextSession);
+        Navigator.of(
+          context,
+        ).pushReplacementNamed(AppRoutes.wordHunt, arguments: nextSession);
         return;
       }
 
@@ -169,10 +282,9 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
               variantId: nextVariantId,
               themeId: session.themeId,
             );
-            Navigator.of(context).pushReplacementNamed(
-              AppRoutes.wordHunt,
-              arguments: nextSession,
-            );
+            Navigator.of(
+              context,
+            ).pushReplacementNamed(AppRoutes.wordHunt, arguments: nextSession);
             return;
           }
         }
@@ -191,20 +303,26 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
   Widget build(BuildContext context) {
     final provider = wordHuntControllerProvider(widget.session);
 
-    ref.listen<AsyncValue<WordHuntState>>(
-      provider,
-      (prev, next) {
-        final prevCompleted = prev?.asData?.value.isCompleted ?? false;
-        final nextCompleted = next.asData?.value.isCompleted ?? false;
+    ref.listen<AsyncValue<WordHuntState>>(provider, (prev, next) {
+      final prevStatus =
+          prev?.asData?.value.endStatus ?? WordHuntEndStatus.running;
+      final nextGame = next.asData?.value;
+      if (nextGame == null) return;
 
-        if (!prevCompleted && nextCompleted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            _showCompletedDialog();
-          });
-        }
-      },
-    );
+      final nextStatus = nextGame.endStatus;
+      if (prevStatus == WordHuntEndStatus.running &&
+          nextStatus != WordHuntEndStatus.running) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          if (nextStatus == WordHuntEndStatus.won) {
+            _completedDialogWasShown = true;
+            _showCompletedDialog(nextGame);
+            return;
+          }
+          _showRunEndedDialog(nextGame);
+        });
+      }
+    });
 
     final gameAsync = ref.watch(provider);
 
@@ -241,8 +359,7 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
                 ),
                 const SizedBox(height: AppUiConstants.sectionSpacing),
                 FilledButton(
-                  onPressed: () =>
-                      ref.read(provider.notifier).newGame(),
+                  onPressed: () => ref.read(provider.notifier).newGame(),
                   child: const Text(AppStringsPtBr.retry),
                 ),
               ],
@@ -253,13 +370,18 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
       data: (game) {
         final controller = ref.read(provider.notifier);
 
-        final puzzleTitle =
-            game.puzzle.title.resolve('pt-BR', fallbackLocale: game.puzzle.content.locale);
-        final variantTitle =
-            game.variant.title.resolve('pt-BR', fallbackLocale: game.puzzle.content.locale);
+        final puzzleTitle = game.puzzle.title.resolve(
+          'pt-BR',
+          fallbackLocale: game.puzzle.content.locale,
+        );
+        final variantTitle = game.variant.title.resolve(
+          'pt-BR',
+          fallbackLocale: game.puzzle.content.locale,
+        );
 
         final showWordList = game.variant.ui?.showWordList ?? true;
         final showRemaining = game.variant.ui?.showRemainingCount ?? true;
+        final showTimer = game.variant.ui?.showTimer ?? false;
 
         return Scaffold(
           appBar: AppBar(
@@ -280,11 +402,23 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
                 Text(
                   '$puzzleTitle • $variantTitle',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppUiConstants.sectionSpacing),
+                if (showTimer)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: AppUiConstants.sectionSpacing,
+                    ),
+                    child: Text(
+                      '${AppStringsPtBr.timer}: ${_formatClockMs(game.remainingMs ?? game.elapsedMs)}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                 Expanded(
                   flex: AppUiConstants.gridFlex,
                   child: WordHuntGrid(
@@ -307,7 +441,9 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
                           Expanded(
                             child: Text(
                               AppStringsPtBr.targetWords,
-                              style: const TextStyle(fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                           if (showRemaining)
@@ -350,7 +486,19 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
 }
 
 class _CompletedDialog extends StatefulWidget {
-  const _CompletedDialog();
+  final int baseScore;
+  final int speedBonus;
+  final int finalScore;
+  final int bestScore;
+  final int elapsedSec;
+
+  const _CompletedDialog({
+    required this.baseScore,
+    required this.speedBonus,
+    required this.finalScore,
+    required this.bestScore,
+    required this.elapsedSec,
+  });
 
   @override
   State<_CompletedDialog> createState() => _CompletedDialogState();
@@ -409,10 +557,9 @@ class _CompletedDialogState extends State<_CompletedDialog>
                       const SizedBox(height: 12),
                       Text(
                         AppStringsPtBr.congratulationsTitle,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w800),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
@@ -421,12 +568,36 @@ class _CompletedDialogState extends State<_CompletedDialog>
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
+                      const SizedBox(height: 10),
+                      Text(
+                        '${AppStringsPtBr.baseScore}: ${widget.baseScore}',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        '${AppStringsPtBr.speedBonus}: +${widget.speedBonus}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        '${AppStringsPtBr.finalScore}: ${widget.finalScore}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        '${AppStringsPtBr.elapsedSec}: ${widget.elapsedSec}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        '${AppStringsPtBr.bestScore}: ${widget.bestScore}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
                             child: FilledButton.icon(
-                              onPressed: () => Navigator.of(context).pop(_CompletionAction.next),
+                              onPressed: () => Navigator.of(
+                                context,
+                              ).pop(_CompletionAction.next),
                               icon: const Icon(Icons.navigate_next),
                               label: const Text(AppStringsPtBr.next),
                             ),
@@ -438,17 +609,14 @@ class _CompletedDialogState extends State<_CompletedDialog>
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: () => Navigator.of(context).pop(_CompletionAction.goToStart),
+                              onPressed: () => Navigator.of(
+                                context,
+                              ).pop(_CompletionAction.goToStart),
                               icon: const Icon(Icons.home),
                               label: const Text(AppStringsPtBr.goToStart),
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 8),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(_CompletionAction.ok),
-                        child: const Text(AppStringsPtBr.ok),
                       ),
                     ],
                   ),
@@ -462,8 +630,6 @@ class _CompletedDialogState extends State<_CompletedDialog>
   }
 }
 
-enum _CompletionAction {
-  ok,
-  next,
-  goToStart,
-}
+enum _CompletionAction { next, goToStart }
+
+enum _RunEndAction { repeat, goToStart }

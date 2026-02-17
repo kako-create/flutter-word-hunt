@@ -44,5 +44,6 @@ flutter:
     # Como os puzzles foram organizados em subpastas, precisamos lista-las aqui.
     - assets/puzzles/temas/
     - assets/puzzles/temas/starter/
+    - assets/puzzles/temas/learning/
     - assets/puzzles/temas/standard/
     - assets/puzzles/temas/lib/

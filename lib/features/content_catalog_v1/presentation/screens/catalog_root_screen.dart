@@ -29,7 +29,9 @@ class CatalogRootScreen extends ConsumerWidget {
       case UnlockUnknownV1():
         return true;
       case final UnlockCompletionPercentV1 u:
-        if (u.scope != UnlockScopeV1.node) return true; // root nao tem self/parent.
+        if (u.scope != UnlockScopeV1.node) {
+          return true; // root nao tem self/parent.
+        }
         final nodeAbsId = u.nodeAbsId;
         if (nodeAbsId == null || nodeAbsId.trim().isEmpty) return false;
         final mode = u.thresholdMode == ThresholdModeV1.unknown
@@ -111,14 +113,14 @@ class CatalogRootScreen extends ConsumerWidget {
                         ),
                         onTap: canOpen
                             ? () => Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => CatalogFolderScreen(
-                                      args: CatalogFolderRouteArgs(
-                                        absNodeId: rootAbsNodeId,
-                                      ),
+                                MaterialPageRoute<void>(
+                                  builder: (_) => CatalogFolderScreen(
+                                    args: CatalogFolderRouteArgs(
+                                      absNodeId: rootAbsNodeId,
                                     ),
                                   ),
-                                )
+                                ),
+                              )
                             : null,
                       ),
                     );
@@ -192,9 +194,7 @@ class CatalogRootScreen extends ConsumerWidget {
 class _HeroHeader extends StatelessWidget {
   final String? hero;
 
-  const _HeroHeader({
-    required this.hero,
-  });
+  const _HeroHeader({required this.hero});
 
   @override
   Widget build(BuildContext context) {
@@ -207,9 +207,7 @@ class _HeroHeader extends StatelessWidget {
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Center(
-          child: Icon(Icons.auto_stories, size: 42),
-        ),
+        child: const Center(child: Icon(Icons.auto_stories, size: 42)),
       );
     }
 
@@ -273,10 +271,9 @@ class _PackCard extends StatelessWidget {
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w800),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
             ],
           ),

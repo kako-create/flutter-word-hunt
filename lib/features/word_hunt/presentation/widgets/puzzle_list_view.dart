@@ -9,19 +9,23 @@ class PuzzleListView extends StatelessWidget {
   final List<PuzzleCatalogItem> puzzles;
   final ValueChanged<WordHuntSession> onSelect;
   final Map<String, Set<String>>? completedByPuzzleId;
+  final Map<String, int>? bestScoreByPuzzleId;
 
   const PuzzleListView({
     super.key,
     required this.puzzles,
     required this.onSelect,
     this.completedByPuzzleId,
+    this.bestScoreByPuzzleId,
   });
 
   void _selectPuzzle(BuildContext context, PuzzleCatalogItem p) {
     if (p.variants.isEmpty) return;
 
     if (p.variants.length == 1) {
-      onSelect(WordHuntSession(puzzleId: p.puzzleId, variantId: p.variants.first.id));
+      onSelect(
+        WordHuntSession(puzzleId: p.puzzleId, variantId: p.variants.first.id),
+      );
       return;
     }
 
@@ -40,10 +44,9 @@ class PuzzleListView extends StatelessWidget {
                 ),
                 child: Text(
                   AppStringsPtBr.chooseVariant,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               for (final v in p.variants)
@@ -52,7 +55,9 @@ class PuzzleListView extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.of(context).pop();
-                    onSelect(WordHuntSession(puzzleId: p.puzzleId, variantId: v.id));
+                    onSelect(
+                      WordHuntSession(puzzleId: p.puzzleId, variantId: v.id),
+                    );
                   },
                 ),
               const SizedBox(height: AppUiConstants.sectionSpacing),
@@ -73,10 +78,14 @@ class PuzzleListView extends StatelessWidget {
       itemBuilder: (context, index) {
         final p = puzzles[index];
         final completed = completedByPuzzleId?[p.puzzleId] ?? const <String>{};
+        final bestScore = bestScoreByPuzzleId?[p.puzzleId];
 
         final subtitleParts = <String>[p.sizeLabel];
         if (p.variants.length > 1) {
           subtitleParts.add('${p.variants.length} ${AppStringsPtBr.variants}');
+        }
+        if (bestScore != null) {
+          subtitleParts.add('${AppStringsPtBr.bestScore}: $bestScore');
         }
 
         return Material(
@@ -88,11 +97,7 @@ class PuzzleListView extends StatelessWidget {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildVariantIndicators(
-                  p,
-                  completed,
-                  colorScheme,
-                ),
+                _buildVariantIndicators(p, completed, colorScheme),
                 const SizedBox(width: 8),
                 Icon(
                   p.variants.length > 1 ? Icons.layers : Icons.chevron_right,

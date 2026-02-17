@@ -5,6 +5,7 @@ import '../../../../app/routes/app_routes.dart';
 import '../../../../core/constants/ui_constants.dart';
 import '../../../../core/i18n/app_strings_pt_br.dart';
 import '../../../word_hunt/domain/entities/word_hunt_session.dart';
+import '../../../word_hunt/presentation/state/word_hunt_controller.dart';
 import '../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
 import '../../domain/entities/catalog_item_v1.dart';
 import '../../domain/entities/catalog_node_v1.dart';
@@ -19,10 +20,7 @@ import 'catalog_route_args.dart';
 class CatalogFolderScreen extends ConsumerWidget {
   final CatalogFolderRouteArgs args;
 
-  const CatalogFolderScreen({
-    super.key,
-    required this.args,
-  });
+  const CatalogFolderScreen({super.key, required this.args});
 
   String _resolveText(I18nText? text) {
     return text?.resolve('pt-BR', fallbackLocale: 'pt-BR') ?? '';
@@ -32,6 +30,7 @@ class CatalogFolderScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final catalogAsync = ref.watch(contentCatalogProvider);
     final completion = ref.read(puzzleCompletionServiceProvider);
+    final highScoresByPuzzle = ref.watch(puzzleHighScoreProvider).asData?.value;
 
     return catalogAsync.when(
       loading: () => Scaffold(
@@ -75,6 +74,7 @@ class CatalogFolderScreen extends ConsumerWidget {
             catalog: catalog,
             node: node,
             completion: completion,
+            highScoresByPuzzle: highScoresByPuzzle ?? const <String, int>{},
           ),
           builder: (context, snap) {
             if (snap.hasError) {
@@ -135,48 +135,30 @@ class CatalogFolderScreen extends ConsumerWidget {
     required CatalogLayout layout,
     required List<_CatalogItemVm> items,
   }) {
-    final effective = layout == CatalogLayout.unknown ? CatalogLayout.list : layout;
+    final effective = layout == CatalogLayout.unknown
+        ? CatalogLayout.list
+        : layout;
 
     switch (effective) {
       case CatalogLayout.grid:
-        return _GridLayout(
-          catalog: catalog,
-          node: node,
-          items: items,
-        );
+        return _GridLayout(catalog: catalog, node: node, items: items);
       case CatalogLayout.heroList:
         return Column(
           children: [
             _HeroHeader(hero: node.index.ui.hero),
             const SizedBox(height: AppUiConstants.sectionSpacing),
             Expanded(
-              child: _ListLayout(
-                catalog: catalog,
-                node: node,
-                items: items,
-              ),
+              child: _ListLayout(catalog: catalog, node: node, items: items),
             ),
           ],
         );
       case CatalogLayout.chapters:
-        return _ChaptersLayout(
-          catalog: catalog,
-          node: node,
-          items: items,
-        );
+        return _ChaptersLayout(catalog: catalog, node: node, items: items);
       case CatalogLayout.chapterGrid:
-        return _ChapterGridLayout(
-          catalog: catalog,
-          node: node,
-          items: items,
-        );
+        return _ChapterGridLayout(catalog: catalog, node: node, items: items);
       case CatalogLayout.list:
       case CatalogLayout.unknown:
-        return _ListLayout(
-          catalog: catalog,
-          node: node,
-          items: items,
-        );
+        return _ListLayout(catalog: catalog, node: node, items: items);
     }
   }
 }
@@ -196,6 +178,7 @@ class _CatalogItemVm {
   final CatalogFolderProgress? folderProgress;
   final String? childAbsNodeId;
   final int? number;
+  final int? bestScore;
 
   const _CatalogItemVm({
     required this.item,
@@ -206,6 +189,7 @@ class _CatalogItemVm {
     required this.folderProgress,
     required this.childAbsNodeId,
     required this.number,
+    required this.bestScore,
   });
 }
 
@@ -213,6 +197,7 @@ Future<_CatalogNodeVm> _buildNodeVm({
   required ContentCatalogV1 catalog,
   required CatalogNodeV1 node,
   required PuzzleCompletionService completion,
+  required Map<String, int> highScoresByPuzzle,
 }) async {
   void logVmError(Object error, StackTrace st, {required String where}) {
     assert(() {
@@ -224,13 +209,15 @@ Future<_CatalogNodeVm> _buildNodeVm({
 
   final items = <_CatalogItemVm>[];
 
-  final sequential = node.index.progression.mode == ProgressionModeV1.sequential;
+  final sequential =
+      node.index.progression.mode == ProgressionModeV1.sequential;
   var prevClearableCleared = true;
   var puzzleNumber = 0;
 
   for (final item in node.index.items) {
     final absItemId = '${node.absNodeId}#${item.id}';
-    final isClearable = item is CatalogPuzzleItemV1 ||
+    final isClearable =
+        item is CatalogPuzzleItemV1 ||
         item is CatalogFolderItemV1 ||
         item is CatalogCampaignItemV1;
 
@@ -240,6 +227,7 @@ Future<_CatalogNodeVm> _buildNodeVm({
     String? childAbsNodeId;
     var completed = false;
     var cleared = false;
+    int? bestScore;
 
     if (item is CatalogPuzzleItemV1) {
       puzzleNumber++;
@@ -248,8 +236,13 @@ Future<_CatalogNodeVm> _buildNodeVm({
           puzzleId: item.puzzleId,
           variantId: item.variantId,
         );
+        bestScore = highScoresByPuzzle[item.puzzleId];
       } catch (e, st) {
-        logVmError(e, st, where: 'completed(${item.puzzleId}, ${item.variantId})');
+        logVmError(
+          e,
+          st,
+          where: 'completed(${item.puzzleId}, ${item.variantId})',
+        );
         completed = false;
       }
       cleared = completed;
@@ -257,8 +250,12 @@ Future<_CatalogNodeVm> _buildNodeVm({
       childAbsNodeId = node.childAbsNodeIdByItemId[item.id];
       if (childAbsNodeId != null) {
         try {
-          folderProgress = await completion.folderProgress(absNodeId: childAbsNodeId);
-          cleared = folderProgress.percentFloor >= node.index.progression.clearThresholdPct;
+          folderProgress = await completion.folderProgress(
+            absNodeId: childAbsNodeId,
+          );
+          cleared =
+              folderProgress.percentFloor >=
+              node.index.progression.clearThresholdPct;
         } catch (e, st) {
           logVmError(e, st, where: 'folderProgress($childAbsNodeId)');
           folderProgress = null;
@@ -299,6 +296,7 @@ Future<_CatalogNodeVm> _buildNodeVm({
         folderProgress: folderProgress,
         childAbsNodeId: childAbsNodeId,
         number: item is CatalogPuzzleItemV1 ? puzzleNumber : null,
+        bestScore: bestScore,
       ),
     );
   }
@@ -317,8 +315,9 @@ Future<bool> _evalUnlockRule({
     case UnlockUnknownV1():
       return true;
     case final UnlockCompletionPercentV1 u:
-      final ThresholdModeV1 mode =
-          u.thresholdMode == ThresholdModeV1.unknown ? ThresholdModeV1.descendants : u.thresholdMode;
+      final ThresholdModeV1 mode = u.thresholdMode == ThresholdModeV1.unknown
+          ? ThresholdModeV1.descendants
+          : u.thresholdMode;
 
       final String? targetAbsNodeId = switch (u.scope) {
         UnlockScopeV1.self => node.absNodeId,
@@ -327,7 +326,9 @@ Future<bool> _evalUnlockRule({
         UnlockScopeV1.unknown => null,
       };
 
-      if (targetAbsNodeId == null || targetAbsNodeId.trim().isEmpty) return false;
+      if (targetAbsNodeId == null || targetAbsNodeId.trim().isEmpty) {
+        return false;
+      }
 
       final p = await completion.nodeProgress(
         absNodeId: targetAbsNodeId,
@@ -340,9 +341,7 @@ Future<bool> _evalUnlockRule({
 class _HeroHeader extends StatelessWidget {
   final String? hero;
 
-  const _HeroHeader({
-    required this.hero,
-  });
+  const _HeroHeader({required this.hero});
 
   @override
   Widget build(BuildContext context) {
@@ -355,9 +354,7 @@ class _HeroHeader extends StatelessWidget {
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Center(
-          child: Icon(Icons.auto_stories, size: 42),
-        ),
+        child: const Center(child: Icon(Icons.auto_stories, size: 42)),
       );
     }
 
@@ -412,8 +409,9 @@ class _ListLayout extends StatelessWidget {
       catalogAbsNodeId: node.absNodeId,
       catalogItemId: p.id,
     );
-    Navigator.of(context)
-        .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
+    Navigator.of(
+      context,
+    ).pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }
 
   @override
@@ -431,10 +429,9 @@ class _ListLayout extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8, bottom: 4),
             child: Text(
               title.isEmpty ? item.id : title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w800),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
           );
         }
@@ -466,6 +463,8 @@ class _ListLayout extends StatelessWidget {
         String? trailingText;
         if (vm.folderProgress != null) {
           trailingText = '${vm.folderProgress!.percentFloor}%';
+        } else if (item is CatalogPuzzleItemV1 && vm.bestScore != null) {
+          trailingText = '${AppStringsPtBr.bestScore}: ${vm.bestScore}';
         }
 
         return Material(
@@ -495,7 +494,8 @@ class _ListLayout extends StatelessWidget {
             onTap: !canTap
                 ? null
                 : () {
-                    if (item is CatalogFolderItemV1 || item is CatalogCampaignItemV1) {
+                    if (item is CatalogFolderItemV1 ||
+                        item is CatalogCampaignItemV1) {
                       final child = vm.childAbsNodeId;
                       if (child == null) return;
                       _openFolder(context, child);
@@ -544,8 +544,9 @@ class _GridLayout extends StatelessWidget {
       catalogAbsNodeId: node.absNodeId,
       catalogItemId: p.id,
     );
-    Navigator.of(context)
-        .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
+    Navigator.of(
+      context,
+    ).pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }
 
   @override
@@ -566,7 +567,13 @@ class _GridLayout extends StatelessWidget {
             title: _resolveText(vm.item.title).isNotEmpty
                 ? _resolveText(vm.item.title)
                 : vm.item.id,
-            subtitle: vm.folderProgress != null ? '${vm.folderProgress!.percentFloor}%' : null,
+            subtitle: vm.item is CatalogPuzzleItemV1
+                ? (vm.bestScore == null
+                      ? null
+                      : '${AppStringsPtBr.bestScore}: ${vm.bestScore}')
+                : (vm.folderProgress != null
+                      ? '${vm.folderProgress!.percentFloor}%'
+                      : null),
             locked: !vm.unlocked,
             completed: vm.completed,
             icon: vm.item is CatalogFolderItemV1 ? Icons.folder : Icons.grid_on,
@@ -626,7 +633,9 @@ class _GridCard extends StatelessWidget {
                   Icon(icon),
                   const Spacer(),
                   Icon(
-                    locked ? Icons.lock : (completed ? Icons.star : Icons.star_border),
+                    locked
+                        ? Icons.lock
+                        : (completed ? Icons.star : Icons.star_border),
                     size: 18,
                     color: colorScheme.outline,
                   ),
@@ -637,17 +646,13 @@ class _GridCard extends StatelessWidget {
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w800),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
               ),
               if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(
-                  subtitle!,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
               ],
             ],
           ),
@@ -684,7 +689,9 @@ class _ChaptersLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chapters = items.where((vm) => vm.item is CatalogFolderItemV1).toList();
+    final chapters = items
+        .where((vm) => vm.item is CatalogFolderItemV1)
+        .toList();
     if (chapters.isEmpty) {
       return const Center(child: Text(AppStringsPtBr.noItemsFound));
     }
@@ -695,7 +702,9 @@ class _ChaptersLayout extends StatelessWidget {
       itemBuilder: (context, i) {
         final vm = chapters[i];
         final item = vm.item as CatalogFolderItemV1;
-        final title = _resolveText(item.title).isNotEmpty ? _resolveText(item.title) : item.id;
+        final title = _resolveText(item.title).isNotEmpty
+            ? _resolveText(item.title)
+            : item.id;
         final pct = vm.folderProgress?.percentFloor ?? 0;
 
         return Material(
@@ -737,13 +746,16 @@ class _ChapterGridLayout extends StatelessWidget {
       catalogAbsNodeId: node.absNodeId,
       catalogItemId: p.id,
     );
-    Navigator.of(context)
-        .pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
+    Navigator.of(
+      context,
+    ).pushReplacementNamed(AppRoutes.wordHunt, arguments: session);
   }
 
   @override
   Widget build(BuildContext context) {
-    final puzzles = items.where((vm) => vm.item is CatalogPuzzleItemV1).toList();
+    final puzzles = items
+        .where((vm) => vm.item is CatalogPuzzleItemV1)
+        .toList();
     if (puzzles.isEmpty) {
       return const Center(child: Text(AppStringsPtBr.noItemsFound));
     }
@@ -760,6 +772,7 @@ class _ChapterGridLayout extends StatelessWidget {
             number: vm.number ?? 0,
             locked: !vm.unlocked,
             completed: vm.completed,
+            bestScore: vm.bestScore,
             onTap: !vm.unlocked
                 ? null
                 : () => _openPuzzle(context, vm.item as CatalogPuzzleItemV1),
@@ -773,12 +786,14 @@ class _NumberTile extends StatelessWidget {
   final int number;
   final bool locked;
   final bool completed;
+  final int? bestScore;
   final VoidCallback? onTap;
 
   const _NumberTile({
     required this.number,
     required this.locked,
     required this.completed,
+    required this.bestScore,
     required this.onTap,
   });
 
@@ -799,11 +814,30 @@ class _NumberTile extends StatelessWidget {
         child: Center(
           child: locked
               ? Icon(Icons.lock, color: colorScheme.outline)
-              : Text(
-                  '$number',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$number',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
+                    ),
+                    if (bestScore != null) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.emoji_events, size: 14),
+                          const SizedBox(width: 3),
+                          Text(
+                            '$bestScore',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
         ),
       ),

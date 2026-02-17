@@ -20,6 +20,16 @@ class AppStringsPtBr {
   static const String next = 'Próxima';
   static const String targetWords = 'Palavras';
   static const String remaining = 'Restam';
+  static const String timer = 'Tempo';
+  static const String elapsed = 'Decorrido';
+  static const String elapsedSec = 'Segundos';
+  static const String remainingTime = 'Restante';
+  static const String score = 'Pontuação';
+  static const String baseScore = 'Base';
+  static const String speedBonus = 'Bônus de velocidade';
+  static const String finalScore = 'Final';
+  static const String maxBaseScore = 'X máx.';
+  static const String bestScore = 'Recorde';
   static const String wordListHidden = 'Lista de palavras oculta';
 
   static const String loading = 'Carregando...';
@@ -37,7 +47,12 @@ class AppStringsPtBr {
 
   static const String completed = 'Concluído';
   static const String congratulationsTitle = 'Parabéns!';
-  static const String congratulationsBody =
-      'Você encontrou todas as palavras.';
+  static const String congratulationsBody = 'Você encontrou todas as palavras.';
   static const String ok = 'OK';
+  static const String victory = 'Vitória';
+  static const String timeOver = 'Tempo esgotado';
+  static const String failed = 'Falhou';
+  static const String ended = 'Encerrado';
+  static const String replay = 'Repetir';
+  static const String back = 'Voltar';
 }

@@ -16,10 +16,7 @@ class CatalogFolderProgress {
   final int completed;
   final int total;
 
-  const CatalogFolderProgress({
-    required this.completed,
-    required this.total,
-  });
+  const CatalogFolderProgress({required this.completed, required this.total});
 
   int get percentFloor {
     if (total <= 0) return 0;
@@ -32,9 +29,9 @@ class PuzzleCompletionService {
     required ContentCatalogRepository catalogRepository,
     required PuzzleRepositoryV1 puzzleRepository,
     required WordHuntProgressRepository progressRepository,
-  })  : _catalogRepository = catalogRepository,
-        _puzzleRepository = puzzleRepository,
-        _progressRepository = progressRepository;
+  }) : _catalogRepository = catalogRepository,
+       _puzzleRepository = puzzleRepository,
+       _progressRepository = progressRepository;
 
   final ContentCatalogRepository _catalogRepository;
   final PuzzleRepositoryV1 _puzzleRepository;
@@ -44,7 +41,8 @@ class PuzzleCompletionService {
   final Map<String, CatalogFolderProgress> _folderProgressCache =
       <String, CatalogFolderProgress>{};
 
-  String _sessionKey(String puzzleId, String variantId) => '$puzzleId::$variantId';
+  String _sessionKey(String puzzleId, String variantId) =>
+      '$puzzleId::$variantId';
 
   Future<bool> completed({
     required String puzzleId,
@@ -68,11 +66,14 @@ class PuzzleCompletionService {
       }
 
       final normalize = puzzle.content.normalize ?? const NormalizeConfig();
+      final session = WordHuntSession(puzzleId: puzzleId, variantId: variantId);
+      final saved = await _progressRepository.loadProgress(session);
       final resolved = _resolveTargets(
         puzzle: puzzle,
         variant: variant,
         normalize: normalize,
         rng: Random(0),
+        forcedSubsetWordIds: saved.subsetTargetWordIds,
       );
 
       final targetIds = resolved.targetWordIds;
@@ -81,9 +82,9 @@ class PuzzleCompletionService {
         return false;
       }
 
-      final session = WordHuntSession(puzzleId: puzzleId, variantId: variantId);
-      final saved = await _progressRepository.loadProgress(session);
-      final isDone = saved.foundWordIds.containsAll(targetIds);
+      final isDone =
+          saved.completedAtEpochMs != null ||
+          saved.foundWordIds.containsAll(targetIds);
       _completedCache[key] = isDone;
       return isDone;
     } catch (e) {
@@ -97,9 +98,7 @@ class PuzzleCompletionService {
     }
   }
 
-  Future<CatalogFolderProgress> folderProgress({
-    required String absNodeId,
-  }) {
+  Future<CatalogFolderProgress> folderProgress({required String absNodeId}) {
     return nodeProgress(
       absNodeId: absNodeId,
       thresholdMode: ThresholdModeV1.descendants,
@@ -181,11 +180,10 @@ class PuzzleCompletionService {
     required PuzzleVariant variant,
     required NormalizeConfig normalize,
     required Random rng,
+    List<String>? forcedSubsetWordIds,
   }) {
     final words = puzzle.content.lexicon.words;
-    final byId = <String, LexiconWord>{
-      for (final w in words) w.id: w,
-    };
+    final byId = <String, LexiconWord>{for (final w in words) w.id: w};
 
     var targetIds = <String>[];
     List<String>? orderedIds;
@@ -217,7 +215,7 @@ class PuzzleCompletionService {
         targetIds = orderedIds!;
       },
       subset: (m) {
-        targetIds = _resolveSubsetIds(puzzle, m, words);
+        targetIds = forcedSubsetWordIds ?? _resolveSubsetIds(puzzle, m, words);
         orderedIds = null;
       },
     );
@@ -228,8 +226,10 @@ class PuzzleCompletionService {
     for (final id in targetIds) {
       final w = byId[id];
       if (w == null) continue;
-      final normalized =
-          PuzzleTextNormalizerV1.normalizeForCompare(w.text, normalize);
+      final normalized = PuzzleTextNormalizerV1.normalizeForCompare(
+        w.text,
+        normalize,
+      );
       targets.add(_TargetStub(id: w.id, normalized: normalized));
     }
 
@@ -287,10 +287,14 @@ class PuzzleCompletionService {
       byLength: (o) {
         final list = [...words];
         list.sort((a, b) {
-          final la =
-              PuzzleTextNormalizerV1.normalizeForCompare(a.text, normalize).length;
-          final lb =
-              PuzzleTextNormalizerV1.normalizeForCompare(b.text, normalize).length;
+          final la = PuzzleTextNormalizerV1.normalizeForCompare(
+            a.text,
+            normalize,
+          ).length;
+          final lb = PuzzleTextNormalizerV1.normalizeForCompare(
+            b.text,
+            normalize,
+          ).length;
           final c = la.compareTo(lb);
           return o.ascending ? c : -c;
         });
@@ -334,8 +338,5 @@ class _TargetStub {
   final String id;
   final String normalized;
 
-  const _TargetStub({
-    required this.id,
-    required this.normalized,
-  });
+  const _TargetStub({required this.id, required this.normalized});
 }

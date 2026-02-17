@@ -96,6 +96,8 @@ class ThemePuzzlesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final completionAsync = ref.watch(puzzleCompletionProvider);
     final completedByPuzzle = completionAsync.asData?.value;
+    final highScoresAsync = ref.watch(puzzleHighScoreProvider);
+    final bestScoreByPuzzle = highScoresAsync.asData?.value;
 
     return Scaffold(
       appBar: AppBar(title: Text(theme.title)),
@@ -122,6 +124,7 @@ class ThemePuzzlesScreen extends ConsumerWidget {
             puzzles: theme.puzzles,
             onSelect: (session) => _start(context, session),
             completedByPuzzleId: completedByPuzzle,
+            bestScoreByPuzzleId: bestScoreByPuzzle,
           ),
         ),
       ),
