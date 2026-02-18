@@ -10,7 +10,11 @@ abstract class PuzzleSpeechService {
 
   Future<void> configure(PuzzleV1 puzzle, PuzzleVariant variant);
 
-  Future<void> speakWord(String word, {bool spellAfter = true});
+  Future<void> speakWord(
+    String word, {
+    bool spellAfter = true,
+    bool forceWord = false,
+  });
 
   Future<void> speakSpelling(String word);
 

@@ -136,6 +136,7 @@
         "id": { "type": "string", "minLength": 1 },
         "text": { "type": "string", "minLength": 1 },
         "display": { "type": "string" },
+        "speech": { "type": "string" },
         "tags": { "type": "array", "items": { "type": "string" } },
         "weight": { "type": "number", "default": 1.0 },
         "difficulty": { "type": "integer" }

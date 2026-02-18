@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "casa",
-          "text": "CASA"
+          "text": "CASA",
+          "speech": "casa"
         },
         {
           "id": "porta",
-          "text": "PORTA"
+          "text": "PORTA",
+          "speech": "porta"
         },
         {
           "id": "telha",
-          "text": "TELHA"
+          "text": "TELHA",
+          "speech": "telha"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

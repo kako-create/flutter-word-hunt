@@ -14,10 +14,10 @@
         "type": "static",
         "grid": [
           "BRASA",
-          "XFPOU",
+          "XFPEU",
           "JOVML",
           "FGRUF",
-          "VOVFE"
+          "VOVLE"
         ]
       }
     },
@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "fogo",
-          "text": "FOGO"
+          "text": "FOGO",
+          "speech": "fogo"
         },
         {
-          "id": "fumo",
-          "text": "FUMO"
+          "id": "lume",
+          "text": "LUME",
+          "speech": "lume"
         },
         {
           "id": "brasa",
-          "text": "BRASA"
+          "text": "BRASA",
+          "speech": "brasa"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -80,7 +83,7 @@
           "type": "explicit",
           "wordIds": [
             "fogo",
-            "fumo",
+            "lume",
             "brasa"
           ]
         }
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

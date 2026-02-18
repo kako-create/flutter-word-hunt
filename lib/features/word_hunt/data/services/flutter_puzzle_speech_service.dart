@@ -184,11 +184,20 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
   }
 
   @override
-  Future<void> speakWord(String word, {bool spellAfter = true}) async {
+  Future<void> speakWord(
+    String word, {
+    bool spellAfter = true,
+    bool forceWord = false,
+  }) async {
     if (_disposed || !_settings.enabled) return;
 
     final cleanWord = word.trim();
     if (cleanWord.isEmpty) return;
+
+    final currentState = _stateNotifier.value;
+    if (currentState.isSpeaking && currentState.speakingWord == cleanWord) {
+      return;
+    }
 
     if (_shouldIgnoreDebouncedTap(cleanWord)) {
       return;
@@ -198,7 +207,7 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
     await _engine.stop();
     if (!_isCurrentRun(currentRun)) return;
 
-    final shouldSpeakWord = _settings.shouldSpeakWord;
+    final shouldSpeakWord = forceWord || _settings.shouldSpeakWord;
     final shouldSpellWord = _settings.shouldSpellWord && spellAfter;
     if (!shouldSpeakWord && !shouldSpellWord) return;
 
@@ -236,6 +245,11 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
 
     final cleanWord = word.trim();
     if (cleanWord.isEmpty) return;
+
+    final currentState = _stateNotifier.value;
+    if (currentState.isSpeaking && currentState.speakingWord == cleanWord) {
+      return;
+    }
 
     final currentRun = ++_runId;
     await _engine.stop();

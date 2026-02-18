@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "flor",
-          "text": "FLOR"
+          "text": "FLOR",
+          "speech": "flor"
         },
         {
           "id": "folha",
-          "text": "FOLHA"
+          "text": "FOLHA",
+          "speech": "folha"
         },
         {
           "id": "grama",
-          "text": "GRAMA"
+          "text": "GRAMA",
+          "speech": "grama"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -152,6 +152,7 @@ Campos:
   "id": "flutter",
   "text": "FLUTTER",
   "display": "FLUTTER",
+  "speech": "flutter",
   "tags": ["tech"],
   "weight": 1.0,
   "difficulty": 2
@@ -162,6 +163,7 @@ Campos:
 - id (string, obrigatorio, minLength=1): identificador unico.
 - text (string, obrigatorio, minLength=1): texto base da palavra.
 - display (string, opcional): exibicao customizada.
+- speech (string, opcional): texto especifico para TTS (ex.: com acentos/caixa natural).
 - tags (array<string>, opcional): tags para filtros.
 - weight (number, opcional, default=1.0): peso.
 - difficulty (int, opcional): dificuldade.

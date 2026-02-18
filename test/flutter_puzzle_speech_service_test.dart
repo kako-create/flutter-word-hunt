@@ -61,6 +61,36 @@ void main() {
     expect(engine.spoken, ['CASA']);
     service.dispose();
   });
+
+  test('repeticao da mesma palavra durante fala atual e ignorada', () async {
+    final engine = _FakeSpeechEngine(
+      speakDelay: const Duration(milliseconds: 80),
+      supportedLanguages: {'pt-BR'},
+    );
+    final service = FlutterPuzzleSpeechService(engine: engine);
+
+    await service.configure(
+      _buildPuzzle(locale: 'pt-BR'),
+      _buildVariantSpeech({
+        'enabled': true,
+        'mode': 'word_then_spelling',
+        'wordPauseMs': 30,
+        'letterPauseMs': 30,
+        'debounceMs': 0,
+        'debounceBehavior': 'restart',
+      }),
+    );
+
+    final first = service.speakWord('BOLA');
+    await Future.delayed(const Duration(milliseconds: 10));
+    final second = service.speakWord('BOLA');
+
+    await Future.wait([first, second]);
+
+    // Nao deve reiniciar: apenas a primeira execucao completa.
+    expect(engine.spoken, ['BOLA', 'B', 'O', 'L', 'A']);
+    service.dispose();
+  });
 }
 
 class _FakeSpeechEngine implements PuzzleSpeechEngine {

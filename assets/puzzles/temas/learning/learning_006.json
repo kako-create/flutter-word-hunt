@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "sapo",
-          "text": "SAPO"
+          "text": "SAPO",
+          "speech": "sapo"
         },
         {
           "id": "urso",
-          "text": "URSO"
+          "text": "URSO",
+          "speech": "urso"
         },
         {
           "id": "foca",
-          "text": "FOCA"
+          "text": "FOCA",
+          "speech": "foca"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

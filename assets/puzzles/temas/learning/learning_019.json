@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "arroz",
-          "text": "ARROZ"
+          "text": "ARROZ",
+          "speech": "arroz"
         },
         {
           "id": "milho",
-          "text": "MILHO"
+          "text": "MILHO",
+          "speech": "milho"
         },
         {
           "id": "trigo",
-          "text": "TRIGO"
+          "text": "TRIGO",
+          "speech": "trigo"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

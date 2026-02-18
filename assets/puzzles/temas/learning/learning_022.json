@@ -25,15 +25,19 @@
       "words": [
         {
           "id": "braco",
-          "text": "BRACO"
+          "text": "BRACO",
+          "display": "BRAÇO",
+          "speech": "braço"
         },
         {
           "id": "perna",
-          "text": "PERNA"
+          "text": "PERNA",
+          "speech": "perna"
         },
         {
           "id": "peito",
-          "text": "PEITO"
+          "text": "PEITO",
+          "speech": "peito"
         }
       ]
     },
@@ -65,7 +69,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +111,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

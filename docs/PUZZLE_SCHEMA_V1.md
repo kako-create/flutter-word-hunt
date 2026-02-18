@@ -84,7 +84,7 @@ Campos:
 ### content.lexicon
 
 - `words`: lista de palavras
-  - `{ id, text, display?, tags?, weight=1.0, difficulty? }`
+  - `{ id, text, display?, speech?, tags?, weight=1.0, difficulty? }`
 - `groups` (opcional): lista de grupos
   - `{ id, label(i18n)?, wordIds: [...] }`
 

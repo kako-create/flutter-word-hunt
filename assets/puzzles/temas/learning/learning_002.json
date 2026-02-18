@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "gato",
-          "text": "GATO"
+          "text": "GATO",
+          "speech": "gato"
         },
         {
           "id": "pato",
-          "text": "PATO"
+          "text": "PATO",
+          "speech": "pato"
         },
         {
           "id": "rato",
-          "text": "RATO"
+          "text": "RATO",
+          "speech": "rato"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

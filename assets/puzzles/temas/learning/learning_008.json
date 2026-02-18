@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "carro",
-          "text": "CARRO"
+          "text": "CARRO",
+          "speech": "carro"
         },
         {
           "id": "trem",
-          "text": "TREM"
+          "text": "TREM",
+          "speech": "trem"
         },
         {
           "id": "moto",
-          "text": "MOTO"
+          "text": "MOTO",
+          "speech": "moto"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

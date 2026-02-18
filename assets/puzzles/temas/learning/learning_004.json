@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "bola",
-          "text": "BOLA"
+          "text": "BOLA",
+          "speech": "bola"
         },
         {
           "id": "pipa",
-          "text": "PIPA"
+          "text": "PIPA",
+          "speech": "pipa"
         },
         {
           "id": "dado",
-          "text": "DADO"
+          "text": "DADO",
+          "speech": "dado"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

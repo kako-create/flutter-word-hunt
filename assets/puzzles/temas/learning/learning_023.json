@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "copa",
-          "text": "COPA"
+          "text": "COPA",
+          "speech": "copa"
         },
         {
           "id": "vaso",
-          "text": "VASO"
+          "text": "VASO",
+          "speech": "vaso"
         },
         {
           "id": "prato",
-          "text": "PRATO"
+          "text": "PRATO",
+          "speech": "prato"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

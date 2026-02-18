@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "sol",
-          "text": "SOL"
+          "text": "SOL",
+          "speech": "sol"
         },
         {
           "id": "lua",
-          "text": "LUA"
+          "text": "LUA",
+          "speech": "lua"
         },
         {
           "id": "nuvem",
-          "text": "NUVEM"
+          "text": "NUVEM",
+          "speech": "nuvem"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

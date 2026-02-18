@@ -25,15 +25,19 @@
       "words": [
         {
           "id": "pao",
-          "text": "PAO"
+          "text": "PAO",
+          "display": "PÃO",
+          "speech": "pão"
         },
         {
           "id": "bolo",
-          "text": "BOLO"
+          "text": "BOLO",
+          "speech": "bolo"
         },
         {
           "id": "suco",
-          "text": "SUCO"
+          "text": "SUCO",
+          "speech": "suco"
         }
       ]
     },
@@ -65,7 +69,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +111,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

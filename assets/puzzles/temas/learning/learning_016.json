@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "giz",
-          "text": "GIZ"
+          "text": "GIZ",
+          "speech": "giz"
         },
         {
           "id": "tinta",
-          "text": "TINTA"
+          "text": "TINTA",
+          "speech": "tinta"
         },
         {
           "id": "papel",
-          "text": "PAPEL"
+          "text": "PAPEL",
+          "speech": "papel"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

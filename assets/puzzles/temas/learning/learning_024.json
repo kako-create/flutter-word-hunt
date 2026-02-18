@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "garfo",
-          "text": "GARFO"
+          "text": "GARFO",
+          "speech": "garfo"
         },
         {
           "id": "faca",
-          "text": "FACA"
+          "text": "FACA",
+          "speech": "faca"
         },
         {
           "id": "copo",
-          "text": "COPO"
+          "text": "COPO",
+          "speech": "copo"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

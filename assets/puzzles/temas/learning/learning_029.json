@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "som",
-          "text": "SOM"
+          "text": "SOM",
+          "speech": "som"
         },
         {
           "id": "ritmo",
-          "text": "RITMO"
+          "text": "RITMO",
+          "speech": "ritmo"
         },
         {
           "id": "canto",
-          "text": "CANTO"
+          "text": "CANTO",
+          "speech": "canto"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "lobo",
-          "text": "LOBO"
+          "text": "LOBO",
+          "speech": "lobo"
         },
         {
           "id": "tatu",
-          "text": "TATU"
+          "text": "TATU",
+          "speech": "tatu"
         },
         {
           "id": "anta",
-          "text": "ANTA"
+          "text": "ANTA",
+          "speech": "anta"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

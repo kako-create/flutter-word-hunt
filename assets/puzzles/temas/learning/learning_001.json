@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "azul",
-          "text": "AZUL"
+          "text": "AZUL",
+          "speech": "azul"
         },
         {
           "id": "rosa",
-          "text": "ROSA"
+          "text": "ROSA",
+          "speech": "rosa"
         },
         {
           "id": "verde",
-          "text": "VERDE"
+          "text": "VERDE",
+          "speech": "verde"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "chuva",
-          "text": "CHUVA"
+          "text": "CHUVA",
+          "speech": "chuva"
         },
         {
           "id": "vento",
-          "text": "VENTO"
+          "text": "VENTO",
+          "speech": "vento"
         },
         {
           "id": "neve",
-          "text": "NEVE"
+          "text": "NEVE",
+          "speech": "neve"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

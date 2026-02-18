@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "vaca",
-          "text": "VACA"
+          "text": "VACA",
+          "speech": "vaca"
         },
         {
           "id": "cabra",
-          "text": "CABRA"
+          "text": "CABRA",
+          "speech": "cabra"
         },
         {
           "id": "porco",
-          "text": "PORCO"
+          "text": "PORCO",
+          "speech": "porco"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

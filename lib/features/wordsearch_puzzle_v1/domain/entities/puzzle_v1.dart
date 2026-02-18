@@ -100,15 +100,15 @@ abstract class PuzzleContent with _$PuzzleContent {
     JsonMap? meta,
   }) = _PuzzleContent;
 
-  factory PuzzleContent.fromJson(Map<String, dynamic> json) {
+  factory PuzzleContent.fromJson(Map<String, dynamic> json) =>
+      _$PuzzleContentFromJson(_patchLocale(json));
+
+  static Map<String, dynamic> _patchLocale(Map<String, dynamic> json) {
     // Backward-compat: alguns puzzles antigos nao tinham `content.locale`.
     // Assumimos pt-BR quando ausente/invalido para nao quebrar o carregamento.
     final rawLocale = json['locale'];
     final locale = rawLocale is String ? rawLocale.trim() : '';
-    final patched = locale.isNotEmpty
-        ? json
-        : <String, dynamic>{...json, 'locale': 'pt-BR'};
-    return _$PuzzleContentFromJson(patched);
+    return locale.isNotEmpty ? json : <String, dynamic>{...json, 'locale': 'pt-BR'};
   }
 }
 
@@ -193,6 +193,7 @@ abstract class LexiconWord with _$LexiconWord {
     required String id,
     required String text,
     String? display,
+    String? speech,
     List<String>? tags,
     @Default(1.0) double weight,
     int? difficulty,

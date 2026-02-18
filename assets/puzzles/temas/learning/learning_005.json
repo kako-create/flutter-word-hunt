@@ -25,15 +25,19 @@
       "words": [
         {
           "id": "manga",
-          "text": "MANGA"
+          "text": "MANGA",
+          "speech": "manga"
         },
         {
           "id": "pera",
-          "text": "PERA"
+          "text": "PERA",
+          "display": "PÊRA",
+          "speech": "pêra"
         },
         {
           "id": "kiwi",
-          "text": "KIWI"
+          "text": "KIWI",
+          "speech": "kiwi"
         }
       ]
     },
@@ -65,7 +69,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +111,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -25,15 +25,20 @@
       "words": [
         {
           "id": "livro",
-          "text": "LIVRO"
+          "text": "LIVRO",
+          "speech": "livro"
         },
         {
           "id": "lapis",
-          "text": "LAPIS"
+          "text": "LAPIS",
+          "display": "LÁPIS",
+          "speech": "lápis"
         },
         {
           "id": "regua",
-          "text": "REGUA"
+          "text": "REGUA",
+          "display": "RÉGUA",
+          "speech": "régua"
         }
       ]
     },
@@ -65,7 +70,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +112,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

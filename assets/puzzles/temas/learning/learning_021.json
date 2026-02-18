@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "boca",
-          "text": "BOCA"
+          "text": "BOCA",
+          "speech": "boca"
         },
         {
           "id": "nariz",
-          "text": "NARIZ"
+          "text": "NARIZ",
+          "speech": "nariz"
         },
         {
           "id": "testa",
-          "text": "TESTA"
+          "text": "TESTA",
+          "speech": "testa"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

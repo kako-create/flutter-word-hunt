@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "pizza",
-          "text": "PIZZA"
+          "text": "PIZZA",
+          "speech": "pizza"
         },
         {
           "id": "massa",
-          "text": "MASSA"
+          "text": "MASSA",
+          "speech": "massa"
         },
         {
           "id": "molho",
-          "text": "MOLHO"
+          "text": "MOLHO",
+          "speech": "molho"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

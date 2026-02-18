@@ -13,7 +13,7 @@
       "source": {
         "type": "static",
         "grid": [
-          "AVORT",
+          "VENTO",
           "PWJYO",
           "PMPCN",
           "RAIOD",
@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "onda",
-          "text": "ONDA"
+          "text": "ONDA",
+          "speech": "onda"
         },
         {
           "id": "raio",
-          "text": "RAIO"
+          "text": "RAIO",
+          "speech": "raio"
         },
         {
-          "id": "trova",
-          "text": "TROVA"
+          "id": "vento",
+          "text": "VENTO",
+          "speech": "vento"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -81,7 +84,7 @@
           "wordIds": [
             "onda",
             "raio",
-            "trova"
+            "vento"
           ]
         }
       },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "rio",
-          "text": "RIO"
+          "text": "RIO",
+          "speech": "rio"
         },
         {
           "id": "lago",
-          "text": "LAGO"
+          "text": "LAGO",
+          "speech": "lago"
         },
         {
           "id": "ponte",
-          "text": "PONTE"
+          "text": "PONTE",
+          "speech": "ponte"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

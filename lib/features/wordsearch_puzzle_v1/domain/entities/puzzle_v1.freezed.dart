@@ -2492,7 +2492,7 @@ as List<LexiconGroup>?,
 /// @nodoc
 mixin _$LexiconWord {
 
- String get id; String get text; String? get display; List<String>? get tags; double get weight; int? get difficulty;
+ String get id; String get text; String? get display; String? get speech; List<String>? get tags; double get weight; int? get difficulty;
 /// Create a copy of LexiconWord
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2505,16 +2505,16 @@ $LexiconWordCopyWith<LexiconWord> get copyWith => _$LexiconWordCopyWithImpl<Lexi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LexiconWord&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.display, display) || other.display == display)&&const DeepCollectionEquality().equals(other.tags, tags)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LexiconWord&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.display, display) || other.display == display)&&(identical(other.speech, speech) || other.speech == speech)&&const DeepCollectionEquality().equals(other.tags, tags)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,display,const DeepCollectionEquality().hash(tags),weight,difficulty);
+int get hashCode => Object.hash(runtimeType,id,text,display,speech,const DeepCollectionEquality().hash(tags),weight,difficulty);
 
 @override
 String toString() {
-  return 'LexiconWord(id: $id, text: $text, display: $display, tags: $tags, weight: $weight, difficulty: $difficulty)';
+  return 'LexiconWord(id: $id, text: $text, display: $display, speech: $speech, tags: $tags, weight: $weight, difficulty: $difficulty)';
 }
 
 
@@ -2525,7 +2525,7 @@ abstract mixin class $LexiconWordCopyWith<$Res>  {
   factory $LexiconWordCopyWith(LexiconWord value, $Res Function(LexiconWord) _then) = _$LexiconWordCopyWithImpl;
 @useResult
 $Res call({
- String id, String text, String? display, List<String>? tags, double weight, int? difficulty
+ String id, String text, String? display, String? speech, List<String>? tags, double weight, int? difficulty
 });
 
 
@@ -2542,11 +2542,12 @@ class _$LexiconWordCopyWithImpl<$Res>
 
 /// Create a copy of LexiconWord
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? display = freezed,Object? tags = freezed,Object? weight = null,Object? difficulty = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? display = freezed,Object? speech = freezed,Object? tags = freezed,Object? weight = null,Object? difficulty = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,display: freezed == display ? _self.display : display // ignore: cast_nullable_to_non_nullable
+as String?,speech: freezed == speech ? _self.speech : speech // ignore: cast_nullable_to_non_nullable
 as String?,tags: freezed == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>?,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
@@ -2635,10 +2636,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String text,  String? display,  List<String>? tags,  double weight,  int? difficulty)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String text,  String? display,  String? speech,  List<String>? tags,  double weight,  int? difficulty)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LexiconWord() when $default != null:
-return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.difficulty);case _:
+return $default(_that.id,_that.text,_that.display,_that.speech,_that.tags,_that.weight,_that.difficulty);case _:
   return orElse();
 
 }
@@ -2656,10 +2657,10 @@ return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String text,  String? display,  List<String>? tags,  double weight,  int? difficulty)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String text,  String? display,  String? speech,  List<String>? tags,  double weight,  int? difficulty)  $default,) {final _that = this;
 switch (_that) {
 case _LexiconWord():
-return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.difficulty);case _:
+return $default(_that.id,_that.text,_that.display,_that.speech,_that.tags,_that.weight,_that.difficulty);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2676,10 +2677,10 @@ return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String text,  String? display,  List<String>? tags,  double weight,  int? difficulty)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String text,  String? display,  String? speech,  List<String>? tags,  double weight,  int? difficulty)?  $default,) {final _that = this;
 switch (_that) {
 case _LexiconWord() when $default != null:
-return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.difficulty);case _:
+return $default(_that.id,_that.text,_that.display,_that.speech,_that.tags,_that.weight,_that.difficulty);case _:
   return null;
 
 }
@@ -2691,12 +2692,13 @@ return $default(_that.id,_that.text,_that.display,_that.tags,_that.weight,_that.
 @JsonSerializable()
 
 class _LexiconWord implements LexiconWord {
-  const _LexiconWord({required this.id, required this.text, this.display, final  List<String>? tags, this.weight = 1.0, this.difficulty}): _tags = tags;
+  const _LexiconWord({required this.id, required this.text, this.display, this.speech, final  List<String>? tags, this.weight = 1.0, this.difficulty}): _tags = tags;
   factory _LexiconWord.fromJson(Map<String, dynamic> json) => _$LexiconWordFromJson(json);
 
 @override final  String id;
 @override final  String text;
 @override final  String? display;
+@override final  String? speech;
  final  List<String>? _tags;
 @override List<String>? get tags {
   final value = _tags;
@@ -2722,16 +2724,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LexiconWord&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.display, display) || other.display == display)&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LexiconWord&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.display, display) || other.display == display)&&(identical(other.speech, speech) || other.speech == speech)&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,display,const DeepCollectionEquality().hash(_tags),weight,difficulty);
+int get hashCode => Object.hash(runtimeType,id,text,display,speech,const DeepCollectionEquality().hash(_tags),weight,difficulty);
 
 @override
 String toString() {
-  return 'LexiconWord(id: $id, text: $text, display: $display, tags: $tags, weight: $weight, difficulty: $difficulty)';
+  return 'LexiconWord(id: $id, text: $text, display: $display, speech: $speech, tags: $tags, weight: $weight, difficulty: $difficulty)';
 }
 
 
@@ -2742,7 +2744,7 @@ abstract mixin class _$LexiconWordCopyWith<$Res> implements $LexiconWordCopyWith
   factory _$LexiconWordCopyWith(_LexiconWord value, $Res Function(_LexiconWord) _then) = __$LexiconWordCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String text, String? display, List<String>? tags, double weight, int? difficulty
+ String id, String text, String? display, String? speech, List<String>? tags, double weight, int? difficulty
 });
 
 
@@ -2759,11 +2761,12 @@ class __$LexiconWordCopyWithImpl<$Res>
 
 /// Create a copy of LexiconWord
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? display = freezed,Object? tags = freezed,Object? weight = null,Object? difficulty = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? display = freezed,Object? speech = freezed,Object? tags = freezed,Object? weight = null,Object? difficulty = freezed,}) {
   return _then(_LexiconWord(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,display: freezed == display ? _self.display : display // ignore: cast_nullable_to_non_nullable
+as String?,speech: freezed == speech ? _self.speech : speech // ignore: cast_nullable_to_non_nullable
 as String?,tags: freezed == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>?,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable

@@ -32,7 +32,7 @@ class WordHuntScreen extends ConsumerStatefulWidget {
 
 class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     with WidgetsBindingObserver {
-  bool _completedDialogWasShown = false;
+  Future<void>? _exitPersistFuture;
   late final PuzzleSpeechService _speechService;
   String? _speechConfigKey;
 
@@ -82,14 +82,22 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
   }
 
   Future<void> _prepareProgressForExit() async {
+    final inFlight = _exitPersistFuture;
+    if (inFlight != null) return inFlight;
+
+    final future = _persistAndRefreshSelection();
+    _exitPersistFuture = future;
+    await future;
+  }
+
+  Future<void> _persistAndRefreshSelection() async {
     final notifier = ref.read(
       wordHuntControllerProvider(widget.session).notifier,
     );
-    if (_completedDialogWasShown) {
-      await notifier.restartCompletedRun();
-      return;
-    }
     await notifier.persist();
+    ref.invalidate(puzzleHighScoreProvider);
+    ref.invalidate(puzzleCompletionProvider);
+    ref.invalidate(puzzleCompletionServiceProvider);
   }
 
   void _ensureSpeechConfigured(WordHuntState game) {
@@ -99,8 +107,24 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     unawaited(_speechService.configure(game.puzzle, game.variant));
   }
 
-  Future<void> _speakTarget(WordTarget target, SpeechSettings settings) async {
-    final word = target.display.isNotEmpty ? target.display : target.text;
+  String _displayWord(WordTarget target) {
+    return target.display.isNotEmpty ? target.display : target.text;
+  }
+
+  String _speechWord(WordTarget target) {
+    final speech = target.speech.trim();
+    if (speech.isNotEmpty) return speech;
+
+    final display = _displayWord(target).trim();
+    if (display.isNotEmpty) return display;
+    return target.text;
+  }
+
+  Future<void> _speakTargetFromList(
+    WordTarget target,
+    SpeechSettings settings,
+  ) async {
+    final word = _speechWord(target);
     if (word.trim().isEmpty) return;
 
     if (settings.mode == SpeechMode.spellingOnly) {
@@ -114,10 +138,16 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     );
   }
 
+  Future<void> _speakTargetFromFound(WordTarget target) async {
+    final word = _speechWord(target);
+    if (word.trim().isEmpty) return;
+    await _speechService.speakWord(word, spellAfter: false, forceWord: true);
+  }
+
   Future<void> _onWordListTap(WordHuntState game, WordTarget target) async {
     final settings = SpeechSettings.fromVariant(game.variant);
     if (!settings.enabled || !settings.allowsWordListTap) return;
-    await _speakTarget(target, settings);
+    await _speakTargetFromList(target, settings);
   }
 
   void _onWordFound(WordHuntState game, String wordId) {
@@ -126,7 +156,7 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
 
     final target = game.targets.where((t) => t.id == wordId).toList();
     if (target.isEmpty) return;
-    unawaited(_speakTarget(target.first, settings));
+    unawaited(_speakTargetFromFound(target.first));
   }
 
   Future<void> _confirmQuitToStart() async {
@@ -373,7 +403,6 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           if (nextStatus == WordHuntEndStatus.won) {
-            _completedDialogWasShown = true;
             _showCompletedDialog(nextGame);
             return;
           }

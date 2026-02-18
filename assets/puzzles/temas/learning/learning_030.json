@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "amigo",
-          "text": "AMIGO"
+          "text": "AMIGO",
+          "speech": "amigo"
         },
         {
           "id": "feliz",
-          "text": "FELIZ"
+          "text": "FELIZ",
+          "speech": "feliz"
         },
         {
           "id": "sorri",
-          "text": "SORRI"
+          "text": "SORRI",
+          "speech": "sorri"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

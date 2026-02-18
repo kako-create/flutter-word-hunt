@@ -25,15 +25,18 @@
       "words": [
         {
           "id": "praia",
-          "text": "PRAIA"
+          "text": "PRAIA",
+          "speech": "praia"
         },
         {
           "id": "areia",
-          "text": "AREIA"
+          "text": "AREIA",
+          "speech": "areia"
         },
         {
           "id": "mar",
-          "text": "MAR"
+          "text": "MAR",
+          "speech": "mar"
         }
       ]
     },
@@ -65,7 +68,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +110,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }

@@ -229,12 +229,19 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       );
 
       final progressRepo = ref.read(progressRepositoryProvider);
-      await progressRepo.clearProgress(loaded.session);
+      final previousSaved = await progressRepo.loadProgress(loaded.session);
+      final preservedBestScore = _bestScoreFromSaved(previousSaved);
+      final reset = WordHuntSavedProgress.empty(loaded.session).copyWith(
+        completedAtEpochMs: previousSaved.completedAtEpochMs,
+        bestScore: preservedBestScore,
+        lastSavedAtEpochMs: DateTime.now().millisecondsSinceEpoch,
+      );
+      await progressRepo.saveProgress(reset);
       await progressRepo.saveLastSession(loaded.session);
 
       final prepared = await _prepareSubsetRunProgress(
         loaded: loaded,
-        saved: WordHuntSavedProgress.empty(loaded.session),
+        saved: reset,
         progressRepo: progressRepo,
         previousSubsetSeed: previousSubsetSeed,
       );
@@ -287,20 +294,8 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
   }
 
   Future<void> restartCompletedRun() async {
-    final current = state.asData?.value;
-    if (current == null) return;
-    if (current.endStatus != WordHuntEndStatus.won) return;
-
-    final progressRepo = ref.read(progressRepositoryProvider);
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final reset = WordHuntSavedProgress.empty(current.session).copyWith(
-      completedAtEpochMs: current.completedAtEpochMs ?? now,
-      bestScore: current.bestScore,
-      lastSavedAtEpochMs: now,
-    );
-
-    await progressRepo.saveProgress(reset);
-    await progressRepo.saveLastSession(current.session);
+    // Mantido por compatibilidade: reinicio de run nao deve apagar progresso.
+    await persist();
   }
 
   void commitSelectionPath(List<CellCoord> path) {
@@ -1191,6 +1186,7 @@ _ResolvedTargets _resolveTargets({
     if (w == null) continue;
 
     final display = w.display ?? w.text;
+    final speech = w.speech ?? display;
     final normalized = PuzzleTextNormalizerV1.normalizeForCompare(
       w.text,
       normalize,
@@ -1201,6 +1197,7 @@ _ResolvedTargets _resolveTargets({
         id: w.id,
         text: w.text,
         display: display,
+        speech: speech,
         normalized: normalized,
       ),
     );

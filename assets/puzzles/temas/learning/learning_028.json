@@ -25,15 +25,19 @@
       "words": [
         {
           "id": "jogo",
-          "text": "JOGO"
+          "text": "JOGO",
+          "speech": "jogo"
         },
         {
           "id": "nivel",
-          "text": "NIVEL"
+          "text": "NIVEL",
+          "display": "NÍVEL",
+          "speech": "nível"
         },
         {
           "id": "ponto",
-          "text": "PONTO"
+          "text": "PONTO",
+          "speech": "ponto"
         }
       ]
     },
@@ -65,7 +69,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     },
@@ -107,7 +111,7 @@
           "pitch": 1.0,
           "volume": 1.0,
           "debounceMs": 250,
-          "debounceBehavior": "restart"
+          "debounceBehavior": "ignore"
         }
       }
     }
