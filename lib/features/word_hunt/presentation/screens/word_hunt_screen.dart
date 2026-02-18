@@ -9,7 +9,11 @@ import '../../../../core/constants/ui_constants.dart';
 import '../../../../core/i18n/app_strings_pt_br.dart';
 import '../../../../features/content_catalog_v1/presentation/screens/catalog_route_args.dart';
 import '../../../../features/content_catalog_v1/presentation/state/content_catalog_providers.dart';
+import '../../di/puzzle_speech_providers.dart';
+import '../../domain/entities/word_target.dart';
 import '../../domain/services/next_word_hunt_session_resolver.dart';
+import '../../domain/services/speech/puzzle_speech_service.dart';
+import '../../domain/services/speech/speech_settings.dart';
 import '../../domain/entities/word_hunt_run_status.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../state/word_hunt_controller.dart';
@@ -29,16 +33,22 @@ class WordHuntScreen extends ConsumerStatefulWidget {
 class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     with WidgetsBindingObserver {
   bool _completedDialogWasShown = false;
+  late final PuzzleSpeechService _speechService;
+  String? _speechConfigKey;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final createSpeechService = ref.read(puzzleSpeechServiceFactoryProvider);
+    _speechService = createSpeechService();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    unawaited(_speechService.stop());
+    _speechService.dispose();
     unawaited(_prepareProgressForExit());
     super.dispose();
   }
@@ -54,6 +64,7 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       notifier.pauseRun();
+      unawaited(_speechService.stop());
       _persist();
       return;
     }
@@ -79,6 +90,43 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
       return;
     }
     await notifier.persist();
+  }
+
+  void _ensureSpeechConfigured(WordHuntState game) {
+    final key = '${game.puzzle.id}::${game.variant.id}';
+    if (_speechConfigKey == key) return;
+    _speechConfigKey = key;
+    unawaited(_speechService.configure(game.puzzle, game.variant));
+  }
+
+  Future<void> _speakTarget(WordTarget target, SpeechSettings settings) async {
+    final word = target.display.isNotEmpty ? target.display : target.text;
+    if (word.trim().isEmpty) return;
+
+    if (settings.mode == SpeechMode.spellingOnly) {
+      await _speechService.speakSpelling(word);
+      return;
+    }
+
+    await _speechService.speakWord(
+      word,
+      spellAfter: settings.mode == SpeechMode.wordThenSpelling,
+    );
+  }
+
+  Future<void> _onWordListTap(WordHuntState game, WordTarget target) async {
+    final settings = SpeechSettings.fromVariant(game.variant);
+    if (!settings.enabled || !settings.allowsWordListTap) return;
+    await _speakTarget(target, settings);
+  }
+
+  void _onWordFound(WordHuntState game, String wordId) {
+    final settings = SpeechSettings.fromVariant(game.variant);
+    if (!settings.enabled || !settings.allowsWordFound) return;
+
+    final target = game.targets.where((t) => t.id == wordId).toList();
+    if (target.isEmpty) return;
+    unawaited(_speakTarget(target.first, settings));
   }
 
   Future<void> _confirmQuitToStart() async {
@@ -304,10 +352,20 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
     final provider = wordHuntControllerProvider(widget.session);
 
     ref.listen<AsyncValue<WordHuntState>>(provider, (prev, next) {
+      final prevGame = prev?.asData?.value;
       final prevStatus =
           prev?.asData?.value.endStatus ?? WordHuntEndStatus.running;
       final nextGame = next.asData?.value;
       if (nextGame == null) return;
+
+      if (prevGame != null) {
+        final newWordIds = nextGame.foundWordIds.difference(
+          prevGame.foundWordIds,
+        );
+        if (newWordIds.isNotEmpty) {
+          _onWordFound(nextGame, newWordIds.first);
+        }
+      }
 
       final nextStatus = nextGame.endStatus;
       if (prevStatus == WordHuntEndStatus.running &&
@@ -368,6 +426,7 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
         ),
       ),
       data: (game) {
+        _ensureSpeechConfigured(game);
         final controller = ref.read(provider.notifier);
 
         final puzzleTitle = game.puzzle.title.resolve(
@@ -468,6 +527,8 @@ class _WordHuntScreenState extends ConsumerState<WordHuntScreen>
                                 targets: game.targets,
                                 foundWordColorsById: game.foundWordColorsById,
                                 nextOrderedWordId: game.nextOrderedWordId,
+                                onWordTap: (target) =>
+                                    _onWordListTap(game, target),
                               )
                             : const Center(
                                 child: Text(AppStringsPtBr.wordListHidden),

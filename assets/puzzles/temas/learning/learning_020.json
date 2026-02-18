@@ -52,6 +52,21 @@
       },
       "rules": {
         "allowedDirsPreset": "orthogonal"
+      },
+      "extensions": {
+        "speech": {
+          "enabled": true,
+          "mode": "word_then_spelling",
+          "trigger": "both",
+          "spellMode": "letters_only",
+          "wordPauseMs": 700,
+          "letterPauseMs": 550,
+          "rate": 0.4,
+          "pitch": 1.0,
+          "volume": 1.0,
+          "debounceMs": 250,
+          "debounceBehavior": "restart"
+        }
       }
     },
     {
@@ -79,6 +94,21 @@
             "type": "find_in_order"
           }
         ]
+      },
+      "extensions": {
+        "speech": {
+          "enabled": true,
+          "mode": "word_then_spelling",
+          "trigger": "both",
+          "spellMode": "letters_only",
+          "wordPauseMs": 700,
+          "letterPauseMs": 550,
+          "rate": 0.4,
+          "pitch": 1.0,
+          "volume": 1.0,
+          "debounceMs": 250,
+          "debounceBehavior": "restart"
+        }
       }
     }
   ]

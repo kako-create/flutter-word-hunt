@@ -7,12 +7,14 @@ class WordList extends StatelessWidget {
   final List<WordTarget> targets;
   final Map<String, int> foundWordColorsById;
   final String? nextOrderedWordId;
+  final ValueChanged<WordTarget>? onWordTap;
 
   const WordList({
     super.key,
     required this.targets,
     required this.foundWordColorsById,
     this.nextOrderedWordId,
+    this.onWordTap,
   });
 
   @override
@@ -29,8 +31,10 @@ class WordList extends StatelessWidget {
               word: target.display,
               colorValue: foundWordColorsById[target.id],
               defaultColor: colorScheme.surfaceContainerHighest,
-              isNext: nextOrderedWordId != null && nextOrderedWordId == target.id,
+              isNext:
+                  nextOrderedWordId != null && nextOrderedWordId == target.id,
               nextColor: colorScheme.primary,
+              onTap: () => onWordTap?.call(target),
             ),
         ],
       ),
@@ -44,6 +48,7 @@ class _WordChip extends StatelessWidget {
   final Color defaultColor;
   final bool isNext;
   final Color nextColor;
+  final VoidCallback? onTap;
 
   const _WordChip({
     required this.word,
@@ -51,6 +56,7 @@ class _WordChip extends StatelessWidget {
     required this.defaultColor,
     required this.isNext,
     required this.nextColor,
+    this.onTap,
   });
 
   @override
@@ -63,24 +69,33 @@ class _WordChip extends StatelessWidget {
         : defaultColor;
 
     final sideColor = isFound
-        ? baseColor!.withAlpha((AppUiConstants.foundBorderOpacity * 255).round())
+        ? baseColor!.withAlpha(
+            (AppUiConstants.foundBorderOpacity * 255).round(),
+          )
         : (isNext ? nextColor : Colors.transparent);
 
-    return Chip(
-      backgroundColor: backgroundColor,
-      avatar: isNext && !isFound
-          ? Icon(Icons.play_arrow, size: 18, color: nextColor)
-          : null,
-      label: Text(
-        word,
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          decoration: isFound ? TextDecoration.lineThrough : null,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Chip(
+          backgroundColor: backgroundColor,
+          avatar: isNext && !isFound
+              ? Icon(Icons.play_arrow, size: 18, color: nextColor)
+              : null,
+          label: Text(
+            word,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              decoration: isFound ? TextDecoration.lineThrough : null,
+            ),
+          ),
+          side: BorderSide(
+            color: sideColor,
+            width: (isFound || isNext) ? 1 : 0,
+          ),
         ),
-      ),
-      side: BorderSide(
-        color: sideColor,
-        width: (isFound || isNext) ? 1 : 0,
       ),
     );
   }
