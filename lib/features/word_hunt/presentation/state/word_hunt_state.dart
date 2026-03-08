@@ -2,12 +2,16 @@ import '../../domain/entities/found_word_span.dart';
 import '../../domain/entities/word_target.dart';
 import '../../domain/entities/word_hunt_run_status.dart';
 import '../../domain/entities/word_hunt_session.dart';
+import '../../domain/game_modes/puzzle_game_mode.dart';
+import '../../domain/game_modes/spell_drag/spell_drag_session_state.dart';
+import '../../domain/game_modes/spell_tap/spell_tap_session_state.dart';
 import '../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
 
 class WordHuntState {
   final WordHuntSession session;
   final PuzzleV1 puzzle;
   final PuzzleVariant variant;
+  final PuzzleGameMode gameMode;
   final NormalizeConfig normalize;
 
   /// Lista de linhas. Cada linha tem exatamente `cols` caracteres.
@@ -23,6 +27,9 @@ class WordHuntState {
   /// Apenas para modo ordered.
   final List<String>? orderedWordIds;
   final int orderedNextIndex;
+  final String? listenFindTargetWordId;
+  final SpellTapSessionState? spellTap;
+  final SpellDragSessionState? spellDrag;
 
   /// Cor (ARGB int) por palavra encontrada (wordId).
   final Map<String, int> foundWordColorsById;
@@ -60,6 +67,7 @@ class WordHuntState {
     required this.session,
     required this.puzzle,
     required this.variant,
+    required this.gameMode,
     required this.normalize,
     required List<String> grid,
     required List<WordTarget> targets,
@@ -67,6 +75,9 @@ class WordHuntState {
     required Map<String, List<String>> targetWordIdsByNormalizedText,
     required this.orderedWordIds,
     required this.orderedNextIndex,
+    required this.listenFindTargetWordId,
+    required this.spellTap,
+    required this.spellDrag,
     required Map<String, int> foundWordColorsById,
     required Map<String, FoundWordSpan> foundWordSpansById,
     required Map<int, int> foundCellColorsByIndex,
@@ -107,6 +118,9 @@ class WordHuntState {
 
   bool get isCompleted => foundWordIds.containsAll(targetWordIds);
   bool get isRunFinished => endStatus != WordHuntEndStatus.running;
+  bool get isSpellTapMode => gameMode.isSpellTap;
+  bool get isSpellDragMode => gameMode.isSpellDrag;
+  bool get isPedagogicalSpellMode => isSpellTapMode || isSpellDragMode;
 
   int get remainingCount {
     final foundTargetCount = foundWordIds.intersection(targetWordIds).length;
@@ -123,6 +137,9 @@ class WordHuntState {
 
   WordHuntState copyWith({
     int? orderedNextIndex,
+    Object? listenFindTargetWordId = _unset,
+    Object? spellTap = _unset,
+    Object? spellDrag = _unset,
     Map<String, int>? foundWordColorsById,
     Map<String, FoundWordSpan>? foundWordSpansById,
     Map<int, int>? foundCellColorsByIndex,
@@ -147,6 +164,7 @@ class WordHuntState {
       session: session,
       puzzle: puzzle,
       variant: variant,
+      gameMode: gameMode,
       normalize: normalize,
       grid: grid,
       targets: targets,
@@ -154,6 +172,15 @@ class WordHuntState {
       targetWordIdsByNormalizedText: targetWordIdsByNormalizedText,
       orderedWordIds: orderedWordIds,
       orderedNextIndex: orderedNextIndex ?? this.orderedNextIndex,
+      listenFindTargetWordId: identical(listenFindTargetWordId, _unset)
+          ? this.listenFindTargetWordId
+          : listenFindTargetWordId as String?,
+      spellTap: identical(spellTap, _unset)
+          ? this.spellTap
+          : spellTap as SpellTapSessionState?,
+      spellDrag: identical(spellDrag, _unset)
+          ? this.spellDrag
+          : spellDrag as SpellDragSessionState?,
       foundWordColorsById: foundWordColorsById ?? this.foundWordColorsById,
       foundWordSpansById: foundWordSpansById ?? this.foundWordSpansById,
       foundCellColorsByIndex:

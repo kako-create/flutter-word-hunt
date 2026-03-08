@@ -1,4 +1,5 @@
 import '../../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
+import '../variant_extension_reader.dart';
 
 enum SpeechMode { wordOnly, spellingOnly, wordThenSpelling }
 
@@ -53,21 +54,21 @@ class SpeechSettings {
   }
 
   factory SpeechSettings.fromExtensions(JsonMap? extensions) {
-    final root = _asMap(extensions);
-    final speech = _asMap(root?['speech']);
+    final speech = VariantExtensionReader.fromExtensions(extensions).nested(
+      'speech',
+    );
 
     if (speech == null) {
       return const SpeechSettings();
     }
 
-    final enabled = _asBool(speech['enabled']) ?? defaultEnabled;
-    final mode = _parseMode(_asString(speech['mode'])) ?? defaultMode;
-    final trigger =
-        _parseTrigger(_asString(speech['trigger'])) ?? defaultTrigger;
+    final enabled = speech.boolValue('enabled') ?? defaultEnabled;
+    final mode = _parseMode(speech.string('mode')) ?? defaultMode;
+    final trigger = _parseTrigger(speech.string('trigger')) ?? defaultTrigger;
     final spellMode =
-        _parseSpellMode(_asString(speech['spellMode'])) ?? defaultSpellMode;
+        _parseSpellMode(speech.string('spellMode')) ?? defaultSpellMode;
     final debounceBehavior =
-        _parseDebounceBehavior(_asString(speech['debounceBehavior'])) ??
+        _parseDebounceBehavior(speech.string('debounceBehavior')) ??
         defaultDebounceBehavior;
 
     return SpeechSettings(
@@ -77,29 +78,29 @@ class SpeechSettings {
       spellMode: spellMode,
       debounceBehavior: debounceBehavior,
       wordPauseMs: _clampInt(
-        _asInt(speech['wordPauseMs']) ?? defaultWordPauseMs,
+        speech.intValue('wordPauseMs') ?? defaultWordPauseMs,
         min: 0,
       ),
       letterPauseMs: _clampInt(
-        _asInt(speech['letterPauseMs']) ?? defaultLetterPauseMs,
+        speech.intValue('letterPauseMs') ?? defaultLetterPauseMs,
         min: 0,
       ),
       debounceMs: _clampInt(
-        _asInt(speech['debounceMs']) ?? defaultDebounceMs,
+        speech.intValue('debounceMs') ?? defaultDebounceMs,
         min: 0,
       ),
       rate: _clampDouble(
-        _asDouble(speech['rate']) ?? defaultRate,
+        speech.doubleValue('rate') ?? defaultRate,
         min: 0.1,
         max: 1.0,
       ),
       pitch: _clampDouble(
-        _asDouble(speech['pitch']) ?? defaultPitch,
+        speech.doubleValue('pitch') ?? defaultPitch,
         min: 0.5,
         max: 2.0,
       ),
       volume: _clampDouble(
-        _asDouble(speech['volume']) ?? defaultVolume,
+        speech.doubleValue('volume') ?? defaultVolume,
         min: 0.0,
         max: 1.0,
       ),
@@ -114,51 +115,6 @@ class SpeechSettings {
 
   bool get allowsWordFound =>
       trigger == SpeechTrigger.wordFound || trigger == SpeechTrigger.both;
-
-  static Map<String, Object?>? _asMap(Object? raw) {
-    if (raw is! Map) return null;
-    final out = <String, Object?>{};
-    for (final entry in raw.entries) {
-      final key = entry.key;
-      if (key is! String) return null;
-      out[key] = entry.value;
-    }
-    return out;
-  }
-
-  static String? _asString(Object? raw) {
-    if (raw is String) {
-      final value = raw.trim();
-      return value.isEmpty ? null : value;
-    }
-    return null;
-  }
-
-  static bool? _asBool(Object? raw) {
-    if (raw is bool) return raw;
-    if (raw is num) return raw != 0;
-    if (raw is String) {
-      final value = raw.trim().toLowerCase();
-      if (value == 'true' || value == '1') return true;
-      if (value == 'false' || value == '0') return false;
-    }
-    return null;
-  }
-
-  static int? _asInt(Object? raw) {
-    if (raw is int) return raw;
-    if (raw is num) return raw.round();
-    if (raw is String) return int.tryParse(raw.trim());
-    return null;
-  }
-
-  static double? _asDouble(Object? raw) {
-    if (raw is double) return raw;
-    if (raw is num) return raw.toDouble();
-    if (raw is String) return double.tryParse(raw.trim());
-    return null;
-  }
-
   static SpeechMode? _parseMode(String? raw) {
     switch (raw) {
       case 'word_only':

@@ -1,0 +1,121 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "infantil_listen_find_019",
+  "title": {
+    "pt-BR": "Infantil Ouça e Encontre 019"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "SONHO",
+          "RISOY",
+          "AMIGO",
+          "OIUYT",
+          "ZXCVB"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "sonho",
+          "text": "SONHO",
+          "speech": "sonho"
+        },
+        {
+          "id": "riso",
+          "text": "RISO",
+          "speech": "riso"
+        },
+        {
+          "id": "amigo",
+          "text": "AMIGO",
+          "speech": "amigo"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    },
+    "meta": {
+      "theme": {
+        "id": "infantil",
+        "title": {
+          "pt-BR": "Infantil"
+        },
+        "icon": "child_care"
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "ordered_listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "sonho",
+            "riso",
+            "amigo"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    }
+  ]
+}

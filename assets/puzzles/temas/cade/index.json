@@ -1,0 +1,16 @@
+{
+  "schema": "wordsearch.catalog@1",
+  "id": "cade_5x5",
+  "contentVersion": 1,
+  "title": { "pt-BR": "Cadê?" },
+  "ui": { "layout": "chapter_grid", "showProgress": true, "gridColumns": 5 },
+  "progression": { "mode": "sequential", "clearThresholdPct": 100 },
+  "items": [
+    { "kind": "puzzle", "id": "p1", "puzzleId": "infantil_listen_find_032", "variantId": "spell_tap" },
+    { "kind": "puzzle", "id": "p2", "puzzleId": "infantil_listen_find_033", "variantId": "spell_tap" },
+    { "kind": "puzzle", "id": "p3", "puzzleId": "infantil_listen_find_034", "variantId": "spell_tap" },
+    { "kind": "puzzle", "id": "p4", "puzzleId": "infantil_listen_find_035", "variantId": "spell_tap" },
+    { "kind": "puzzle", "id": "p5", "puzzleId": "infantil_listen_find_036", "variantId": "spell_tap" },
+    { "kind": "puzzle", "id": "p6", "puzzleId": "infantil_listen_find_037", "variantId": "spell_tap" }
+  ]
+}

@@ -3,13 +3,54 @@ import 'access_rule_v1.dart';
 import 'catalog_ui_v1.dart';
 import 'unlock_rule_v1.dart';
 
-enum CatalogItemKindV1 {
-  folder,
-  puzzle,
-  campaign,
-  section,
-  divider,
-  unknown,
+enum CatalogItemKindV1 { folder, puzzle, campaign, section, divider, unknown }
+
+class CatalogEducationExtensionV1 {
+  final String trackId;
+  final int? order;
+  final int minCompleted;
+  final bool hasMinCompleted;
+
+  const CatalogEducationExtensionV1({
+    required this.trackId,
+    required this.order,
+    required this.minCompleted,
+    required this.hasMinCompleted,
+  });
+
+  int? get minCompletedOrNull => hasMinCompleted ? minCompleted : null;
+
+  static CatalogEducationExtensionV1? fromExtensionsJson(Object? raw) {
+    if (raw is! Map) return null;
+
+    final educationRaw = raw['education'];
+    if (educationRaw is! Map) return null;
+
+    final trackIdRaw = educationRaw['trackId'];
+    final trackId = trackIdRaw is String ? trackIdRaw.trim() : '';
+    if (trackId.isEmpty) return null;
+
+    final order = _parseIntOrNull(educationRaw['order']);
+
+    final minCompletedRaw = educationRaw['minCompleted'];
+    final minCompletedParsed = _parseIntOrNull(minCompletedRaw);
+    final normalizedMinCompleted = minCompletedParsed == null
+        ? 0
+        : (minCompletedParsed < 0 ? 0 : minCompletedParsed);
+
+    return CatalogEducationExtensionV1(
+      trackId: trackId,
+      order: order,
+      minCompleted: normalizedMinCompleted,
+      hasMinCompleted: minCompletedParsed != null,
+    );
+  }
+
+  static int? _parseIntOrNull(Object? raw) {
+    if (raw is int) return raw;
+    if (raw is num) return raw.round();
+    return null;
+  }
 }
 
 CatalogItemKindV1 parseCatalogItemKind(Object? raw) {
@@ -76,6 +117,9 @@ sealed class CatalogItemV1 {
           unlock: unlock,
           access: access,
           ref: raw['ref'] is String ? (raw['ref'] as String) : '',
+          education: CatalogEducationExtensionV1.fromExtensionsJson(
+            raw['extensions'],
+          ),
         );
       case CatalogItemKindV1.puzzle:
         return CatalogPuzzleItemV1(
@@ -85,9 +129,12 @@ sealed class CatalogItemV1 {
           ui: ui,
           unlock: unlock,
           access: access,
-          puzzleId: raw['puzzleId'] is String ? (raw['puzzleId'] as String) : '',
-          variantId:
-              raw['variantId'] is String ? (raw['variantId'] as String) : '',
+          puzzleId: raw['puzzleId'] is String
+              ? (raw['puzzleId'] as String)
+              : '',
+          variantId: raw['variantId'] is String
+              ? (raw['variantId'] as String)
+              : '',
         );
       case CatalogItemKindV1.campaign:
         return CatalogCampaignItemV1(
@@ -138,6 +185,7 @@ sealed class CatalogItemV1 {
 
 final class CatalogFolderItemV1 extends CatalogItemV1 {
   final String ref;
+  final CatalogEducationExtensionV1? education;
 
   const CatalogFolderItemV1({
     required super.id,
@@ -147,6 +195,7 @@ final class CatalogFolderItemV1 extends CatalogItemV1 {
     required super.unlock,
     required super.access,
     required this.ref,
+    this.education,
   }) : super(kind: CatalogItemKindV1.folder);
 }
 
@@ -208,16 +257,13 @@ final class CatalogDividerItemV1 extends CatalogItemV1 {
 final class CatalogUnknownItemV1 extends CatalogItemV1 {
   final String rawKind;
 
-  const CatalogUnknownItemV1({
-    required super.id,
-    required this.rawKind,
-  }) : super(
-          kind: CatalogItemKindV1.unknown,
-          title: null,
-          subtitle: null,
-          ui: null,
-          unlock: const UnlockAlwaysV1(),
-          access: const AccessRuleV1(type: 'unknown'),
-        );
+  const CatalogUnknownItemV1({required super.id, required this.rawKind})
+    : super(
+        kind: CatalogItemKindV1.unknown,
+        title: null,
+        subtitle: null,
+        ui: null,
+        unlock: const UnlockAlwaysV1(),
+        access: const AccessRuleV1(type: 'unknown'),
+      );
 }
-

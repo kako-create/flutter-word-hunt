@@ -1,0 +1,190 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "infantil_listen_find_033",
+  "title": {
+    "pt-BR": "Infantil Ouça e Encontre 033"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "COBRA",
+          "GALOW",
+          "RATOV",
+          "QWERT",
+          "YUIOP"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "cobra",
+          "text": "COBRA",
+          "speech": "cobra"
+        },
+        {
+          "id": "galo",
+          "text": "GALO",
+          "speech": "galo"
+        },
+        {
+          "id": "rato",
+          "text": "RATO",
+          "speech": "rato"
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "cobra",
+          "start": { "r": 0, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 5
+        },
+        {
+          "wordId": "galo",
+          "start": { "r": 1, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 4
+        },
+        {
+          "wordId": "rato",
+          "start": { "r": 2, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 4
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "infantil",
+        "title": {
+          "pt-BR": "Infantil"
+        },
+        "icon": "child_care"
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "ordered_listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "cobra",
+            "galo",
+            "rato"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "spell_tap",
+      "title": {
+        "pt-BR": "Monte a Palavra"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "cobra",
+            "galo",
+            "rato"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false,
+        "showRemainingCount": true,
+        "showMistakes": true,
+        "showHints": true
+      },
+      "extensions": {
+        "gameMode": "spell_tap",
+        "assistLevel": "adaptive",
+        "speakFullWordFirst": true,
+        "autoSpeakLetter": false,
+        "repeatWordAfterMistakes": 2,
+        "speakLetterAfterMistakes": 3,
+        "visualHintAfterMistakes": 4,
+        "highlightCorrectCell": false,
+        "showWordAsSlots": true,
+        "allowHintButtons": true,
+        "strikeWordProgress": true,
+        "requireExactCellSequence": true,
+        "repeatFullWordOnComplete": true,
+        "feedbackLockMs": 420
+      }
+    }
+  ]
+}

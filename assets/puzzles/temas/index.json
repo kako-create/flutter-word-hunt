@@ -1,37 +1,64 @@
 {
   "schema": "wordsearch.catalog@1",
-  "id": "root",
+  "id": "primeiros_passos_root",
   "contentVersion": 1,
-  "title": { "pt-BR": "Temas" },
+  "title": { "pt-BR": "Primeiros Passos" },
   "ui": { "layout": "chapters", "showProgress": true },
   "items": [
     {
       "kind": "folder",
-      "id": "starter",
-      "title": { "pt-BR": "Starter" },
-      "ref": "starter/index.json",
-      "ui": { "layout": "chapter_grid", "showProgress": true }
-    },
-    {
-      "kind": "folder",
-      "id": "learning",
-      "title": { "pt-BR": "Primeiros Passos" },
+      "id": "learning_classic_5x5",
+      "title": { "pt-BR": "5x5 Clássico" },
       "ref": "learning/index.json",
-      "ui": { "layout": "chapter_grid", "showProgress": true }
+      "ui": { "layout": "chapter_grid", "showProgress": true },
+      "extensions": {
+        "education": {
+          "trackId": "kids_learning_5x5",
+          "order": 1,
+          "minCompleted": 0
+        }
+      }
     },
     {
       "kind": "folder",
-      "id": "standard",
-      "title": { "pt-BR": "Standard" },
-      "ref": "standard/index.json",
-      "ui": { "layout": "list", "showProgress": true }
+      "id": "learning_ordered_5x5",
+      "title": { "pt-BR": "5x5 Em ordem" },
+      "ref": "learning/ordered/index.json",
+      "ui": { "layout": "chapter_grid", "showProgress": true },
+      "extensions": {
+        "education": {
+          "trackId": "kids_learning_5x5",
+          "order": 2
+        }
+      }
     },
     {
       "kind": "folder",
-      "id": "lib",
-      "title": { "pt-BR": "Biblioteca" },
-      "ref": "lib/index.json",
-      "ui": { "layout": "grid", "showProgress": true, "gridColumns": 2 }
+      "id": "infantil_listen_find_5x5",
+      "title": { "pt-BR": "5x5 Ouça e Encontre" },
+      "ref": "infantil_listen_find/index.json",
+      "ui": { "layout": "chapter_grid", "showProgress": true },
+      "extensions": {
+        "education": {
+          "trackId": "kids_learning_5x5",
+          "order": 3,
+          "minCompleted": 0
+        }
+      }
+    },
+    {
+      "kind": "folder",
+      "id": "cade_5x5",
+      "title": { "pt-BR": "Cadê?" },
+      "ref": "cade/index.json",
+      "ui": { "layout": "chapter_grid", "showProgress": true },
+      "extensions": {
+        "education": {
+          "trackId": "kids_learning_5x5",
+          "order": 4,
+          "minCompleted": 0
+        }
+      }
     }
   ]
 }

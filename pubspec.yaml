@@ -41,10 +41,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/puzzles/
-    # Flutter nao inclui assets de subpastas automaticamente ao declarar apenas o diretorio pai.
-    # Como os puzzles foram organizados em subpastas, precisamos lista-las aqui.
     - assets/puzzles/temas/
-    - assets/puzzles/temas/starter/
+    - assets/puzzles/temas/cade/
     - assets/puzzles/temas/learning/
-    - assets/puzzles/temas/standard/
-    - assets/puzzles/temas/lib/
+    - assets/puzzles/temas/learning/ordered/
+    - assets/puzzles/temas/infantil_listen_find/

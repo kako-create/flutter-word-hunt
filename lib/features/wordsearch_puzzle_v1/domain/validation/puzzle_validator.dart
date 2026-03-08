@@ -105,9 +105,11 @@ class PuzzleValidator {
     final normalizedAlphabet =
         PuzzleTextNormalizerV1.normalizeForCompare(board.alphabet, normalize);
     final alphabetSet = normalizedAlphabet.split('').toSet();
+    List<String>? staticGrid;
 
     board.source.when(
       staticGrid: (grid) {
+        staticGrid = grid;
         if (grid.length != board.rows) {
           add(
             'content.board.source.grid',
@@ -299,6 +301,15 @@ class PuzzleValidator {
       }
 
       _validateVariantMode(add, v, index: i, wordById: wordById, groupIds: groupIds);
+      _validateVariantGameMode(
+        add,
+        variant: v,
+        index: i,
+        solution: content.solution,
+        words: lexicon.words,
+        grid: staticGrid,
+        normalize: normalize,
+      );
       _validateVariantRules(add, v, index: i);
       _validateVariantModifiers(add, v, index: i, boardRows: board.rows, boardCols: board.cols, wordById: wordById);
     }
@@ -459,6 +470,150 @@ class PuzzleValidator {
         PuzzleValidationCode.invalidValue,
         'maxLen deve ser >= minLen.',
       );
+    }
+  }
+
+  static void _validateVariantGameMode(
+    void Function(String, PuzzleValidationCode, String) add, {
+    required PuzzleVariant variant,
+    required int index,
+    required PuzzleSolution solution,
+    required List<LexiconWord> words,
+    required List<String>? grid,
+    required NormalizeConfig normalize,
+  }) {
+    final extensions = variant.extensions;
+    final rawGameMode = _readString(extensions, 'gameMode');
+    if (rawGameMode == null) return;
+
+    final base = 'variants[$index].extensions.gameMode';
+    if (rawGameMode != 'spell_tap' && rawGameMode != 'spell_drag') {
+      add(
+        base,
+        PuzzleValidationCode.invalidValue,
+        'extensions.gameMode="$rawGameMode" nao e suportado.',
+      );
+      return;
+    }
+
+    if (rawGameMode == 'spell_drag') {
+      if (variant.mode is! VariantModeOrdered) {
+        add(
+          base,
+          PuzzleValidationCode.invalidValue,
+          'spell_drag exige mode.type="ordered".',
+        );
+        return;
+      }
+
+      if (grid == null || grid.isEmpty) {
+        add(
+          base,
+          PuzzleValidationCode.invalidValue,
+          'spell_drag exige board.source.type="static".',
+        );
+        return;
+      }
+
+      final boardLetterCounts = <String, int>{};
+      for (final row in grid) {
+        for (final rawChar in row.split('')) {
+          final normalizedChar = PuzzleTextNormalizerV1.normalizeChar(
+            rawChar,
+            normalize,
+          );
+          if (normalizedChar.length != 1) continue;
+          boardLetterCounts.update(
+            normalizedChar,
+            (value) => value + 1,
+            ifAbsent: () => 1,
+          );
+        }
+      }
+
+      final wordsById = <String, LexiconWord>{for (final word in words) word.id: word};
+      for (final wordId in _resolveSpellTapVariantWordIds(variant.mode, words)) {
+        final word = wordsById[wordId];
+        if (word == null) continue;
+
+        final neededCounts = <String, int>{};
+        final normalizedWord = PuzzleTextNormalizerV1.normalizeForCompare(
+          word.text,
+          normalize,
+        );
+        for (final letter in normalizedWord.split('')) {
+          neededCounts.update(letter, (value) => value + 1, ifAbsent: () => 1);
+        }
+
+        for (final entry in neededCounts.entries) {
+          final available = boardLetterCounts[entry.key] ?? 0;
+          if (available >= entry.value) continue;
+          add(
+            base,
+            PuzzleValidationCode.invalidValue,
+            'spell_drag exige ${entry.value} ocorrencias de "${entry.key}" '
+            'para wordId "$wordId", mas o grid tem $available.',
+          );
+        }
+      }
+      return;
+    }
+
+    final requireExact = _readBool(extensions, 'requireExactCellSequence');
+    if (requireExact == false) {
+      add(
+        'variants[$index].extensions.requireExactCellSequence',
+        PuzzleValidationCode.invalidValue,
+        'spell_tap exige requireExactCellSequence=true.',
+      );
+    }
+
+    if (variant.mode is! VariantModeOrdered) {
+      add(
+        base,
+        PuzzleValidationCode.invalidValue,
+        'spell_tap exige mode.type="ordered".',
+      );
+      return;
+    }
+
+    final placements = solution.maybeWhen(
+      placements: (placements) => placements,
+      orElse: () => null,
+    );
+    if (placements == null || placements.isEmpty) {
+      add(
+        base,
+        PuzzleValidationCode.missingRequired,
+        'spell_tap exige content.solution.type="placements".',
+      );
+      return;
+    }
+
+    final placementsByWordId = <String, int>{};
+    for (final placement in placements) {
+      placementsByWordId.update(
+        placement.wordId,
+        (value) => value + 1,
+        ifAbsent: () => 1,
+      );
+    }
+
+    for (final wordId in _resolveSpellTapVariantWordIds(variant.mode, words)) {
+      final count = placementsByWordId[wordId] ?? 0;
+      if (count == 0) {
+        add(
+          'variants[$index].extensions.gameMode',
+          PuzzleValidationCode.unknownReference,
+          'spell_tap exige placement para wordId "$wordId".',
+        );
+      } else if (count > 1) {
+        add(
+          'variants[$index].extensions.gameMode',
+          PuzzleValidationCode.invalidValue,
+          'spell_tap exige placement unico para wordId "$wordId".',
+        );
+      }
     }
   }
 
@@ -669,5 +824,46 @@ class PuzzleValidator {
     if (d.dc < -1 || d.dc > 1) return false;
     if (d.dr == 0 && d.dc == 0) return false;
     return true;
+  }
+
+  static String? _readString(Map<String, Object?>? map, String key) {
+    final raw = map?[key];
+    if (raw is! String) return null;
+    final value = raw.trim();
+    return value.isEmpty ? null : value;
+  }
+
+  static bool? _readBool(Map<String, Object?>? map, String key) {
+    final raw = map?[key];
+    if (raw is bool) return raw;
+    if (raw is num) return raw != 0;
+    if (raw is String) {
+      final value = raw.trim().toLowerCase();
+      if (value == 'true' || value == '1') return true;
+      if (value == 'false' || value == '0') return false;
+    }
+    return null;
+  }
+
+  static List<String> _resolveSpellTapVariantWordIds(
+    VariantMode mode,
+    List<LexiconWord> words,
+  ) {
+    return mode.maybeMap(
+      ordered: (orderedMode) {
+        return orderedMode.order.map(
+          explicit: (config) => config.wordIds,
+          byLength: (_) => words.map((word) => word.id).toList(growable: false),
+          byTag: (config) {
+            return words
+                .where((word) => (word.tags ?? const <String>[]).contains(config.tag))
+                .map((word) => word.id)
+                .toList(growable: false);
+          },
+          random: (_) => words.map((word) => word.id).toList(growable: false),
+        );
+      },
+      orElse: () => const <String>[],
+    );
   }
 }

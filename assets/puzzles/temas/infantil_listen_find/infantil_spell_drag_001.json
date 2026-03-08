@@ -1,0 +1,104 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "infantil_spell_drag_001",
+  "title": {
+    "pt-BR": "Infantil Puxe e Monte 001"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "AORGA",
+          "TLABR",
+          "AOARX",
+          "BQLEP",
+          "MNCDU"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "arara",
+          "text": "ARARA",
+          "speech": "arara"
+        },
+        {
+          "id": "gato",
+          "text": "GATO",
+          "speech": "gato"
+        },
+        {
+          "id": "bola",
+          "text": "BOLA",
+          "speech": "bola"
+        }
+      ]
+    },
+    "solution": {
+      "type": "none"
+    },
+    "meta": {
+      "theme": {
+        "id": "infantil",
+        "title": {
+          "pt-BR": "Infantil"
+        },
+        "icon": "child_care"
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "spell_drag",
+      "title": {
+        "pt-BR": "Puxe e Monte"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "arara",
+            "gato",
+            "bola"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false,
+        "showRemainingCount": true,
+        "showMistakes": true,
+        "showHints": true
+      },
+      "extensions": {
+        "gameMode": "spell_drag",
+        "assistLevel": "adaptive",
+        "speakFullWordFirst": true,
+        "repeatWordAfterMistakes": 2,
+        "speakLetterAfterMistakes": 3,
+        "visualHintAfterMistakes": 4,
+        "highlightCorrectCell": false,
+        "showWordAsSlots": true,
+        "allowHintButtons": true,
+        "repeatFullWordOnComplete": false,
+        "feedbackLockMs": 420
+      }
+    }
+  ]
+}

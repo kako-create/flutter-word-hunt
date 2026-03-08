@@ -12,6 +12,12 @@ class WordHuntSavedProgress {
   final int? elapsedMs;
   final int? remainingMs;
   final int? mistakes;
+  final int? hintsUsed;
+  final int? spellTapLetterIndex;
+  final int? spellTapWordMistakes;
+  final int? spellDragLetterIndex;
+  final int? spellDragWordMistakes;
+  final List<int>? spellDragCollectedCellIndices;
   final int? baseScore;
   final int? speedBonus;
   final int? maxBaseScore;
@@ -32,6 +38,12 @@ class WordHuntSavedProgress {
     this.elapsedMs,
     this.remainingMs,
     this.mistakes,
+    this.hintsUsed,
+    this.spellTapLetterIndex,
+    this.spellTapWordMistakes,
+    this.spellDragLetterIndex,
+    this.spellDragWordMistakes,
+    this.spellDragCollectedCellIndices,
     this.baseScore,
     this.speedBonus,
     this.maxBaseScore,
@@ -61,6 +73,12 @@ class WordHuntSavedProgress {
     Object? elapsedMs = _unset,
     Object? remainingMs = _unset,
     Object? mistakes = _unset,
+    Object? hintsUsed = _unset,
+    Object? spellTapLetterIndex = _unset,
+    Object? spellTapWordMistakes = _unset,
+    Object? spellDragLetterIndex = _unset,
+    Object? spellDragWordMistakes = _unset,
+    Object? spellDragCollectedCellIndices = _unset,
     Object? baseScore = _unset,
     Object? speedBonus = _unset,
     Object? maxBaseScore = _unset,
@@ -90,6 +108,25 @@ class WordHuntSavedProgress {
           ? this.remainingMs
           : remainingMs as int?,
       mistakes: identical(mistakes, _unset) ? this.mistakes : mistakes as int?,
+      hintsUsed: identical(hintsUsed, _unset)
+          ? this.hintsUsed
+          : hintsUsed as int?,
+      spellTapLetterIndex: identical(spellTapLetterIndex, _unset)
+          ? this.spellTapLetterIndex
+          : spellTapLetterIndex as int?,
+      spellTapWordMistakes: identical(spellTapWordMistakes, _unset)
+          ? this.spellTapWordMistakes
+          : spellTapWordMistakes as int?,
+      spellDragLetterIndex: identical(spellDragLetterIndex, _unset)
+          ? this.spellDragLetterIndex
+          : spellDragLetterIndex as int?,
+      spellDragWordMistakes: identical(spellDragWordMistakes, _unset)
+          ? this.spellDragWordMistakes
+          : spellDragWordMistakes as int?,
+      spellDragCollectedCellIndices:
+          identical(spellDragCollectedCellIndices, _unset)
+          ? this.spellDragCollectedCellIndices
+          : spellDragCollectedCellIndices as List<int>?,
       baseScore: identical(baseScore, _unset)
           ? this.baseScore
           : baseScore as int?,

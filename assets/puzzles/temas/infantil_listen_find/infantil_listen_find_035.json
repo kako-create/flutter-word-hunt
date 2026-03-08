@@ -1,0 +1,190 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "infantil_listen_find_035",
+  "title": {
+    "pt-BR": "Infantil Ouça e Encontre 035"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "FLORX",
+          "FOLHA",
+          "GRAMA",
+          "QWERT",
+          "YUIOP"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "flor",
+          "text": "FLOR",
+          "speech": "flor"
+        },
+        {
+          "id": "folha",
+          "text": "FOLHA",
+          "speech": "folha"
+        },
+        {
+          "id": "grama",
+          "text": "GRAMA",
+          "speech": "grama"
+        }
+      ]
+    },
+    "solution": {
+      "type": "placements",
+      "placements": [
+        {
+          "wordId": "flor",
+          "start": { "r": 0, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 4
+        },
+        {
+          "wordId": "folha",
+          "start": { "r": 1, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 5
+        },
+        {
+          "wordId": "grama",
+          "start": { "r": 2, "c": 0 },
+          "dir": { "dr": 0, "dc": 1 },
+          "len": 5
+        }
+      ]
+    },
+    "meta": {
+      "theme": {
+        "id": "infantil",
+        "title": {
+          "pt-BR": "Infantil"
+        },
+        "icon": "child_care"
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "ordered_listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "flor",
+            "folha",
+            "grama"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "spell_tap",
+      "title": {
+        "pt-BR": "Monte a Palavra"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "flor",
+            "folha",
+            "grama"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false,
+        "showRemainingCount": true,
+        "showMistakes": true,
+        "showHints": true
+      },
+      "extensions": {
+        "gameMode": "spell_tap",
+        "assistLevel": "adaptive",
+        "speakFullWordFirst": true,
+        "autoSpeakLetter": false,
+        "repeatWordAfterMistakes": 2,
+        "speakLetterAfterMistakes": 3,
+        "visualHintAfterMistakes": 4,
+        "highlightCorrectCell": false,
+        "showWordAsSlots": true,
+        "allowHintButtons": true,
+        "strikeWordProgress": true,
+        "requireExactCellSequence": true,
+        "repeatFullWordOnComplete": true,
+        "feedbackLockMs": 420
+      }
+    }
+  ]
+}

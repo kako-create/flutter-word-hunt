@@ -11,10 +11,7 @@ import '../widgets/app_footer_bar.dart';
 class StartScreen extends ConsumerWidget {
   final ValueChanged<WordHuntSession?> onStart;
 
-  const StartScreen({
-    super.key,
-    required this.onStart,
-  });
+  const StartScreen({super.key, required this.onStart});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,28 +68,18 @@ class StartScreen extends ConsumerWidget {
               ),
               Text(
                 AppStringsPtBr.choosePuzzle,
-                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               const SizedBox(height: AppUiConstants.sectionSpacing),
               FilledButton.icon(
-                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.catalog),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.catalog),
                 icon: const Icon(Icons.view_module),
                 label: const Text(AppStringsPtBr.catalog),
               ),
-              const SizedBox(height: AppUiConstants.sectionSpacing),
-              FilledButton.icon(
-                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.themes),
-                icon: const Icon(Icons.category),
-                label: const Text(AppStringsPtBr.themes),
-              ),
-              const SizedBox(height: AppUiConstants.sectionSpacing),
               const Spacer(),
-              const SizedBox(height: AppUiConstants.sectionSpacing),
-              FilledButton.icon(
-                onPressed: () => onStart(null),
-                icon: const Icon(Icons.shuffle),
-                label: const Text(AppStringsPtBr.playRandom),
-              ),
             ],
           ),
         ),

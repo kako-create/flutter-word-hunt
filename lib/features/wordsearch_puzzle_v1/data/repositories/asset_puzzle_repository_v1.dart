@@ -11,11 +11,17 @@ import '../../domain/validation/puzzle_validation_exception.dart';
 import '../../domain/validation/puzzle_validator.dart';
 
 class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
+  static const List<String> _activeAssetPrefixes = <String>[
+    'assets/puzzles/temas/learning/',
+    'assets/puzzles/temas/infantil_listen_find/',
+  ];
+
   final AssetBundle _bundle;
   List<PuzzleV1>? _cacheAll;
   Map<String, PuzzleV1>? _cacheById;
 
-  AssetPuzzleRepositoryV1({AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
+  AssetPuzzleRepositoryV1({AssetBundle? bundle})
+    : _bundle = bundle ?? rootBundle;
 
   @override
   Future<PuzzleV1> loadById(String id) async {
@@ -95,8 +101,9 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
         final all = manifest.listAssets().toList(growable: false);
         manifestTotal = all.length;
         manifestAssetsPrefix = all.where((k) => k.startsWith('assets/')).length;
-        manifestPuzzlesPrefix =
-            all.where((k) => k.startsWith('assets/puzzles/')).length;
+        manifestPuzzlesPrefix = all
+            .where((k) => k.startsWith('assets/puzzles/'))
+            .length;
         manifestSample = all.take(15).toList(growable: false);
       } catch (_) {
         // Ignora: se nao conseguimos ler manifest, os valores ficam como default.
@@ -127,16 +134,12 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
     // Primary (runtime): AssetManifest.bin via Flutter assets.
     try {
       final manifest = await AssetManifest.loadFromAssetBundle(_bundle);
-      final paths = manifest
-          .listAssets()
-          .where(
-            (k) =>
-                k.startsWith('assets/puzzles/') &&
-                k.endsWith('.json') &&
-                !k.endsWith('/index.json'),
-          )
-          .toList(growable: false)
-        ..sort();
+      final paths =
+          manifest
+              .listAssets()
+              .where((k) => _isAllowedPuzzleJsonPath(k))
+              .toList(growable: false)
+            ..sort();
       return paths;
     } catch (_) {
       // Fallback (unit tests on VM): scan filesystem.
@@ -152,7 +155,7 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
         if (e is File && e.path.endsWith('.json')) {
           // Normalize separators for consistency.
           final p = e.path.replaceAll('\\', '/');
-          if (p.endsWith('/index.json')) continue;
+          if (!_isAllowedPuzzleJsonPath(p)) continue;
           files.add(p);
         }
       }
@@ -172,5 +175,20 @@ class AssetPuzzleRepositoryV1 implements PuzzleRepositoryV1 {
     }
 
     return File(path).readAsString();
+  }
+
+  bool _isAllowedPuzzleJsonPath(String path) {
+    final normalized = path.replaceAll('\\', '/');
+    if (!normalized.endsWith('.json')) return false;
+    if (normalized.endsWith('/index.json')) return false;
+    if (normalized.contains('/archive/')) return false;
+
+    final segments = normalized.split('/');
+    if (segments.any((s) => s.startsWith('_'))) return false;
+
+    for (final prefix in _activeAssetPrefixes) {
+      if (normalized.startsWith(prefix)) return true;
+    }
+    return false;
   }
 }

@@ -1,0 +1,121 @@
+{
+  "schema": "wordsearch.puzzle@1",
+  "id": "infantil_listen_find_049",
+  "title": {
+    "pt-BR": "Infantil Ouça e Encontre 049"
+  },
+  "content": {
+    "locale": "pt-BR",
+    "board": {
+      "rows": 5,
+      "cols": 5,
+      "alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "source": {
+        "type": "static",
+        "grid": [
+          "VELAX",
+          "NAVIO",
+          "TREMV",
+          "QWERT",
+          "YUIOP"
+        ]
+      }
+    },
+    "lexicon": {
+      "words": [
+        {
+          "id": "vela",
+          "text": "VELA",
+          "speech": "vela"
+        },
+        {
+          "id": "navio",
+          "text": "NAVIO",
+          "speech": "navio"
+        },
+        {
+          "id": "trem",
+          "text": "TREM",
+          "speech": "trem"
+        }
+      ]
+    },
+    "solution": {
+      "type": "auto_from_grid"
+    },
+    "meta": {
+      "theme": {
+        "id": "infantil",
+        "title": {
+          "pt-BR": "Infantil"
+        },
+        "icon": "child_care"
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre"
+      },
+      "mode": {
+        "type": "classic"
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    },
+    {
+      "id": "ordered_listen_and_find",
+      "title": {
+        "pt-BR": "Ouça e Encontre em ordem"
+      },
+      "mode": {
+        "type": "ordered",
+        "order": {
+          "type": "explicit",
+          "wordIds": [
+            "vela",
+            "navio",
+            "trem"
+          ]
+        }
+      },
+      "rules": {
+        "allowedDirsPreset": "orthogonal"
+      },
+      "goals": {
+        "win": [
+          {
+            "type": "find_in_order"
+          }
+        ]
+      },
+      "ui": {
+        "showWordList": false
+      },
+      "extensions": {
+        "listenFind": {
+          "enabled": true,
+          "autoSpeakOnStart": true,
+          "autoSpeakOnWrong": true,
+          "autoNextOnFound": true,
+          "repeatCooldownMs": 1200
+        }
+      }
+    }
+  ]
+}

@@ -73,6 +73,12 @@ class SharedPrefsWordHuntProgressRepository
     int? elapsedMs;
     int? remainingMs;
     int? mistakes;
+    int? hintsUsed;
+    int? spellTapLetterIndex;
+    int? spellTapWordMistakes;
+    int? spellDragLetterIndex;
+    int? spellDragWordMistakes;
+    List<int>? spellDragCollectedCellIndices;
     int? baseScore;
     int? speedBonus;
     int? maxBaseScore;
@@ -134,6 +140,21 @@ class SharedPrefsWordHuntProgressRepository
     elapsedMs = _readNonNegativeInt(decoded, 'elapsedMs');
     remainingMs = _readNonNegativeInt(decoded, 'remainingMs');
     mistakes = _readNonNegativeInt(decoded, 'mistakes');
+    hintsUsed = _readNonNegativeInt(decoded, 'hintsUsed');
+    spellTapLetterIndex = _readNonNegativeInt(decoded, 'spellTapLetterIndex');
+    spellTapWordMistakes = _readNonNegativeInt(
+      decoded,
+      'spellTapWordMistakes',
+    );
+    spellDragLetterIndex = _readNonNegativeInt(decoded, 'spellDragLetterIndex');
+    spellDragWordMistakes = _readNonNegativeInt(
+      decoded,
+      'spellDragWordMistakes',
+    );
+    spellDragCollectedCellIndices = _readIntList(
+      decoded,
+      'spellDragCollectedCellIndices',
+    );
     baseScore = _readInt(decoded, 'baseScore');
     speedBonus = _readInt(decoded, 'speedBonus');
     maxBaseScore = _readNonNegativeInt(decoded, 'maxBaseScore');
@@ -154,6 +175,14 @@ class SharedPrefsWordHuntProgressRepository
       elapsedMs: elapsedMs,
       remainingMs: remainingMs,
       mistakes: mistakes,
+      hintsUsed: hintsUsed,
+      spellTapLetterIndex: spellTapLetterIndex,
+      spellTapWordMistakes: spellTapWordMistakes,
+      spellDragLetterIndex: spellDragLetterIndex,
+      spellDragWordMistakes: spellDragWordMistakes,
+      spellDragCollectedCellIndices: spellDragCollectedCellIndices == null
+          ? null
+          : List.unmodifiable(spellDragCollectedCellIndices),
       baseScore: baseScore,
       speedBonus: speedBonus,
       maxBaseScore: maxBaseScore,
@@ -197,6 +226,12 @@ class SharedPrefsWordHuntProgressRepository
       'elapsedMs': progress.elapsedMs,
       'remainingMs': progress.remainingMs,
       'mistakes': progress.mistakes,
+      'hintsUsed': progress.hintsUsed,
+      'spellTapLetterIndex': progress.spellTapLetterIndex,
+      'spellTapWordMistakes': progress.spellTapWordMistakes,
+      'spellDragLetterIndex': progress.spellDragLetterIndex,
+      'spellDragWordMistakes': progress.spellDragWordMistakes,
+      'spellDragCollectedCellIndices': progress.spellDragCollectedCellIndices,
       'baseScore': progress.baseScore,
       'speedBonus': progress.speedBonus,
       'maxBaseScore': progress.maxBaseScore,
@@ -243,6 +278,23 @@ List<String>? _readStringList(Map decoded, String key) {
   for (final value in raw) {
     if (value is String && value.isNotEmpty) {
       out.add(value);
+    }
+  }
+  return out;
+}
+
+List<int>? _readIntList(Map decoded, String key) {
+  final raw = decoded[key];
+  if (raw is! List) return null;
+
+  final out = <int>[];
+  for (final value in raw) {
+    if (value is int) {
+      out.add(value);
+      continue;
+    }
+    if (value is num) {
+      out.add(value.toInt());
     }
   }
   return out;

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../../wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
+import '../../domain/services/speech/puzzle_speech_event.dart';
 import '../../domain/services/speech/puzzle_speech_service.dart';
 import '../../domain/services/speech/puzzle_speech_state.dart';
 import '../../domain/services/speech/speech_settings.dart';
@@ -126,6 +127,8 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
   final ValueNotifier<PuzzleSpeechState> _stateNotifier = ValueNotifier(
     const PuzzleSpeechState.idle(),
   );
+  final StreamController<PuzzleSpeechEvent> _eventsController =
+      StreamController<PuzzleSpeechEvent>.broadcast();
 
   SpeechSettings _settings = const SpeechSettings();
   bool _prepared = false;
@@ -134,9 +137,13 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
   String _activeLocale = 'pt-BR';
   String? _lastWord;
   DateTime? _lastWordAt;
+  String? _activeWordKey;
 
   @override
   ValueListenable<PuzzleSpeechState> get state => _stateNotifier;
+
+  @override
+  Stream<PuzzleSpeechEvent> get events => _eventsController.stream;
 
   @override
   SpeechSettings get settings => _settings;
@@ -150,11 +157,7 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
     _lastWord = null;
     _lastWordAt = null;
 
-    await stop();
-    if (!_settings.enabled) {
-      _setState(const PuzzleSpeechState.idle());
-      return;
-    }
+    await _stopInternal(PuzzleSpeechStopReason.reconfigured);
 
     try {
       if (!_prepared) {
@@ -188,23 +191,43 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
     String word, {
     bool spellAfter = true,
     bool forceWord = false,
+    String? wordKey,
+    String? displayText,
   }) async {
-    if (_disposed || !_settings.enabled) return;
+    if (_disposed || (!_settings.enabled && !forceWord)) return;
 
     final cleanWord = word.trim();
     if (cleanWord.isEmpty) return;
+    final eventText = _normalizeEventText(displayText ?? cleanWord);
+    final resolvedWordKey = _resolveWordKey(
+      explicitWordKey: wordKey,
+      eventText: eventText,
+    );
 
     final currentState = _stateNotifier.value;
     if (currentState.isSpeaking && currentState.speakingWord == cleanWord) {
       return;
     }
 
-    if (_shouldIgnoreDebouncedTap(cleanWord)) {
+    if (!forceWord && _shouldIgnoreDebouncedTap(cleanWord)) {
       return;
     }
 
-    final currentRun = ++_runId;
+    final previousRun = _runId;
+    final previousWordKey = _activeWordKey;
+    final currentRun = previousRun + 1;
+    _runId = currentRun;
+    _activeWordKey = resolvedWordKey;
     await _engine.stop();
+    if (previousRun > 0 && currentState.isSpeaking) {
+      _emitEvent(
+        PuzzleSpeechStopEvent(
+          runId: previousRun,
+          reason: PuzzleSpeechStopReason.canceled,
+          wordKey: previousWordKey,
+        ),
+      );
+    }
     if (!_isCurrentRun(currentRun)) return;
 
     final shouldSpeakWord = forceWord || _settings.shouldSpeakWord;
@@ -225,47 +248,131 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
           if (!paused) return;
         }
 
-        final spelled = await _spell(currentRun, cleanWord);
+        final spelled = await _spell(
+          currentRun,
+          word: cleanWord,
+          eventWordKey: resolvedWordKey,
+          eventText: eventText,
+        );
         if (!spelled) return;
       }
 
       if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
         _setState(const PuzzleSpeechState.idle());
       }
     } catch (error) {
       if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
         _setState(PuzzleSpeechState.error('Falha ao reproduzir audio: $error'));
       }
     }
   }
 
   @override
-  Future<void> speakSpelling(String word) async {
+  Future<void> speakSpelling(
+    String word, {
+    String? wordKey,
+    String? displayText,
+  }) async {
     if (_disposed || !_settings.enabled) return;
 
     final cleanWord = word.trim();
     if (cleanWord.isEmpty) return;
+    final eventText = _normalizeEventText(displayText ?? cleanWord);
+    final resolvedWordKey = _resolveWordKey(
+      explicitWordKey: wordKey,
+      eventText: eventText,
+    );
 
     final currentState = _stateNotifier.value;
     if (currentState.isSpeaking && currentState.speakingWord == cleanWord) {
       return;
     }
 
-    final currentRun = ++_runId;
+    final previousRun = _runId;
+    final previousWordKey = _activeWordKey;
+    final currentRun = previousRun + 1;
+    _runId = currentRun;
+    _activeWordKey = resolvedWordKey;
     await _engine.stop();
+    if (previousRun > 0 && currentState.isSpeaking) {
+      _emitEvent(
+        PuzzleSpeechStopEvent(
+          runId: previousRun,
+          reason: PuzzleSpeechStopReason.canceled,
+          wordKey: previousWordKey,
+        ),
+      );
+    }
     if (!_isCurrentRun(currentRun)) return;
 
     _setState(PuzzleSpeechState.speaking(cleanWord));
 
     try {
-      final spelled = await _spell(currentRun, cleanWord);
+      final spelled = await _spell(
+        currentRun,
+        word: cleanWord,
+        eventWordKey: resolvedWordKey,
+        eventText: eventText,
+      );
       if (!spelled) return;
 
       if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
         _setState(const PuzzleSpeechState.idle());
       }
     } catch (error) {
       if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
+        _setState(PuzzleSpeechState.error('Falha ao reproduzir audio: $error'));
+      }
+    }
+  }
+
+  @override
+  Future<void> speakLetter(
+    String letter, {
+    bool force = false,
+    String? wordKey,
+    String? displayText,
+  }) async {
+    if (_disposed || (!_settings.enabled && !force)) return;
+
+    final cleanLetter = letter.trim();
+    if (cleanLetter.isEmpty) return;
+
+    final previousRun = _runId;
+    final previousWordKey = _activeWordKey;
+    final currentRun = previousRun + 1;
+    _runId = currentRun;
+    _activeWordKey = wordKey;
+    await _engine.stop();
+    final currentState = _stateNotifier.value;
+    if (previousRun > 0 && currentState.isSpeaking) {
+      _emitEvent(
+        PuzzleSpeechStopEvent(
+          runId: previousRun,
+          reason: PuzzleSpeechStopReason.canceled,
+          wordKey: previousWordKey,
+        ),
+      );
+    }
+    if (!_isCurrentRun(currentRun)) return;
+
+    _setState(PuzzleSpeechState.speaking(cleanLetter));
+
+    try {
+      final spoken = await _speakToken(currentRun, _spellToken(cleanLetter));
+      if (!spoken) return;
+
+      if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
+        _setState(const PuzzleSpeechState.idle());
+      }
+    } catch (error) {
+      if (_isCurrentRun(currentRun)) {
+        _activeWordKey = null;
         _setState(PuzzleSpeechState.error('Falha ao reproduzir audio: $error'));
       }
     }
@@ -273,19 +380,28 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
 
   @override
   Future<void> stop() async {
-    if (_disposed) return;
-    _runId++;
-    await _engine.stop();
-    _setState(const PuzzleSpeechState.idle());
+    await _stopInternal(PuzzleSpeechStopReason.stopped);
   }
 
   @override
   void dispose() {
     if (_disposed) return;
-    _disposed = true;
+    final stoppedRun = _runId;
+    final stoppedWordKey = _activeWordKey;
     _runId++;
+    if (stoppedRun > 0) {
+      _emitEvent(
+        PuzzleSpeechStopEvent(
+          runId: stoppedRun,
+          reason: PuzzleSpeechStopReason.disposed,
+          wordKey: stoppedWordKey,
+        ),
+      );
+    }
+    _disposed = true;
     unawaited(_engine.stop());
     unawaited(_engine.dispose());
+    unawaited(_eventsController.close());
     _stateNotifier.dispose();
   }
 
@@ -314,19 +430,75 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
     return _settings.debounceBehavior == SpeechDebounceBehavior.ignore;
   }
 
-  Future<bool> _spell(int runId, String word) async {
-    final letters = word.runes
+  Future<void> _stopInternal(PuzzleSpeechStopReason reason) async {
+    if (_disposed) return;
+    final stoppedRun = _runId;
+    final stoppedWordKey = _activeWordKey;
+    _runId++;
+    _activeWordKey = null;
+    await _engine.stop();
+    _setState(const PuzzleSpeechState.idle());
+    if (stoppedRun > 0) {
+      _emitEvent(
+        PuzzleSpeechStopEvent(
+          runId: stoppedRun,
+          reason: reason,
+          wordKey: stoppedWordKey,
+        ),
+      );
+    }
+  }
+
+  Future<bool> _spell(
+    int runId, {
+    required String word,
+    required String eventWordKey,
+    required String eventText,
+  }) async {
+    final spokenLetters = word.runes
         .map((r) => String.fromCharCode(r))
         .toList(growable: false);
-    for (var i = 0; i < letters.length; i++) {
-      final token = _spellToken(letters[i]);
+    final eventLetters = _eventLetters(
+      eventText: eventText,
+      spokenLetters: spokenLetters,
+    );
+    _emitEvent(
+      PuzzleSpeechSpellStartEvent(
+        runId: runId,
+        wordKey: eventWordKey,
+        text: eventText,
+        len: eventLetters.length,
+      ),
+    );
+
+    var completed = false;
+    for (var i = 0; i < spokenLetters.length; i++) {
+      if (!_isCurrentRun(runId)) return false;
+      final eventChar = eventLetters[i];
+      _emitEvent(
+        PuzzleSpeechSpellIndexEvent(
+          runId: runId,
+          wordKey: eventWordKey,
+          text: eventText,
+          index: i,
+          char: eventChar,
+        ),
+      );
+      final token = _spellToken(spokenLetters[i]);
       final spoken = await _speakToken(runId, token);
       if (!spoken) return false;
 
-      if (i < letters.length - 1 && _settings.letterPauseMs > 0) {
+      if (i < spokenLetters.length - 1 && _settings.letterPauseMs > 0) {
         final paused = await _pause(runId, _settings.letterPauseMs);
         if (!paused) return false;
       }
+      completed = true;
+    }
+
+    if (completed && _isCurrentRun(runId)) {
+      _emitEvent(
+        PuzzleSpeechSpellEndEvent(runId: runId, wordKey: eventWordKey),
+      );
     }
     return true;
   }
@@ -396,9 +568,52 @@ class FlutterPuzzleSpeechService implements PuzzleSpeechService {
     return value;
   }
 
+  String _normalizeEventText(String raw) {
+    final value = raw.trim();
+    if (value.isEmpty) return raw;
+    return value;
+  }
+
+  String _resolveWordKey({
+    required String? explicitWordKey,
+    required String eventText,
+  }) {
+    final provided = explicitWordKey?.trim();
+    if (provided != null && provided.isNotEmpty) {
+      return provided;
+    }
+
+    final normalized = eventText.toLowerCase().trim().replaceAll(
+      RegExp(r'\s+'),
+      '_',
+    );
+    if (normalized.isEmpty) return 'speech_word';
+    return normalized;
+  }
+
+  List<String> _eventLetters({
+    required String eventText,
+    required List<String> spokenLetters,
+  }) {
+    final eventLetters = eventText.runes
+        .map((r) => String.fromCharCode(r))
+        .toList(growable: false);
+    if (eventLetters.length == spokenLetters.length &&
+        eventLetters.isNotEmpty) {
+      return eventLetters;
+    }
+    return List<String>.from(spokenLetters, growable: false);
+  }
+
   void _setState(PuzzleSpeechState next) {
     if (_disposed) return;
     _stateNotifier.value = next;
+  }
+
+  void _emitEvent(PuzzleSpeechEvent event) {
+    if (_disposed) return;
+    if (_eventsController.isClosed) return;
+    _eventsController.add(event);
   }
 
   static const Map<String, String> _ptBrLetterNames = {

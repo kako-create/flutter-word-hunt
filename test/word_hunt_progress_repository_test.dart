@@ -37,6 +37,12 @@ void main() {
         elapsedMs: 12345,
         remainingMs: 47655,
         mistakes: 2,
+        hintsUsed: 4,
+        spellTapLetterIndex: 3,
+        spellTapWordMistakes: 1,
+        spellDragLetterIndex: 2,
+        spellDragWordMistakes: 3,
+        spellDragCollectedCellIndices: const [0, 6, 7],
         baseScore: 850,
         speedBonus: 340,
         maxBaseScore: 3000,
@@ -58,6 +64,12 @@ void main() {
       expect(loaded.elapsedMs, 12345);
       expect(loaded.remainingMs, 47655);
       expect(loaded.mistakes, 2);
+      expect(loaded.hintsUsed, 4);
+      expect(loaded.spellTapLetterIndex, 3);
+      expect(loaded.spellTapWordMistakes, 1);
+      expect(loaded.spellDragLetterIndex, 2);
+      expect(loaded.spellDragWordMistakes, 3);
+      expect(loaded.spellDragCollectedCellIndices, [0, 6, 7]);
       expect(loaded.baseScore, 850);
       expect(loaded.speedBonus, 340);
       expect(loaded.maxBaseScore, 3000);
@@ -102,6 +114,12 @@ void main() {
       expect(loaded.elapsedMs, isNull);
       expect(loaded.remainingMs, isNull);
       expect(loaded.mistakes, isNull);
+      expect(loaded.hintsUsed, isNull);
+      expect(loaded.spellTapLetterIndex, isNull);
+      expect(loaded.spellTapWordMistakes, isNull);
+      expect(loaded.spellDragLetterIndex, isNull);
+      expect(loaded.spellDragWordMistakes, isNull);
+      expect(loaded.spellDragCollectedCellIndices, isNull);
       expect(loaded.baseScore, isNull);
       expect(loaded.speedBonus, isNull);
       expect(loaded.maxBaseScore, isNull);

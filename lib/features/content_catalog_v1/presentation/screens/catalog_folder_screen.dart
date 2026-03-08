@@ -687,11 +687,77 @@ class _ChaptersLayout extends StatelessWidget {
     );
   }
 
+  List<_ChapterTileVm> _resolveChapters() {
+    final rawChapters = items.where((vm) => vm.item is CatalogFolderItemV1).map(
+      (vm) {
+        final item = vm.item as CatalogFolderItemV1;
+        return _RawChapterVm(vm: vm, item: item, title: _resolveTitle(item));
+      },
+    ).toList();
+
+    rawChapters.sort((a, b) {
+      final aOrder = a.item.education?.order;
+      final bOrder = b.item.education?.order;
+
+      if (aOrder != null && bOrder != null) {
+        final byOrder = aOrder.compareTo(bOrder);
+        if (byOrder != 0) return byOrder;
+      } else if (aOrder != null) {
+        return -1;
+      } else if (bOrder != null) {
+        return 1;
+      }
+
+      final byTitle = a.title.toLowerCase().compareTo(b.title.toLowerCase());
+      if (byTitle != 0) return byTitle;
+      return a.item.id.toLowerCase().compareTo(b.item.id.toLowerCase());
+    });
+
+    final previousProgressByTrack = <String, _ChapterProgressSnapshot>{};
+    final chapters = <_ChapterTileVm>[];
+
+    for (final raw in rawChapters) {
+      final progress = raw.vm.folderProgress;
+      final completed = progress?.completed ?? 0;
+      final total = progress?.total ?? 0;
+
+      var unlockedByEducation = true;
+      final education = raw.item.education;
+      if (education != null) {
+        final previous = previousProgressByTrack[education.trackId];
+        if (previous != null) {
+          final minCompleted = education.minCompletedOrNull ?? previous.total;
+          unlockedByEducation = previous.completed >= minCompleted;
+        }
+        previousProgressByTrack[education.trackId] = _ChapterProgressSnapshot(
+          completed: completed,
+          total: total,
+        );
+      }
+
+      chapters.add(
+        _ChapterTileVm(
+          vm: raw.vm,
+          title: raw.title,
+          completed: completed,
+          total: total,
+          unlocked: raw.vm.unlocked && unlockedByEducation,
+          lockedByEducation: !unlockedByEducation,
+        ),
+      );
+    }
+
+    return chapters;
+  }
+
+  String _resolveTitle(CatalogFolderItemV1 item) {
+    final title = _resolveText(item.title);
+    return title.isEmpty ? item.id : title;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final chapters = items
-        .where((vm) => vm.item is CatalogFolderItemV1)
-        .toList();
+    final chapters = _resolveChapters();
     if (chapters.isEmpty) {
       return const Center(child: Text(AppStringsPtBr.noItemsFound));
     }
@@ -700,32 +766,78 @@ class _ChaptersLayout extends StatelessWidget {
       itemCount: chapters.length,
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, i) {
-        final vm = chapters[i];
-        final item = vm.item as CatalogFolderItemV1;
-        final title = _resolveText(item.title).isNotEmpty
-            ? _resolveText(item.title)
-            : item.id;
-        final pct = vm.folderProgress?.percentFloor ?? 0;
+        final chapter = chapters[i];
+        final progress = '${chapter.completed}/${chapter.total}';
+        final subtitle = chapter.lockedByEducation
+            ? '${AppStringsPtBr.completePreviousChapter} ($progress)'
+            : progress;
+
+        final icon = Icon(
+          chapter.unlocked ? Icons.chevron_right : Icons.lock,
+          color: Theme.of(context).colorScheme.outline,
+        );
 
         return Material(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           child: ListTile(
             leading: const Icon(Icons.bookmark),
-            title: Text(title),
-            subtitle: Text('$pct%'),
-            trailing: Icon(
-              vm.unlocked ? Icons.chevron_right : Icons.lock,
-              color: Theme.of(context).colorScheme.outline,
-            ),
-            onTap: vm.unlocked && vm.childAbsNodeId != null
-                ? () => _openFolder(context, vm.childAbsNodeId!)
+            title: Text(chapter.title),
+            subtitle: Text(subtitle),
+            trailing: chapter.lockedByEducation
+                ? Tooltip(
+                    message: AppStringsPtBr.completePreviousChapter,
+                    child: icon,
+                  )
+                : icon,
+            onTap: chapter.unlocked && chapter.vm.childAbsNodeId != null
+                ? () => _openFolder(context, chapter.vm.childAbsNodeId!)
                 : null,
           ),
         );
       },
     );
   }
+}
+
+class _RawChapterVm {
+  final _CatalogItemVm vm;
+  final CatalogFolderItemV1 item;
+  final String title;
+
+  const _RawChapterVm({
+    required this.vm,
+    required this.item,
+    required this.title,
+  });
+}
+
+class _ChapterProgressSnapshot {
+  final int completed;
+  final int total;
+
+  const _ChapterProgressSnapshot({
+    required this.completed,
+    required this.total,
+  });
+}
+
+class _ChapterTileVm {
+  final _CatalogItemVm vm;
+  final String title;
+  final int completed;
+  final int total;
+  final bool unlocked;
+  final bool lockedByEducation;
+
+  const _ChapterTileVm({
+    required this.vm,
+    required this.title,
+    required this.completed,
+    required this.total,
+    required this.unlocked,
+    required this.lockedByEducation,
+  });
 }
 
 class _ChapterGridLayout extends StatelessWidget {

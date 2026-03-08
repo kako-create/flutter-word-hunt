@@ -2,16 +2,15 @@
   "schema": "wordsearch.catalog@1",
   "id": "global",
   "contentVersion": 1,
-  "title": { "pt-BR": "Catálogo" },
+  "title": { "pt-BR": "Primeiros Passos" },
   "ui": { "layout": "hero_list", "showProgress": false },
   "items": [
     {
       "kind": "folder",
-      "id": "temas",
-      "title": { "pt-BR": "Temas" },
+      "id": "primeiros_passos",
+      "title": { "pt-BR": "Primeiros Passos" },
       "ref": "temas/index.json",
-      "ui": { "layout": "chapters", "showProgress": true }
+      "ui": { "layout": "chapter_grid", "showProgress": true }
     }
   ]
 }
-

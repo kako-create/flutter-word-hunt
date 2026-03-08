@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:caca_palavra/features/word_hunt/data/services/flutter_puzzle_speech_service.dart';
+import 'package:caca_palavra/features/word_hunt/domain/services/speech/puzzle_speech_event.dart';
 import 'package:caca_palavra/features/wordsearch_puzzle_v1/domain/entities/puzzle_v1.dart';
 
 void main() {
@@ -89,6 +90,126 @@ void main() {
 
     // Nao deve reiniciar: apenas a primeira execucao completa.
     expect(engine.spoken, ['BOLA', 'B', 'O', 'L', 'A']);
+    service.dispose();
+  });
+
+  test('forceWord fala mesmo com extensions.speech ausente', () async {
+    final engine = _FakeSpeechEngine(
+      speakDelay: const Duration(milliseconds: 10),
+      supportedLanguages: {'pt-BR'},
+    );
+    final service = FlutterPuzzleSpeechService(engine: engine);
+
+    await service.configure(
+      _buildPuzzle(locale: 'pt-BR'),
+      _buildVariantNoSpeech(),
+    );
+
+    await service.speakWord('ALVO', spellAfter: false, forceWord: true);
+    expect(engine.spoken, ['ALVO']);
+    service.dispose();
+  });
+
+  test('events: spell start/index/end e stop ao interromper', () async {
+    final engine = _FakeSpeechEngine(
+      speakDelay: const Duration(milliseconds: 40),
+      supportedLanguages: {'pt-BR'},
+    );
+    final service = FlutterPuzzleSpeechService(engine: engine);
+    final events = <PuzzleSpeechEvent>[];
+    final sub = service.events.listen(events.add);
+    addTearDown(sub.cancel);
+
+    await service.configure(
+      _buildPuzzle(locale: 'pt-BR'),
+      _buildVariantSpeech({
+        'enabled': true,
+        'mode': 'spelling_only',
+        'letterPauseMs': 0,
+        'debounceMs': 0,
+      }),
+    );
+
+    final first = service.speakSpelling(
+      'CASA',
+      wordKey: 'w1',
+      displayText: 'CASA',
+    );
+    await service.events.firstWhere(
+      (event) => event is PuzzleSpeechSpellStartEvent && event.wordKey == 'w1',
+    );
+    final endW2Reached = service.events.firstWhere(
+      (event) => event is PuzzleSpeechSpellEndEvent && event.wordKey == 'w2',
+    );
+    final second = service.speakSpelling(
+      'SOL',
+      wordKey: 'w2',
+      displayText: 'SOL',
+    );
+    await Future.wait([first, second, endW2Reached]);
+
+    final startW2 = events
+        .whereType<PuzzleSpeechSpellStartEvent>()
+        .where((e) => e.wordKey == 'w2')
+        .toList(growable: false);
+    final indexW2 = events
+        .whereType<PuzzleSpeechSpellIndexEvent>()
+        .where((e) => e.wordKey == 'w2')
+        .toList(growable: false);
+    final endW2 = events
+        .whereType<PuzzleSpeechSpellEndEvent>()
+        .where((e) => e.wordKey == 'w2')
+        .toList(growable: false);
+    final canceledStops = events
+        .whereType<PuzzleSpeechStopEvent>()
+        .where((e) => e.reason == PuzzleSpeechStopReason.canceled)
+        .toList(growable: false);
+
+    expect(startW2, hasLength(1));
+    expect(startW2.first.len, 3);
+    expect(indexW2.map((e) => e.char).toList(growable: false), ['S', 'O', 'L']);
+    expect(endW2, hasLength(1));
+    expect(canceledStops, isNotEmpty);
+    expect(canceledStops.last.wordKey, 'w1');
+
+    service.dispose();
+  });
+
+  test('stop emite evento e nao deixa highlight preso', () async {
+    final engine = _FakeSpeechEngine(
+      speakDelay: const Duration(milliseconds: 50),
+      supportedLanguages: {'pt-BR'},
+    );
+    final service = FlutterPuzzleSpeechService(engine: engine);
+    final events = <PuzzleSpeechEvent>[];
+    final sub = service.events.listen(events.add);
+    addTearDown(sub.cancel);
+
+    await service.configure(
+      _buildPuzzle(locale: 'pt-BR'),
+      _buildVariantSpeech({
+        'enabled': true,
+        'mode': 'spelling_only',
+        'letterPauseMs': 0,
+      }),
+    );
+
+    final future = service.speakSpelling(
+      'GATO',
+      wordKey: 'w3',
+      displayText: 'GATO',
+    );
+    await Future.delayed(const Duration(milliseconds: 10));
+    await service.stop();
+    await future;
+
+    final stopEvents = events.whereType<PuzzleSpeechStopEvent>().toList(
+      growable: false,
+    );
+    expect(stopEvents, isNotEmpty);
+    expect(stopEvents.last.reason, PuzzleSpeechStopReason.stopped);
+    expect(stopEvents.last.wordKey, 'w3');
+
     service.dispose();
   });
 }
@@ -182,5 +303,13 @@ PuzzleVariant _buildVariantSpeech(Map<String, Object?> speech) {
     title: const I18nText.raw('Speech'),
     mode: const VariantMode.classic(),
     extensions: {'speech': speech},
+  );
+}
+
+PuzzleVariant _buildVariantNoSpeech() {
+  return PuzzleVariant(
+    id: 'no_speech',
+    title: const I18nText.raw('No speech'),
+    mode: const VariantMode.classic(),
   );
 }

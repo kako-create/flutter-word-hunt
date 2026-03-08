@@ -126,6 +126,109 @@ void main() {
     );
     _expectStructuredErrors(errors);
   });
+
+  test('detecta variant spell_tap sem ordered e sem placements', () {
+    final puzzle = PuzzleV1.fromJson({
+      'schema': wordsearchPuzzleSchemaV1,
+      'id': 'spell_tap_invalid',
+      'title': 'Spell Tap Invalid',
+      'content': {
+        'locale': 'pt-BR',
+        'board': {
+          'rows': 2,
+          'cols': 2,
+          'alphabet': 'ABCD',
+          'source': {
+            'type': 'static',
+            'grid': ['AB', 'CD'],
+          },
+        },
+        'lexicon': {
+          'words': [
+            {'id': 'w1', 'text': 'AB'},
+          ],
+        },
+        'solution': {'type': 'none'},
+      },
+      'variants': [
+        {
+          'id': 'spell_tap',
+          'title': 'Spell Tap',
+          'mode': {'type': 'classic'},
+          'extensions': {
+            'gameMode': 'spell_tap',
+            'requireExactCellSequence': false,
+          },
+        },
+      ],
+    });
+
+    final errors = PuzzleValidator.validate(PuzzleDefaults.apply(puzzle));
+
+    expect(
+      errors.any((e) => e.path == 'variants[0].extensions.gameMode'),
+      isTrue,
+    );
+    expect(
+      errors.any(
+        (e) => e.path == 'variants[0].extensions.requireExactCellSequence',
+      ),
+      isTrue,
+    );
+  });
+
+  test('detecta variant spell_drag sem letras suficientes no grid', () {
+    final puzzle = PuzzleV1.fromJson({
+      'schema': wordsearchPuzzleSchemaV1,
+      'id': 'spell_drag_invalid',
+      'title': 'Spell Drag Invalid',
+      'content': {
+        'locale': 'pt-BR',
+        'board': {
+          'rows': 2,
+          'cols': 3,
+          'alphabet': 'ABCDRT',
+          'source': {
+            'type': 'static',
+            'grid': ['ART', 'BCD'],
+          },
+        },
+        'lexicon': {
+          'words': [
+            {'id': 'arara', 'text': 'ARARA'},
+          ],
+        },
+        'solution': {'type': 'none'},
+      },
+      'variants': [
+        {
+          'id': 'spell_drag',
+          'title': 'Spell Drag',
+          'mode': {
+            'type': 'ordered',
+            'order': {
+              'type': 'explicit',
+              'wordIds': ['arara'],
+            },
+          },
+          'extensions': {
+            'gameMode': 'spell_drag',
+          },
+        },
+      ],
+    });
+
+    final errors = PuzzleValidator.validate(PuzzleDefaults.apply(puzzle));
+
+    expect(
+      errors.any(
+        (e) =>
+            e.path == 'variants[0].extensions.gameMode' &&
+            e.message.contains('spell_drag exige'),
+      ),
+      isTrue,
+    );
+  });
 }
 
 Future<Map<String, Object?>> _loadExampleRaw() async {

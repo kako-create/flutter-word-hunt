@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +12,17 @@ import '../../domain/entities/word_hunt_progress.dart';
 import '../../domain/entities/word_hunt_run_status.dart';
 import '../../domain/entities/word_hunt_session.dart';
 import '../../domain/entities/word_target.dart';
+import '../../domain/game_modes/puzzle_game_mode.dart';
+import '../../domain/game_modes/spell_drag/spell_drag_game_engine.dart';
+import '../../domain/game_modes/spell_drag/spell_drag_session_state.dart';
+import '../../domain/game_modes/spell_tap/spell_tap_game_engine.dart';
+import '../../domain/game_modes/spell_tap/spell_tap_session_state.dart';
+import '../../domain/game_modes/spell_tap/spell_tap_target.dart';
+import '../../domain/game_modes/spell_tap/spell_tap_target_resolver.dart';
 import '../../domain/repositories/word_hunt_progress_repository.dart';
 import '../../domain/rules/selection_path.dart';
 import '../../domain/services/goal_evaluator.dart';
+import '../../domain/services/listen_find_settings.dart';
 import '../../domain/services/max_score_calculator.dart';
 import '../../domain/services/run_clock.dart';
 import '../../domain/services/subset_target_selector.dart';
@@ -24,9 +33,34 @@ import '../../../wordsearch_puzzle_v1/di/puzzle_repository_v1_provider.dart';
 import '../../di/word_hunt_progress_providers.dart';
 import 'word_hunt_state.dart';
 
+const WordHuntSession _firstStepsFallbackSession = WordHuntSession(
+  puzzleId: 'learning_001',
+  variantId: 'classic',
+);
+
 final lastSessionProvider = FutureProvider<WordHuntSession?>((ref) async {
-  final repo = ref.read(progressRepositoryProvider);
-  return repo.loadLastSession();
+  final progressRepo = ref.read(progressRepositoryProvider);
+  final puzzleRepo = ref.read(puzzleRepositoryV1Provider);
+
+  final session = await progressRepo.loadLastSession();
+  if (session == null) return null;
+
+  final canUseLast = await _canLoadSession(
+    puzzleRepo: puzzleRepo,
+    session: session,
+  );
+  if (canUseLast) return session;
+
+  final canUseFallback = await _canLoadSession(
+    puzzleRepo: puzzleRepo,
+    session: _firstStepsFallbackSession,
+  );
+
+  await progressRepo.clearLastSession();
+  if (!canUseFallback) return null;
+
+  await progressRepo.saveLastSession(_firstStepsFallbackSession);
+  return _firstStepsFallbackSession;
 });
 
 final puzzleCatalogProvider = FutureProvider<List<PuzzleCatalogItem>>((
@@ -184,12 +218,19 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       const SpeedBonusCalculator();
   final SubsetTargetSelector _subsetTargetSelector =
       const SubsetTargetSelector();
+  final SpellTapTargetResolver _spellTapTargetResolver =
+      const SpellTapTargetResolver();
+  final SpellTapGameEngine _spellTapGameEngine = const SpellTapGameEngine();
+  final SpellDragGameEngine _spellDragGameEngine = const SpellDragGameEngine();
   RunClock? _runClock;
+  Timer? _spellTapFeedbackTimer;
+  Timer? _spellDragFeedbackTimer;
+  int _spellTapSpeechRequestCounter = 0;
   int _timePenaltyMs = 0;
 
   @override
   Future<WordHuntState> build() async {
-    ref.onDispose(_disposeClock);
+    ref.onDispose(_disposeRuntimeResources);
 
     final puzzleRepo = ref.read(puzzleRepositoryV1Provider);
 
@@ -202,9 +243,14 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     await progressRepo.saveLastSession(loaded.session);
 
     final savedRaw = await progressRepo.loadProgress(loaded.session);
-    final saved = await _prepareSubsetRunProgress(
+    final savedForRun = await _resetCompletedRunIfNeeded(
       loaded: loaded,
       saved: savedRaw,
+      progressRepo: progressRepo,
+    );
+    final saved = await _prepareSubsetRunProgress(
+      loaded: loaded,
+      saved: savedForRun,
       progressRepo: progressRepo,
     );
 
@@ -216,7 +262,7 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
 
   Future<void> newGame() async {
     final previousSubsetSeed = state.asData?.value.subsetSeed;
-    _disposeClock();
+    _disposeRuntimeResources();
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
@@ -302,6 +348,7 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     final current = state.asData?.value;
     if (current == null) return;
     if (current.endStatus != WordHuntEndStatus.running) return;
+    if (current.isPedagogicalSpellMode) return;
     if (path.length < 2) return;
 
     // MinLen do variant (default 2).
@@ -318,51 +365,504 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       current.normalize,
     );
 
-    final foundWordColors = <String, int>{...current.foundWordColorsById};
-    final foundWordSpans = <String, FoundWordSpan>{
-      ...current.foundWordSpansById,
-    };
-    final foundCellColors = <int, int>{...current.foundCellColorsByIndex};
-
-    var orderedNextIndex = current.orderedNextIndex;
-    var mistakes = current.mistakes;
-    var baseScore = current.baseScore;
-    var remainingMs = current.remainingMs;
+    final listenFindSettings = ListenFindSettings.fromVariant(current.variant);
+    final listenFindEnabled = listenFindSettings.enabled;
+    final listenFindTargetWordId = listenFindEnabled
+        ? (current.listenFindTargetWordId ??
+              _resolveListenFindTargetWordId(
+                targets: current.targets,
+                orderedWordIds: current.orderedWordIds,
+                foundWordIds: current.foundWordIds,
+              ))
+        : null;
 
     final match = _resolveMatchedWordId(
       current,
       forward: forward,
       backward: backward,
     );
+    final wrongTargetSelection =
+        listenFindEnabled &&
+        match != null &&
+        listenFindTargetWordId != null &&
+        match != listenFindTargetWordId;
 
-    if (match != null && !foundWordColors.containsKey(match)) {
+    if (match != null &&
+        !current.foundWordColorsById.containsKey(match) &&
+        !wrongTargetSelection) {
+      final nextState = _registerFoundWord(
+        current,
+        wordId: match,
+        path: path,
+      );
+      _pushResolvedState(nextState);
+      return;
+    }
+
+    final nextState = _applyWrongSelection(
+      current,
+      skipScoreAndPenalty: listenFindEnabled,
+    );
+    _pushResolvedState(nextState);
+  }
+
+  void tapSpellTapCell(CellCoord cell) {
+    final current = state.asData?.value;
+    if (current == null) return;
+    if (current.endStatus != WordHuntEndStatus.running) return;
+    if (!current.isSpellTapMode) return;
+
+    final spellTap = current.spellTap;
+    if (spellTap == null) return;
+
+    final result = _spellTapGameEngine.handleCellTap(
+      spellTap,
+      cell: cell,
+      settings: current.gameMode.requireSpellTapSettings,
+    );
+    if (result.kind == SpellTapAdvanceKind.none) return;
+
+    WordHuntState nextState;
+    switch (result.kind) {
+      case SpellTapAdvanceKind.none:
+        return;
+      case SpellTapAdvanceKind.wrongLetter:
+        nextState = _applyWrongSelection(
+          current,
+          spellTap: result.state,
+          skipScoreAndPenalty: false,
+        );
+        _pushResolvedState(nextState);
+        _scheduleSpellTapTransientAdvance(nextState);
+        return;
+      case SpellTapAdvanceKind.correctLetter:
+        nextState = _replaceSpellTapState(current, result.state);
+        _pushResolvedState(nextState);
+        _scheduleSpellTapTransientAdvance(nextState);
+        return;
+      case SpellTapAdvanceKind.wordCompleted:
+      case SpellTapAdvanceKind.puzzleCompleted:
+        final completedTarget = result.completedTarget;
+        if (completedTarget == null) return;
+        nextState = _registerFoundWord(
+          current,
+          wordId: completedTarget.wordId,
+          path: completedTarget.sequence,
+          spellTap: result.state,
+        );
+        _pushResolvedState(nextState);
+        if (result.kind != SpellTapAdvanceKind.puzzleCompleted) {
+          _scheduleSpellTapTransientAdvance(nextState);
+        }
+        return;
+    }
+  }
+
+  void dropSpellDragCell(CellCoord cell) {
+    final current = state.asData?.value;
+    if (current == null) return;
+    if (current.endStatus != WordHuntEndStatus.running) return;
+    if (!current.isSpellDragMode) return;
+
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null) return;
+
+    final selectedLetter = _normalizedGridLetterAt(current, cell);
+    if (selectedLetter == null) return;
+
+    final result = _spellDragGameEngine.handleCellDrop(
+      spellDrag,
+      cell: cell,
+      selectedLetter: selectedLetter,
+      settings: current.gameMode.requireSpellingSettings,
+    );
+    if (result.kind == SpellDragAdvanceKind.none) return;
+
+    WordHuntState nextState;
+    switch (result.kind) {
+      case SpellDragAdvanceKind.none:
+        return;
+      case SpellDragAdvanceKind.wrongLetter:
+        nextState = _applyWrongSelection(
+          current,
+          spellDrag: result.state,
+          skipScoreAndPenalty: false,
+        );
+        _pushResolvedState(nextState);
+        _scheduleSpellDragTransientAdvance(nextState);
+        return;
+      case SpellDragAdvanceKind.correctLetter:
+        nextState = _replaceSpellDragState(current, result.state);
+        _pushResolvedState(nextState);
+        _scheduleSpellDragTransientAdvance(nextState);
+        return;
+      case SpellDragAdvanceKind.wordCompleted:
+      case SpellDragAdvanceKind.puzzleCompleted:
+        final completedTarget = result.completedTarget;
+        if (completedTarget == null) return;
+        nextState = _registerFoundWord(
+          current,
+          wordId: completedTarget.id,
+          path: result.state.collectedCells,
+          spellDrag: result.state,
+        );
+        _pushResolvedState(nextState);
+        if (result.kind != SpellDragAdvanceKind.puzzleCompleted) {
+          _scheduleSpellDragTransientAdvance(nextState);
+        }
+        return;
+    }
+  }
+
+  void requestSpellTapWordHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellTapSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellTap = _spellTapGameEngine.requestWordHint(
+      spellTap,
+      settings: settings,
+      nextSpeechRequestId: _nextSpellTapSpeechRequestId(),
+    );
+    if (identical(nextSpellTap, spellTap)) return;
+    _pushResolvedState(_replaceSpellTapState(current, nextSpellTap));
+  }
+
+  void requestSpellTapLetterHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellTapSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellTap = _spellTapGameEngine.requestLetterHint(
+      spellTap,
+      settings: settings,
+      nextSpeechRequestId: _nextSpellTapSpeechRequestId(),
+    );
+    if (identical(nextSpellTap, spellTap)) return;
+    _pushResolvedState(_replaceSpellTapState(current, nextSpellTap));
+  }
+
+  void requestSpellTapVisualHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellTapSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellTap = _spellTapGameEngine.requestVisualHint(
+      spellTap,
+      settings: settings,
+    );
+    if (identical(nextSpellTap, spellTap)) return;
+    final nextState = _replaceSpellTapState(current, nextSpellTap);
+    _pushResolvedState(nextState);
+    _scheduleSpellTapTransientAdvance(nextState);
+  }
+
+  void requestSpellDragWordHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellingSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellDrag = _spellDragGameEngine.requestWordHint(
+      spellDrag,
+      settings: settings,
+      nextSpeechRequestId: _nextSpellDragSpeechRequestId(),
+    );
+    if (identical(nextSpellDrag, spellDrag)) return;
+    _pushResolvedState(_replaceSpellDragState(current, nextSpellDrag));
+  }
+
+  void requestSpellDragLetterHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellingSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellDrag = _spellDragGameEngine.requestLetterHint(
+      spellDrag,
+      settings: settings,
+      nextSpeechRequestId: _nextSpellDragSpeechRequestId(),
+    );
+    if (identical(nextSpellDrag, spellDrag)) return;
+    _pushResolvedState(_replaceSpellDragState(current, nextSpellDrag));
+  }
+
+  void requestSpellDragVisualHint() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+    final settings = current.gameMode.requireSpellingSettings;
+    if (!settings.allowHintButtons) return;
+
+    final nextSpellDrag = _spellDragGameEngine.requestVisualHint(
+      spellDrag,
+      settings: settings,
+    );
+    if (identical(nextSpellDrag, spellDrag)) return;
+    final nextState = _replaceSpellDragState(current, nextSpellDrag);
+    _pushResolvedState(nextState);
+    _scheduleSpellDragTransientAdvance(nextState);
+  }
+
+  void completeSpellTapSpeechRequest(int requestId) {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+
+    final nextSpellTap = _spellTapGameEngine.completeSpeechRequest(
+      spellTap,
+      settings: current.gameMode.requireSpellTapSettings,
+      requestId: requestId,
+      nextSpeechRequestId: _nextSpellTapSpeechRequestId(),
+    );
+    if (nextSpellTap.pendingSpeechRequest == spellTap.pendingSpeechRequest &&
+        nextSpellTap.stage == spellTap.stage &&
+        nextSpellTap.currentLetterIndex == spellTap.currentLetterIndex &&
+        nextSpellTap.currentWordIndex == spellTap.currentWordIndex) {
+      return;
+    }
+    _pushResolvedState(_replaceSpellTapState(current, nextSpellTap));
+  }
+
+  void completeSpellDragSpeechRequest(int requestId) {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+
+    final nextSpellDrag = _spellDragGameEngine.completeSpeechRequest(
+      spellDrag,
+      settings: current.gameMode.requireSpellingSettings,
+      requestId: requestId,
+      nextSpeechRequestId: _nextSpellDragSpeechRequestId(),
+    );
+    if (nextSpellDrag.pendingSpeechRequest == spellDrag.pendingSpeechRequest &&
+        nextSpellDrag.stage == spellDrag.stage &&
+        nextSpellDrag.currentLetterIndex == spellDrag.currentLetterIndex &&
+        nextSpellDrag.currentWordIndex == spellDrag.currentWordIndex &&
+        nextSpellDrag.collectedCells.length == spellDrag.collectedCells.length) {
+      return;
+    }
+    _pushResolvedState(_replaceSpellDragState(current, nextSpellDrag));
+  }
+
+  void _scheduleSpellTapTransientAdvance(WordHuntState current) {
+    if (!current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null) return;
+    if (spellTap.stage != SpellTapStage.correctFeedback &&
+        spellTap.stage != SpellTapStage.wrongFeedback &&
+        spellTap.stage != SpellTapStage.wordCompleted &&
+        spellTap.stage != SpellTapStage.hinting) {
+      return;
+    }
+
+    _spellTapFeedbackTimer?.cancel();
+    final delayMs = current.gameMode.requireSpellTapSettings.feedbackLockMs;
+    if (delayMs <= 0) {
+      _advanceSpellTapAfterTransientStage();
+      return;
+    }
+
+    final expectedWordIndex = spellTap.currentWordIndex;
+    final expectedLetterIndex = spellTap.currentLetterIndex;
+    final expectedStage = spellTap.stage;
+
+    _spellTapFeedbackTimer = Timer(Duration(milliseconds: delayMs), () {
+      final live = state.asData?.value;
+      final liveSpellTap = live?.spellTap;
+      if (live == null || liveSpellTap == null) return;
+      if (live.session.puzzleId != current.session.puzzleId ||
+          live.session.variantId != current.session.variantId) {
+        return;
+      }
+      if (liveSpellTap.stage != expectedStage ||
+          liveSpellTap.currentWordIndex != expectedWordIndex ||
+          liveSpellTap.currentLetterIndex != expectedLetterIndex) {
+        return;
+      }
+      _advanceSpellTapAfterTransientStage();
+    });
+  }
+
+  void _advanceSpellTapAfterTransientStage() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellTapMode) return;
+    final spellTap = current.spellTap;
+    if (spellTap == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+
+    final nextSpellTap = _spellTapGameEngine.advanceAfterTransientStage(
+      spellTap,
+      settings: current.gameMode.requireSpellTapSettings,
+      nextSpeechRequestId: _nextSpellTapSpeechRequestId(),
+    );
+    _pushResolvedState(_replaceSpellTapState(current, nextSpellTap));
+  }
+
+  void _scheduleSpellDragTransientAdvance(WordHuntState current) {
+    if (!current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null) return;
+    if (spellDrag.stage != SpellTapStage.correctFeedback &&
+        spellDrag.stage != SpellTapStage.wrongFeedback &&
+        spellDrag.stage != SpellTapStage.wordCompleted &&
+        spellDrag.stage != SpellTapStage.hinting) {
+      return;
+    }
+
+    _spellDragFeedbackTimer?.cancel();
+    final delayMs = current.gameMode.requireSpellingSettings.feedbackLockMs;
+    if (delayMs <= 0) {
+      _advanceSpellDragAfterTransientStage();
+      return;
+    }
+
+    final expectedWordIndex = spellDrag.currentWordIndex;
+    final expectedLetterIndex = spellDrag.currentLetterIndex;
+    final expectedStage = spellDrag.stage;
+    final expectedCollectedCount = spellDrag.collectedCells.length;
+
+    _spellDragFeedbackTimer = Timer(Duration(milliseconds: delayMs), () {
+      final live = state.asData?.value;
+      final liveSpellDrag = live?.spellDrag;
+      if (live == null || liveSpellDrag == null) return;
+      if (live.session.puzzleId != current.session.puzzleId ||
+          live.session.variantId != current.session.variantId) {
+        return;
+      }
+      if (liveSpellDrag.stage != expectedStage ||
+          liveSpellDrag.currentWordIndex != expectedWordIndex ||
+          liveSpellDrag.currentLetterIndex != expectedLetterIndex ||
+          liveSpellDrag.collectedCells.length != expectedCollectedCount) {
+        return;
+      }
+      _advanceSpellDragAfterTransientStage();
+    });
+  }
+
+  void _advanceSpellDragAfterTransientStage() {
+    final current = state.asData?.value;
+    if (current == null || !current.isSpellDragMode) return;
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null || current.endStatus != WordHuntEndStatus.running) {
+      return;
+    }
+
+    final nextSpellDrag = _spellDragGameEngine.advanceAfterTransientStage(
+      spellDrag,
+      settings: current.gameMode.requireSpellingSettings,
+      nextSpeechRequestId: _nextSpellDragSpeechRequestId(),
+    );
+    _pushResolvedState(_replaceSpellDragState(current, nextSpellDrag));
+  }
+
+  WordHuntState _registerFoundWord(
+    WordHuntState current, {
+    required String wordId,
+    required List<CellCoord> path,
+    SpellTapSessionState? spellTap,
+    SpellDragSessionState? spellDrag,
+  }) {
+    final foundWordColors = <String, int>{...current.foundWordColorsById};
+    final foundWordSpans = <String, FoundWordSpan>{
+      ...current.foundWordSpansById,
+    };
+    final foundCellColors = <int, int>{...current.foundCellColorsByIndex};
+    var orderedNextIndex = current.orderedNextIndex;
+    var baseScore = current.baseScore;
+
+    if (!foundWordColors.containsKey(wordId)) {
       final usedColors = foundWordColors.values.toSet();
       final colorValue = _pickColorValue(usedColors);
-      foundWordColors[match] = colorValue;
+      foundWordColors[wordId] = colorValue;
       baseScore = _applyScoreDelta(
         baseScore,
-        _scoreDeltaForWordFound(current, match),
+        _scoreDeltaForWordFound(current, wordId),
       );
 
-      final gridWidth = current.cols;
-      for (final c in path) {
-        final index = (c.row * gridWidth) + c.col;
-        // Se houver sobreposição entre palavras, mantemos a cor da primeira.
-        foundCellColors.putIfAbsent(index, () => colorValue);
-      }
-
-      foundWordSpans[match] = FoundWordSpan(start: path.first, end: path.last);
-
-      // Ordered: avancar apenas quando o wordId encontrado e o esperado.
-      final orderedIds = current.orderedWordIds;
-      if (orderedIds != null) {
-        if (orderedNextIndex < orderedIds.length &&
-            match == orderedIds[orderedNextIndex]) {
-          orderedNextIndex++;
+      if (!current.isSpellDragMode && path.isNotEmpty) {
+        final gridWidth = current.cols;
+        for (final c in path) {
+          final index = (c.row * gridWidth) + c.col;
+          foundCellColors.putIfAbsent(index, () => colorValue);
         }
+
+        foundWordSpans[wordId] = FoundWordSpan(start: path.first, end: path.last);
       }
-    } else if (match == null) {
-      mistakes++;
+
+      final orderedIds = current.orderedWordIds;
+      if (orderedIds != null &&
+          orderedNextIndex < orderedIds.length &&
+          wordId == orderedIds[orderedNextIndex]) {
+        orderedNextIndex++;
+      }
+    }
+
+    final listenFindSettings = ListenFindSettings.fromVariant(current.variant);
+    final listenFindTargetWordId = listenFindSettings.enabled
+        ? _resolveListenFindTargetWordId(
+            targets: current.targets,
+            orderedWordIds: current.orderedWordIds,
+            foundWordIds: foundWordColors.keys.toSet(),
+          )
+        : null;
+
+    return current.copyWith(
+      orderedNextIndex: orderedNextIndex,
+      listenFindTargetWordId: listenFindTargetWordId,
+      spellTap: spellTap,
+      spellDrag: spellDrag,
+      foundWordColorsById: foundWordColors,
+      foundWordSpansById: foundWordSpans,
+      foundCellColorsByIndex: foundCellColors,
+      baseScore: baseScore,
+      score: baseScore,
+    );
+  }
+
+  WordHuntState _applyWrongSelection(
+    WordHuntState current, {
+    required bool skipScoreAndPenalty,
+    SpellTapSessionState? spellTap,
+    SpellDragSessionState? spellDrag,
+  }) {
+    var baseScore = current.baseScore;
+    var remainingMs = current.remainingMs;
+
+    if (!skipScoreAndPenalty) {
       baseScore = _applyScoreDelta(
         baseScore,
         _scoreDeltaForWrongSelection(current),
@@ -378,22 +878,99 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       }
     }
 
-    var nextState = current.copyWith(
-      orderedNextIndex: orderedNextIndex,
-      foundWordColorsById: foundWordColors,
-      foundWordSpansById: foundWordSpans,
-      foundCellColorsByIndex: foundCellColors,
+    return current.copyWith(
+      spellTap: spellTap,
+      spellDrag: spellDrag,
       baseScore: baseScore,
       score: baseScore,
-      mistakes: mistakes,
+      mistakes: current.mistakes + 1,
       remainingMs: remainingMs,
     );
+  }
 
-    nextState = _syncStateWithClock(nextState);
-    nextState = _resolveRunGoals(nextState);
+  WordHuntState _replaceSpellTapState(
+    WordHuntState current,
+    SpellTapSessionState nextSpellTap,
+  ) {
+    final previousSpellTap = current.spellTap;
+    var nextState = current.copyWith(spellTap: nextSpellTap);
+    if (previousSpellTap != null &&
+        _didStartSpellTapHint(previousSpellTap, nextSpellTap)) {
+      nextState = _applyHintUsage(nextState);
+    }
+    return nextState;
+  }
 
-    state = AsyncData(nextState);
-    _persistSnapshot(nextState);
+  WordHuntState _replaceSpellDragState(
+    WordHuntState current,
+    SpellDragSessionState nextSpellDrag,
+  ) {
+    final previousSpellDrag = current.spellDrag;
+    var nextState = current.copyWith(spellDrag: nextSpellDrag);
+    if (previousSpellDrag != null &&
+        _didStartSpellDragHint(previousSpellDrag, nextSpellDrag)) {
+      nextState = _applyHintUsage(nextState);
+    }
+    return nextState;
+  }
+
+  bool _didStartSpellTapHint(
+    SpellTapSessionState previous,
+    SpellTapSessionState next,
+  ) {
+    final nextHintKind = next.activeHintKind;
+    if (nextHintKind == null) return false;
+
+    if (next.stage == SpellTapStage.hinting) {
+      return previous.stage != SpellTapStage.hinting ||
+          previous.activeHintKind != nextHintKind ||
+          previous.currentWordIndex != next.currentWordIndex ||
+          previous.currentLetterIndex != next.currentLetterIndex;
+    }
+
+    final nextRequestId = next.pendingSpeechRequest?.id;
+    if (nextRequestId == null) return false;
+    return previous.pendingSpeechRequest?.id != nextRequestId;
+  }
+
+  bool _didStartSpellDragHint(
+    SpellDragSessionState previous,
+    SpellDragSessionState next,
+  ) {
+    final nextHintKind = next.activeHintKind;
+    if (nextHintKind == null) return false;
+
+    if (next.stage == SpellTapStage.hinting) {
+      return previous.stage != SpellTapStage.hinting ||
+          previous.activeHintKind != nextHintKind ||
+          previous.currentWordIndex != next.currentWordIndex ||
+          previous.currentLetterIndex != next.currentLetterIndex;
+    }
+
+    final nextRequestId = next.pendingSpeechRequest?.id;
+    if (nextRequestId == null) return false;
+    return previous.pendingSpeechRequest?.id != nextRequestId;
+  }
+
+  WordHuntState _applyHintUsage(WordHuntState current) {
+    final scoring = current.variant.scoring;
+    final events = scoring?.events ?? const ScoringEvents();
+    final nextBaseScore = scoring?.enabled == false
+        ? current.baseScore
+        : _applyScoreDelta(current.baseScore, events.hintUsed.delta);
+
+    return current.copyWith(
+      baseScore: nextBaseScore,
+      score: nextBaseScore,
+      hintsUsed: current.hintsUsed + 1,
+    );
+  }
+
+  void _pushResolvedState(WordHuntState nextState) {
+    var resolved = _syncStateWithClock(nextState);
+    resolved = _resolveRunGoals(resolved);
+    state = AsyncData(resolved);
+    _persistSnapshot(resolved);
   }
 
   void _onClockTick(int elapsedMs, int? _) {
@@ -436,6 +1013,14 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     _runClock = null;
   }
 
+  void _disposeRuntimeResources() {
+    _disposeClock();
+    _spellTapFeedbackTimer?.cancel();
+    _spellTapFeedbackTimer = null;
+    _spellDragFeedbackTimer?.cancel();
+    _spellDragFeedbackTimer = null;
+  }
+
   WordHuntSavedProgress _toSavedProgress(WordHuntState current) {
     final now = DateTime.now().millisecondsSinceEpoch;
     final completedAtEpochMs = current.endStatus == WordHuntEndStatus.won
@@ -464,6 +1049,22 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       elapsedMs: current.elapsedMs,
       remainingMs: current.remainingMs,
       mistakes: current.mistakes,
+      hintsUsed: current.hintsUsed,
+      spellTapLetterIndex: current.isSpellTapMode
+          ? _spellTapLetterIndexForSave(current)
+          : null,
+      spellTapWordMistakes: current.isSpellTapMode
+          ? current.spellTap?.currentWordMistakes
+          : null,
+      spellDragLetterIndex: current.isSpellDragMode
+          ? _spellDragLetterIndexForSave(current)
+          : null,
+      spellDragWordMistakes: current.isSpellDragMode
+          ? current.spellDrag?.currentWordMistakes
+          : null,
+      spellDragCollectedCellIndices: current.isSpellDragMode
+          ? _spellDragCollectedCellIndicesForSave(current)
+          : null,
       baseScore: current.baseScore,
       speedBonus: current.speedBonus,
       maxBaseScore: current.maxBaseScore,
@@ -476,11 +1077,85 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     );
   }
 
+  int? _spellTapLetterIndexForSave(WordHuntState current) {
+    final spellTap = current.spellTap;
+    if (spellTap == null) return null;
+
+    switch (spellTap.stage) {
+      case SpellTapStage.wordCompleted:
+      case SpellTapStage.puzzleCompleted:
+        return 0;
+      case SpellTapStage.idle:
+      case SpellTapStage.speakingWord:
+      case SpellTapStage.speakingLetter:
+      case SpellTapStage.waitingInput:
+      case SpellTapStage.wrongFeedback:
+      case SpellTapStage.correctFeedback:
+      case SpellTapStage.hinting:
+        return spellTap.currentLetterIndex;
+    }
+  }
+
+  int? _spellDragLetterIndexForSave(WordHuntState current) {
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null) return null;
+
+    switch (spellDrag.stage) {
+      case SpellTapStage.wordCompleted:
+      case SpellTapStage.puzzleCompleted:
+        return 0;
+      case SpellTapStage.idle:
+      case SpellTapStage.speakingWord:
+      case SpellTapStage.speakingLetter:
+      case SpellTapStage.waitingInput:
+      case SpellTapStage.wrongFeedback:
+      case SpellTapStage.correctFeedback:
+      case SpellTapStage.hinting:
+        return spellDrag.currentLetterIndex;
+    }
+  }
+
+  List<int>? _spellDragCollectedCellIndicesForSave(WordHuntState current) {
+    final spellDrag = current.spellDrag;
+    if (spellDrag == null) return null;
+    if (spellDrag.stage == SpellTapStage.wordCompleted ||
+        spellDrag.stage == SpellTapStage.puzzleCompleted) {
+      return const <int>[];
+    }
+    final out = <int>[];
+    for (final cell in spellDrag.collectedCells) {
+      out.add((cell.row * current.cols) + cell.col);
+    }
+    return List.unmodifiable(out);
+  }
+
   void _persistSnapshot(WordHuntState current) {
     final progressRepo = ref.read(progressRepositoryProvider);
     final saved = _toSavedProgress(current);
     progressRepo.saveProgress(saved);
     progressRepo.saveLastSession(current.session);
+  }
+
+  Future<WordHuntSavedProgress> _resetCompletedRunIfNeeded({
+    required _LoadedPuzzle loaded,
+    required WordHuntSavedProgress saved,
+    required WordHuntProgressRepository progressRepo,
+  }) async {
+    final solvedSnapshot = _isSavedProgressSolvedSnapshot(
+      puzzle: loaded.puzzle,
+      variant: loaded.variant,
+      saved: saved,
+    );
+    if (!solvedSnapshot) return saved;
+
+    final preservedBestScore = _bestScoreFromSaved(saved);
+    final reset = WordHuntSavedProgress.empty(loaded.session).copyWith(
+      completedAtEpochMs: saved.completedAtEpochMs,
+      bestScore: preservedBestScore,
+      lastSavedAtEpochMs: DateTime.now().millisecondsSinceEpoch,
+    );
+    await progressRepo.saveProgress(reset);
+    return reset;
   }
 
   Future<WordHuntSavedProgress> _prepareSubsetRunProgress({
@@ -809,6 +1484,25 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     return null;
   }
 
+  String? _resolveListenFindTargetWordId({
+    required List<WordTarget> targets,
+    required List<String>? orderedWordIds,
+    required Set<String> foundWordIds,
+  }) {
+    final ordered = orderedWordIds;
+    if (ordered != null) {
+      for (final id in ordered) {
+        if (!foundWordIds.contains(id)) return id;
+      }
+      return null;
+    }
+
+    for (final target in targets) {
+      if (!foundWordIds.contains(target.id)) return target.id;
+    }
+    return null;
+  }
+
   int _pickColorValue(Set<int> usedColorValues) {
     final palette = AppUiConstants.foundWordPalette;
 
@@ -918,6 +1612,7 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     final speedBonus = _nonNegative(saved.speedBonus ?? 0);
     final maxBaseScore = _nonNegative(saved.maxBaseScore ?? 0);
     final bestScore = _nonNegative(saved.bestScore ?? score);
+    final hintsUsed = _nonNegative(saved.hintsUsed ?? 0);
 
     _timePenaltyMs = 0;
 
@@ -931,10 +1626,45 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       _timePenaltyMs = max(0, timeLimitMs - elapsedMs - remainingMs);
     }
 
+    final listenFindSettings = ListenFindSettings.fromVariant(loaded.variant);
+    final listenFindTargetWordId = listenFindSettings.enabled
+        ? _resolveListenFindTargetWordId(
+            targets: targets,
+            orderedWordIds: orderedIds,
+            foundWordIds: foundWordColors.keys.toSet(),
+          )
+        : null;
+    final spellTap = loaded.gameMode.isSpellTap
+        ? _spellTapGameEngine.createInitialState(
+            targets: loaded.spellTapTargets,
+            settings: loaded.gameMode.requireSpellingSettings,
+            nextSpeechRequestId: _nextSpellTapSpeechRequestId(),
+            currentWordIndex: orderedNextIndex,
+            currentLetterIndex: _nonNegative(saved.spellTapLetterIndex ?? 0),
+            currentWordMistakes: _nonNegative(saved.spellTapWordMistakes ?? 0),
+          )
+        : null;
+    final spellDrag = loaded.gameMode.isSpellDrag
+        ? _spellDragGameEngine.createInitialState(
+            targets: loaded.targets,
+            settings: loaded.gameMode.requireSpellingSettings,
+            nextSpeechRequestId: _nextSpellDragSpeechRequestId(),
+            currentWordIndex: orderedNextIndex,
+            currentLetterIndex: _nonNegative(saved.spellDragLetterIndex ?? 0),
+            currentWordMistakes: _nonNegative(saved.spellDragWordMistakes ?? 0),
+            currentCollectedCells: _linearIndicesToCells(
+              saved.spellDragCollectedCellIndices,
+              cols: loaded.cols,
+              rows: loaded.grid.length,
+            ),
+          )
+        : null;
+
     return WordHuntState(
       session: loaded.session,
       puzzle: loaded.puzzle,
       variant: loaded.variant,
+      gameMode: loaded.gameMode,
       normalize: normalize,
       grid: loaded.grid,
       targets: targets,
@@ -942,6 +1672,9 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       targetWordIdsByNormalizedText: idsByNorm,
       orderedWordIds: orderedIds,
       orderedNextIndex: orderedNextIndex,
+      listenFindTargetWordId: listenFindTargetWordId,
+      spellTap: spellTap,
+      spellDrag: spellDrag,
       foundWordColorsById: foundWordColors,
       foundWordSpansById: foundWordSpans,
       foundCellColorsByIndex: foundCellColors,
@@ -959,7 +1692,7 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       score: score,
       bestScore: bestScore,
       mistakes: mistakes,
-      hintsUsed: 0,
+      hintsUsed: hintsUsed,
       endStatus: WordHuntEndStatus.running,
       endReason: null,
     );
@@ -1074,6 +1807,7 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
     }
 
     final session = WordHuntSession(puzzleId: puzzle.id, variantId: variant.id);
+    final gameMode = PuzzleGameMode.fromVariant(variant);
 
     final resolved = _resolveTargets(
       puzzle: puzzle,
@@ -1081,18 +1815,120 @@ class WordHuntController extends AsyncNotifier<WordHuntState> {
       normalize: normalize,
       rng: _random,
     );
+    final spellTapTargets = gameMode.isSpellTap
+        ? _spellTapTargetResolver.resolve(
+            puzzle: puzzle,
+            normalize: normalize,
+            grid: grid,
+            targets: resolved.targets,
+            orderedWordIds: resolved.orderedWordIds,
+          )
+        : const <SpellTapTarget>[];
+    if (gameMode.isSpellDrag) {
+      _validateSpellDragTargetsAgainstGrid(
+        targets: resolved.targets,
+        grid: grid,
+        normalize: normalize,
+      );
+    }
 
     return _LoadedPuzzle(
       session: session,
       puzzle: puzzle,
       variant: variant,
+      gameMode: gameMode,
       normalize: normalize,
       grid: grid,
       cols: puzzle.content.board.cols,
       targets: resolved.targets,
       targetWordIds: resolved.targetWordIds,
       orderedWordIds: resolved.orderedWordIds,
+      spellTapTargets: spellTapTargets,
     );
+  }
+
+  int _nextSpellTapSpeechRequestId() {
+    _spellTapSpeechRequestCounter++;
+    return _spellTapSpeechRequestCounter;
+  }
+
+  int _nextSpellDragSpeechRequestId() {
+    return _nextSpellTapSpeechRequestId();
+  }
+
+  String? _normalizedGridLetterAt(WordHuntState current, CellCoord cell) {
+    if (cell.row < 0 ||
+        cell.col < 0 ||
+        cell.row >= current.rows ||
+        cell.col >= current.cols) {
+      return null;
+    }
+    final rawLetter = current.grid[cell.row][cell.col];
+    final normalized = PuzzleTextNormalizerV1.normalizeChar(
+      rawLetter,
+      current.normalize,
+    );
+    if (normalized.length != 1) return null;
+    return normalized;
+  }
+
+  List<CellCoord> _linearIndicesToCells(
+    List<int>? indices, {
+    required int cols,
+    required int rows,
+  }) {
+    if (indices == null || indices.isEmpty || cols <= 0 || rows <= 0) {
+      return const <CellCoord>[];
+    }
+
+    final out = <CellCoord>[];
+    for (final index in indices) {
+      if (index < 0) continue;
+      final row = index ~/ cols;
+      final col = index % cols;
+      if (row < 0 || col < 0 || row >= rows || col >= cols) continue;
+      out.add(CellCoord(row, col));
+    }
+    return List.unmodifiable(out);
+  }
+
+  void _validateSpellDragTargetsAgainstGrid({
+    required List<WordTarget> targets,
+    required List<String> grid,
+    required NormalizeConfig normalize,
+  }) {
+    final boardLetterCounts = <String, int>{};
+    for (final row in grid) {
+      for (final rawChar in row.split('')) {
+        final normalized = PuzzleTextNormalizerV1.normalizeChar(
+          rawChar,
+          normalize,
+        );
+        if (normalized.length != 1) continue;
+        boardLetterCounts.update(
+          normalized,
+          (value) => value + 1,
+          ifAbsent: () => 1,
+        );
+      }
+    }
+
+    for (final target in targets) {
+      final neededCounts = <String, int>{};
+      for (final letter in target.normalized.split('')) {
+        neededCounts.update(letter, (value) => value + 1, ifAbsent: () => 1);
+      }
+
+      for (final entry in neededCounts.entries) {
+        final available = boardLetterCounts[entry.key] ?? 0;
+        if (available < entry.value) {
+          throw AppException(
+            'Puzzle "${target.id}": spell_drag exige ao menos ${entry.value} '
+            'ocorrencias da letra "${entry.key}" no grid, mas so ha $available.',
+          );
+        }
+      }
+    }
   }
 }
 
@@ -1100,23 +1936,27 @@ class _LoadedPuzzle {
   final WordHuntSession session;
   final PuzzleV1 puzzle;
   final PuzzleVariant variant;
+  final PuzzleGameMode gameMode;
   final NormalizeConfig normalize;
   final List<String> grid;
   final int cols;
   final List<WordTarget> targets;
   final Set<String> targetWordIds;
   final List<String>? orderedWordIds;
+  final List<SpellTapTarget> spellTapTargets;
 
   const _LoadedPuzzle({
     required this.session,
     required this.puzzle,
     required this.variant,
+    required this.gameMode,
     required this.normalize,
     required this.grid,
     required this.cols,
     required this.targets,
     required this.targetWordIds,
     required this.orderedWordIds,
+    required this.spellTapTargets,
   });
 }
 
@@ -1335,6 +2175,31 @@ Future<bool> _isVariantCompleted({
   final session = WordHuntSession(puzzleId: puzzle.id, variantId: variant.id);
   final saved = await progressRepo.loadProgress(session);
 
+  return _isSavedProgressCompleted(
+    puzzle: puzzle,
+    variant: variant,
+    saved: saved,
+  );
+}
+
+bool _isSavedProgressCompleted({
+  required PuzzleV1 puzzle,
+  required PuzzleVariant variant,
+  required WordHuntSavedProgress saved,
+}) {
+  return saved.completedAtEpochMs != null ||
+      _isSavedProgressSolvedSnapshot(
+        puzzle: puzzle,
+        variant: variant,
+        saved: saved,
+      );
+}
+
+bool _isSavedProgressSolvedSnapshot({
+  required PuzzleV1 puzzle,
+  required PuzzleVariant variant,
+  required WordHuntSavedProgress saved,
+}) {
   final normalize = puzzle.content.normalize ?? const NormalizeConfig();
   final resolved = _resolveTargets(
     puzzle: puzzle,
@@ -1347,8 +2212,7 @@ Future<bool> _isVariantCompleted({
   final targetIds = resolved.targetWordIds;
   if (targetIds.isEmpty) return false;
 
-  return saved.completedAtEpochMs != null ||
-      saved.foundWordIds.containsAll(targetIds);
+  return saved.foundWordIds.containsAll(targetIds);
 }
 
 int? _bestScoreFromSaved(WordHuntSavedProgress saved) {
@@ -1359,6 +2223,18 @@ int? _bestScoreFromSaved(WordHuntSavedProgress saved) {
   if (score != null) return score < 0 ? 0 : score;
 
   return null;
+}
+
+Future<bool> _canLoadSession({
+  required PuzzleRepositoryV1 puzzleRepo,
+  required WordHuntSession session,
+}) async {
+  try {
+    final puzzle = await puzzleRepo.loadById(session.puzzleId);
+    return puzzle.variants.any((v) => v.id == session.variantId);
+  } catch (_) {
+    return false;
+  }
 }
 
 PuzzleThemeInfo? _resolveThemeInfo(PuzzleV1 puzzle) {
